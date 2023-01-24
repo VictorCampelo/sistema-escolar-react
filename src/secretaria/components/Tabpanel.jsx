@@ -20,6 +20,7 @@ import {
   PersonAdd
 } from "@material-ui/icons";
 import AddStudent from "./addStudent/AddStudent";
+import AddTeacher from "./addTeacher/AddTeacher";
 import SchoolSettings from "./schoolSettings/SchoolSettings";
 import Students from "./students/Students";
 import AddClass from "./addClass/AddClass";
@@ -93,8 +94,9 @@ export default function SecretariaTabs() {
           <Tab label="Turmas" icon={<GroupWork />} {...a11yProps(2)} />
           <Tab label="Novo Aluno" icon={<PersonAdd />} {...a11yProps(3)} />
           <Tab label="Nova Turma" icon={<AddBox />} {...a11yProps(4)} />
-          <Tab label="Pré-Matrículas" icon={<AssignmentInd />} {...a11yProps(5)} />
-          <Tab label="Conf. da Escola" icon={<Build />} {...a11yProps(6)} />
+          <Tab label="Novo Professor" icon={<AddBox />} {...a11yProps(5)} />
+          <Tab label="Pré-Matrículas" icon={<AssignmentInd />} {...a11yProps(6)} />
+          <Tab label="Conf. da Escola" icon={<Build />} {...a11yProps(7)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -113,9 +115,12 @@ export default function SecretariaTabs() {
         <AddClass />
       </TabPanel>
       <TabPanel value={value} index={5}>
-        <PreEnrollments changeTab={handleChange} />
+        <AddTeacher />
       </TabPanel>
       <TabPanel value={value} index={6}>
+        <PreEnrollments changeTab={handleChange} />
+      </TabPanel>
+      <TabPanel value={value} index={7}>
         <SchoolSettings />
       </TabPanel>
     </div>

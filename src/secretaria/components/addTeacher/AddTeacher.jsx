@@ -17,12 +17,12 @@ import {
   Paper,
   useMediaQuery
 } from "@material-ui/core";
-import { enrollStudent } from "../../../shared/FunctionsUse";
+import { enrollTeacher } from "../../../shared/FunctionsUse";
 import {
   AddressAndParentsFields,
   BasicDataFields,
   CourseDataFields
-} from "../../../shared/StudentFields";
+} from "../../../shared/TeacherFields";
 import $ from "jquery";
 import { classesRef } from "../../../services/databaseRefs";
 import ErrorDialog from "../../../shared/ErrorDialog";
@@ -55,16 +55,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function AddStudent() {
+export default function AddTeacher() {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState(new Set());
   const [skipped, setSkipped] = useState(new Set());
   const [loader, setLoader] = useState(false);
-  const steps = getSteps();
   const [shrink, setShrink] = useState();
   const [optionalSteps, setOptionalSteps] = useState([]);
   const [parentsRequired, setParentsRequired] = useState(undefined);
+  const steps = getSteps();
 
   const [errorMessage, setErrorMessage] = useState("Error");
   const [courseTable, setCourseTable] = useState({
@@ -80,19 +80,19 @@ export default function AddStudent() {
 
   useEffect(() => {
     let index = activeStep;
-    let formData = new FormData(document.getElementById("formAddStudent"));
+    let formData = new FormData(document.getElementById("formAddTeacher"));
     let item = JSON.parse(sessionStorage.getItem(index));
+    // eslint-disable-next-line guard-for-in
     for (let key in item) {
       formData.append(key, item[key]);
 
       $("#" + key).val(item[key]);
       setShrink(true);
     }
+
     if (allStepsCompleted()) {
       handleAddStudent();
     }
-
-    handleGetCourseData();
   }, [activeStep, completed]);
 
   const handleOnCloseErrorDialog = () => {
@@ -114,61 +114,8 @@ export default function AddStudent() {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const handleGetCourseData = async () => {
-    try {
-      setErrorMessage(null);
-      setLoader(true);
-      const schoolClasses = (await classesRef.once("value")).val();
-      let columns = [
-        { field: "col1", headerName: "Turma", width: 150 },
-        { field: "col2", headerName: "Horário", width: 125 },
-        { field: "col3", headerName: "Professor(a)", width: 170 },
-        { field: "col4", headerName: "E-mail Prof.", width: 170 }
-      ];
-      let rows = [];
-      let coursesData = [];
-
-      for (const classKey in schoolClasses) {
-        if (Object.hasOwnProperty.call(schoolClasses, classKey)) {
-          const classInfo = schoolClasses[classKey];
-          let teacherObj;
-          let teacher;
-          let teacherEmail;
-          if (classInfo.hasOwnProperty("professor")) {
-            teacherObj = classInfo.professor[0];
-            teacherEmail = classInfo.professor[0].email;
-            teacher = classInfo.professor[0].nome;
-          } else {
-            teacher = "Não cadastrado";
-          }
-          rows.push({
-            id: classKey,
-            col1: classKey,
-            col2: classInfo.hora + "h",
-            col3: teacher,
-            col4: teacherEmail
-          });
-          coursesData.push({
-            turmaAluno: classKey,
-            horaAluno: classInfo.hora + "h",
-            profAluno: teacherObj,
-            courseId: classInfo.curso
-          });
-        }
-      }
-      sessionStorage.setItem("coursesData", JSON.stringify(coursesData));
-
-      setCourseTable({ rows: rows, columns: columns });
-      setLoader(false);
-    } catch (error) {
-      console.log(error);
-      setLoader(false);
-      setErrorMessage(error.message);
-    }
-  };
-
   function getSteps() {
-    return ["Dados básicos", "Dados para o Curso", "Endereço, Responsáveis e dados adicionais"];
+    return ["Dados básicos"];
   }
 
   const handleOptionalSteps = (step, remove = false) => {
@@ -195,17 +142,6 @@ export default function AddStudent() {
           />
         );
       case 1:
-        return (
-          <CourseDataFields
-            shrink={shrink}
-            rows={courseTable.rows}
-            columns={courseTable.columns}
-            rowHeight={25}
-            setLoader={setLoader}
-            activeStep={activeStep}
-          />
-        );
-      case 2:
         return <AddressAndParentsFields shrink={shrink} parentsRequired={parentsRequired} />;
       default:
         return "Unknown step";
@@ -314,55 +250,12 @@ export default function AddStudent() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e);
     try {
-      let formData = new FormData(document.getElementById("formAddStudent"));
+      let formData = new FormData(document.getElementById("formAddTeacher"));
 
       let data = Object.fromEntries(formData.entries());
-      console.log(data);
 
-      switch (activeStep) {
-        case 0:
-          sessionStorage.setItem(activeStep, JSON.stringify(data));
-          break;
-        case 1:
-          let configuredContract = JSON.parse(sessionStorage.getItem("contratoConfigurado"));
-          let originalPlan = JSON.parse(sessionStorage.getItem("planoOriginal"));
-          let classStoredData = JSON.parse(sessionStorage.getItem(activeStep));
-          try {
-            let test = classStoredData.dadosTurma;
-          } catch {
-            throw Error("Turma não escolhida.");
-          }
-          let contractCode = sessionStorage.getItem("codContrato");
-          if (!contractCode) {
-            throw Error("Contrato não configurado.");
-          }
-
-          let stepStore = {
-            dadosTurma: classStoredData.dadosTurma,
-            dadosContrato: {
-              codContrato: contractCode,
-              planoOriginal: originalPlan,
-              contratoConfigurado: configuredContract
-            }
-          };
-          sessionStorage.setItem(activeStep, JSON.stringify(stepStore));
-          break;
-        case 2:
-          data.responsaveis = JSON.parse(sessionStorage.getItem("responsaveis")) || null;
-          console.log(parentsRequired, data.responsaveis);
-          if (parentsRequired && (data.responsaveis === null || data.responsaveis.length < 1)) {
-            throw new Error(
-              "O aluno é menor de idade. É necessário cadastrar pelo menos um responsável."
-            );
-          }
-          sessionStorage.setItem(activeStep, JSON.stringify(data));
-          break;
-
-        default:
-          break;
-      }
+      sessionStorage.setItem(activeStep, JSON.stringify(data));
 
       handleComplete();
 
@@ -381,26 +274,23 @@ export default function AddStudent() {
     setOpenFinalDialog(false);
     setLoader(true);
     let storedData = {};
+
     for (let i = 0; i < totalSteps(); i++) {
       storedData[i] = JSON.parse(sessionStorage.getItem(i));
     }
-    console.log(storedData);
-    enrollStudent(
-      storedData[0],
-      storedData[1] === null ? "" : storedData[1].dadosTurma,
-      storedData[1] === null ? "" : storedData[1].dadosContrato,
-      storedData[2]
-    )
+
+    enrollTeacher(storedData[0])
       .then((message) => {
         setOpenFinalDialog(false);
+
         enqueueSnackbar(message.answer, { variant: "success" });
+
         for (let index = 0; index < steps.length; index++) {
           sessionStorage.removeItem(index);
         }
-        sessionStorage.removeItem("planoOriginal");
+
         sessionStorage.removeItem("codContrato");
-        sessionStorage.removeItem("contratoConfigurado");
-        sessionStorage.removeItem("responsaveis");
+
         setLoader(false);
         handleReset();
       })
@@ -420,10 +310,9 @@ export default function AddStudent() {
         open={openFinalDialog}
         onClose={() => setOpenFinalDialog(false)}
         aria-labelledby="responsive-dialog-title"
-        ba
-      >
+        ba>
         <DialogTitle id="responsive-dialog-title">
-          {"Você confirma o cadastro do aluno?"}
+          {"Você confirma o cadastro do Professor?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -432,11 +321,11 @@ export default function AddStudent() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={() => setOpenFinalDialog(false)} color="primary">
+          <Button onClick={() => setOpenFinalDialog(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={handleSendData} color="primary" autoFocus>
-            Cadastrar aluno
+          <Button onClick={handleSendData} color="primary">
+            Cadastrar Professor
           </Button>
         </DialogActions>
       </Dialog>
@@ -449,11 +338,13 @@ export default function AddStudent() {
           onClose={handleOnCloseErrorDialog}
         />
       )}
+
       <div style={{ position: "absolute" }}>
         <Backdrop className={classes.backdrop} open={loader}>
           <CircularProgress color="inherit" />
         </Backdrop>
       </div>
+
       <div className={classes.root}>
         <Stepper alternativeLabel activeStep={activeStep}>
           {steps.map((label, index) => {
@@ -470,16 +361,16 @@ export default function AddStudent() {
                 <StepButton
                   onClick={handleStep(index)}
                   completed={isStepComplete(index)}
-                  {...buttonProps}
-                >
+                  {...buttonProps}>
                   {label}
                 </StepButton>
               </Step>
             );
           })}
         </Stepper>
+
         <div>
-          <form onSubmit={handleSubmit} id="formAddStudent" autoComplete="off">
+          <form onSubmit={handleSubmit} id="formAddTeacher" autoComplete="off">
             <div>
               <Typography className={classes.instructions}>
                 <Paper style={{ padding: "10px", minWidth: "250px" }} elevation={2}>
@@ -491,25 +382,16 @@ export default function AddStudent() {
                 {allStepsCompleted() && <Button onClick={handleReset}>Resetar</Button>}
 
                 <Fab type="submit" style={fabStyle} variant="extended" color="primary">
-                  {completedSteps() === totalSteps() - 1 ? "Cadastrar Aluno" : "Próximo"}
+                  {completedSteps() === totalSteps() - 1 ? "Cadastrar Professor" : "Próximo"}
                   <ArrowForward className={classes.extendedIcon} />
                 </Fab>
 
-                {/* <Button
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                    className={classes.button}
-                >
-                    {completedSteps() === totalSteps() - 1 ? 'Cadastrar Aluno' : 'Próximo'}
-                </Button> */}
                 {isStepOptional(activeStep) && !completed.has(activeStep) && (
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={handleSkip}
-                    className={classes.button}
-                  >
+                    className={classes.button}>
                     Pular
                   </Button>
                 )}

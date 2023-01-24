@@ -275,7 +275,8 @@ const Contracts = () => {
       <Dialog
         aria-labelledby="confirmation-dialog-title"
         open={openDialog}
-        onClose={() => setOpenDialog(false)}>
+        onClose={() => setOpenDialog(false)}
+      >
         <DialogTitle id="confirmation-dialog-title">Você confirma esta ação?</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -304,7 +305,8 @@ const Contracts = () => {
         }}
         title={"Informações do aluno"}
         saveButton={"Salvar"}
-        saveButtonDisabled={true}>
+        saveButtonDisabled={true}
+      >
         <StudentInfo studentInfo={studentInfo} />
       </FullScreenDialog>
       <Grid justifyContent="flex-start" container direction="row" spacing={2}>
@@ -359,7 +361,8 @@ const Contracts = () => {
               color="secondary"
               onClick={() => {
                 handleConfirmDisable();
-              }}>
+              }}
+            >
               Desativar selecionado{selectedRows.length > 1 && "s"}
             </Button>
           )}

@@ -367,8 +367,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
             onClick={() => handleDeleteTeacher(teacherIndex)}
             variant="contained"
             color="primary"
-            autoFocus
-          >
+            autoFocus>
             Sim, continuar
           </Button>
         </DialogActions>
@@ -421,8 +420,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
               autoFocus
               fullWidth
               required
-              onChange={(e) => setClassCodeTransfer(e.target.value)}
-            >
+              onChange={(e) => setClassCodeTransfer(e.target.value)}>
               {classesCodes.map((id, i) => (
                 <MenuItem value={id}>{id}</MenuItem>
               ))}
@@ -552,9 +550,9 @@ const ClassInfo = ({ classDataRows, onClose }) => {
               {"Você está adicionando um(a) professor(a) á esta turma. Escolha o(a) professor(a):"}
             </DialogContentText>
 
-            <Select autoFocus fullWidth required onChange={(e) => setChosenTeacher(e.target.value)}>
+            <Select fullWidth required onChange={(e) => setChosenTeacher(e.target.value)}>
               {teachersList.map((teacher, i) => (
-                <MenuItem value={teacher.email}>
+                <MenuItem key={i} value={teacher.email}>
                   {teacher.nome} ({teacher.email})
                 </MenuItem>
               ))}
@@ -565,7 +563,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
             <Button onClick={() => setOpenDialog(false)} color="primary">
               Cancelar
             </Button>
-            <Button onClick={handleTeacherAdding} variant="contained" color="primary" autoFocus>
+            <Button onClick={handleTeacherAdding} variant="contained" color="primary">
               Sim, continuar
             </Button>
           </DialogActions>
@@ -860,8 +858,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
       <Dialog
         aria-labelledby="confirmation-dialog-title"
         open={openDialog}
-        onClose={() => setOpenDialog(false)}
-      >
+        onClose={() => setOpenDialog(false)}>
         <DialogTitle id="confirmation-dialog-title">Você confirma esta ação?</DialogTitle>
         {dialogContent}
       </Dialog>
@@ -877,8 +874,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
         }}
         title={"Editar as informações da turma"}
         saveButton={"Salvar"}
-        saveButtonDisabled={true}
-      >
+        saveButtonDisabled={true}>
         <AddClass
           dataForEditing={dataForEditing}
           onClose={() => {
@@ -899,8 +895,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
         }}
         title={"Calendário da turma"}
         saveButton={"Salvar"}
-        saveButtonDisabled={true}
-      >
+        saveButtonDisabled={true}>
         <Container>
           <CalendarComponent sourceId={classCode} />
         </Container>
@@ -909,8 +904,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
       <Dialog
         aria-labelledby="confirmation-dialog-title"
         open={openDialog2}
-        onClose={() => setOpenDialog2(false)}
-      >
+        onClose={() => setOpenDialog2(false)}>
         <DialogTitle id="confirmation-dialog-title">Você confirma esta ação?</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -1081,8 +1075,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
         }}
         title={"Informações do aluno"}
         saveButton={"Salvar"}
-        saveButtonDisabled={true}
-      >
+        saveButtonDisabled={true}>
         <StudentInfo studentInfo={studentInfo} />
       </FullScreenDialog>
       <div style={{ position: "absolute" }}>
@@ -1100,8 +1093,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
                     classData.hasOwnProperty("status") && classData.status.turma === "aberta"
                       ? "Turma aberta"
                       : "Turma Fechada"
-                  }
-                >
+                  }>
                   <Avatar
                     className={classes.avatar}
                     style={{
@@ -1110,8 +1102,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
                           ? "#38a800"
                           : "red"
                       }`
-                    }}
-                  >
+                    }}>
                     {classData.hasOwnProperty("status") && classData.status.turma === "aberta" ? (
                       <MeetingRoom />
                     ) : (
@@ -1156,7 +1147,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
             </Typography>
             <List component="nav" aria-label="professores cadastrados">
               {teachers.map((teacher, i) => (
-                <ListItem divider button onClick={handleTeacherClick}>
+                <ListItem key={i} divider button onClick={handleTeacherClick}>
                   <ListItemText className={classes.list}>
                     {teacher.nome} ({teacher.email}){" "}
                   </ListItemText>
@@ -1194,8 +1185,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
                 variant="contained"
                 color="primary"
                 startIcon={<Add />}
-                onClick={handleConfirmAddTeacher}
-              >
+                onClick={handleConfirmAddTeacher}>
                 {" "}
                 Add professores
               </Button>
@@ -1207,8 +1197,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
                 variant="contained"
                 color="primary"
                 onClick={() => setOpenClassEditing(true)}
-                startIcon={<Edit />}
-              >
+                startIcon={<Edit />}>
                 Editar dados
               </Button>
             </Box>
@@ -1220,8 +1209,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
                 variant="contained"
                 color="primary"
                 startIcon={<Grade />}
-                onClick={handleGradeDefinition}
-              >
+                onClick={handleGradeDefinition}>
                 Distribuir notas
               </Button>
             </Box>
@@ -1236,8 +1224,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
                 }
                 color="primary"
                 startIcon={<Print />}
-                onClick={handleClassReport}
-              >
+                onClick={handleClassReport}>
                 Diário de classe
               </Button>
             </Box>
@@ -1258,8 +1245,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
                   ) : (
                     <MeetingRoom />
                   )
-                }
-              >
+                }>
                 {classData.hasOwnProperty("status") && classData.status.turma === "aberta"
                   ? "Fechar "
                   : "Abrir "}
@@ -1274,8 +1260,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
                   variant="contained"
                   color="primary"
                   onClick={handleOpenCalendar}
-                  startIcon={<Event />}
-                >
+                  startIcon={<Event />}>
                   Calendário da turma
                 </Button>
               </Box>
@@ -1290,8 +1275,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
                 variant="contained"
                 style={{ backgroundColor: "red", color: "white" }}
                 startIcon={<DeleteForever />}
-                onClick={handleDeleteClassConfirm}
-              >
+                onClick={handleDeleteClassConfirm}>
                 Excluir turma
               </Button>
             </Box>
@@ -1343,8 +1327,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
                   color="primary"
                   disabled={selectedRows.length === 0}
                   startIcon={<TransferWithinAStation />}
-                  onClick={handleConfirmTransfer}
-                >
+                  onClick={handleConfirmTransfer}>
                   Transferir
                 </Button>
                 <Button
@@ -1353,8 +1336,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
                   color="secondary"
                   startIcon={<Clear />}
                   disabled={selectedRows.length === 0}
-                  onClick={handleConfirmDisable}
-                >
+                  onClick={handleConfirmDisable}>
                   Desativar
                 </Button>
               </div>

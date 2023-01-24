@@ -180,7 +180,6 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
     setOpenDialog(true);
   };
 
-
   const handleOpenParentsDialog = () => {
     setOpenParentsDialog(true);
   };
