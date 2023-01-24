@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import Link from '@material-ui/core/Link';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Title from './Title';
-import { quickDataRef } from '../services/databaseRefs';
+import React, { useEffect, useState } from "react";
+import Link from "@material-ui/core/Link";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import Title from "./Title";
+import { quickDataRef } from "../services/databaseRefs";
 
 function preventDefault(event) {
   event.preventDefault();
@@ -11,11 +11,9 @@ function preventDefault(event) {
 
 const useStyles = makeStyles({
   depositContext: {
-    flex: 1,
-  },
+    flex: 1
+  }
 });
-
-
 
 export default function Deposits() {
   const classes = useStyles();
@@ -23,12 +21,15 @@ export default function Deposits() {
   const [data, setData] = useState({});
 
   useEffect(() => {
-    quickDataRef.once('value').then((snapshot) => {
-      setData(snapshot.val())
-    }).catch(error => {
-      console.log(error)
-    })
-  }, [])
+    quickDataRef
+      .once("value")
+      .then((snapshot) => {
+        setData(snapshot.val());
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <React.Fragment>

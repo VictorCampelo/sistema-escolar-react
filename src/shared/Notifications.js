@@ -6,7 +6,7 @@ import { useAuth } from "../hooks/useAuth";
 const Notifications = (props) => {
   const [isTokenFound, setTokenFound] = useState(false);
 
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   console.log("Token found", isTokenFound);
 

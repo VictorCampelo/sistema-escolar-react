@@ -1,22 +1,31 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import '../../App.css';
+import React from "react";
+import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import "../../App.css";
 
-import Typography from '@material-ui/core/Typography';
+import Typography from "@material-ui/core/Typography";
 
-import Box from '@material-ui/core/Box';
-import { AddBox, AssignmentInd, Build, Email, GroupWork, Home, PeopleAlt, PersonAdd } from '@material-ui/icons';
-import AddStudent from './addStudent/AddStudent';
-import SchoolSettings from './schoolSettings/SchoolSettings';
-import Students from './students/Students';
-import AddClass from './addClass/AddClass';
-import Classes from './classes/Classes';
-import Dashboard from '../../muiDashboard/Dashboard';
-import PreEnrollments from './preMatriculas/PreEnrollments';
+import Box from "@material-ui/core/Box";
+import {
+  AddBox,
+  AssignmentInd,
+  Build,
+  Email,
+  GroupWork,
+  Home,
+  PeopleAlt,
+  PersonAdd
+} from "@material-ui/icons";
+import AddStudent from "./addStudent/AddStudent";
+import SchoolSettings from "./schoolSettings/SchoolSettings";
+import Students from "./students/Students";
+import AddClass from "./addClass/AddClass";
+import Classes from "./classes/Classes";
+import Dashboard from "../../muiDashboard/Dashboard";
+import PreEnrollments from "./preMatriculas/PreEnrollments";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -41,22 +50,22 @@ function TabPanel(props) {
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired
 };
 
 function a11yProps(index) {
   return {
     id: `scrollable-force-tab-${index}`,
-    'aria-controls': `scrollable-force-tabpanel-${index}`,
+    "aria-controls": `scrollable-force-tabpanel-${index}`
   };
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-  },
+    width: "100%",
+    backgroundColor: theme.palette.background.paper
+  }
 }));
 
 export default function SecretariaTabs() {
@@ -104,7 +113,7 @@ export default function SecretariaTabs() {
         <AddClass />
       </TabPanel>
       <TabPanel value={value} index={5}>
-        <PreEnrollments changeTab={handleChange}/>
+        <PreEnrollments changeTab={handleChange} />
       </TabPanel>
       <TabPanel value={value} index={6}>
         <SchoolSettings />

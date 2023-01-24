@@ -1,34 +1,32 @@
 import { database } from "./firebase";
 
 // Setting the paths of the firebase database
-const rootPath = 'sistemaEscolar/';
+const rootPath = "sistemaEscolar/";
 
 // School info paths
-const schoolInfoPath = 'infoEscola/';
-const booksPath = schoolInfoPath + 'livros/';
-const coursesPath = schoolInfoPath + 'cursos/';
-const contractsPath = schoolInfoPath + 'contratos/';
-const additionalFieldsPath = schoolInfoPath + 'camposAdicionais/';
-const basicDataPath = schoolInfoPath + 'dadosBasicos/';
-const daysCodesPath = schoolInfoPath + 'codDiasSemana/';
-const calendarPath = schoolInfoPath + 'calendarioGeral/';
-
+const schoolInfoPath = "infoEscola/";
+const booksPath = schoolInfoPath + "livros/";
+const coursesPath = schoolInfoPath + "cursos/";
+const contractsPath = schoolInfoPath + "contratos/";
+const additionalFieldsPath = schoolInfoPath + "camposAdicionais/";
+const basicDataPath = schoolInfoPath + "dadosBasicos/";
+const daysCodesPath = schoolInfoPath + "codDiasSemana/";
+const calendarPath = schoolInfoPath + "calendarioGeral/";
 
 // General paths
-const classesPath = 'turmas/';
-const studentsPath = 'alunos/';
-const disabledStudentsPath = 'alunosDesativados/';
-const usersPath = 'usuarios/';
-const chatsPath = 'chats/';
-const notificationsPath = 'notifications/';
-const teachersListPath = 'listaDeProfessores/';
-const followUpPath = 'followUp/'
-const performanceGradesPath = 'notasDesempenho/referencia/'
-const billetsDocsPath = 'docsBoletos/'
-const usersListPath = 'listaDeUsuarios/'
-const preEnrollmentsPath = 'preMatriculas/'
-const quickDataPath = 'dadosRapidos/'
-
+const classesPath = "turmas/";
+const studentsPath = "alunos/";
+const disabledStudentsPath = "alunosDesativados/";
+const usersPath = "usuarios/";
+const chatsPath = "chats/";
+const notificationsPath = "notifications/";
+const teachersListPath = "listaDeProfessores/";
+const followUpPath = "followUp/";
+const performanceGradesPath = "notasDesempenho/referencia/";
+const billetsDocsPath = "docsBoletos/";
+const usersListPath = "listaDeUsuarios/";
+const preEnrollmentsPath = "preMatriculas/";
+const quickDataPath = "dadosRapidos/";
 
 // Setting the root ref
 const rootRef = database.ref(rootPath);
@@ -56,4 +54,25 @@ const preEnrollmentsRef = rootRef.child(preEnrollmentsPath);
 const quickDataRef = rootRef.child(quickDataPath);
 
 // Export the refs created
-export { schoolInfoRef, classesRef, booksRef, coursesRef, contractRef, daysCodesRef, additionalFieldsRef, basicDataRef, notificationsRef, studentsRef, disabledStudentsRef, teachersListRef, calendarRef, followUpRef, performanceGradesRef, usersRef, billetsDocsRef, usersListRef, preEnrollmentsRef, quickDataRef };
+export {
+  schoolInfoRef,
+  classesRef,
+  booksRef,
+  coursesRef,
+  contractRef,
+  daysCodesRef,
+  additionalFieldsRef,
+  basicDataRef,
+  notificationsRef,
+  studentsRef,
+  disabledStudentsRef,
+  teachersListRef,
+  calendarRef,
+  followUpRef,
+  performanceGradesRef,
+  usersRef,
+  billetsDocsRef,
+  usersListRef,
+  preEnrollmentsRef,
+  quickDataRef
+};

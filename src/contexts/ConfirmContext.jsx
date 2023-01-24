@@ -3,14 +3,10 @@ import { ConfirmationDialog } from "../shared/ConfirmDialog";
 
 const ConfirmationServiceContext = React.createContext(Promise.reject);
 
-export const useConfirmation = () =>
-  React.useContext(ConfirmationServiceContext);
+export const useConfirmation = () => React.useContext(ConfirmationServiceContext);
 
 export const ConfirmationServiceProvider = ({ children }) => {
-  const [
-    confirmationState,
-    setConfirmationState
-  ] = React.useState(null);
+  const [confirmationState, setConfirmationState] = React.useState(null);
 
   const awaitingPromiseRef = React.useRef();
 
@@ -39,10 +35,7 @@ export const ConfirmationServiceProvider = ({ children }) => {
 
   return (
     <>
-      <ConfirmationServiceContext.Provider
-        value={openConfirmation}
-        children={children}
-      />
+      <ConfirmationServiceContext.Provider value={openConfirmation} children={children} />
 
       <ConfirmationDialog
         open={Boolean(confirmationState)}
@@ -53,5 +46,3 @@ export const ConfirmationServiceProvider = ({ children }) => {
     </>
   );
 };
-
-  

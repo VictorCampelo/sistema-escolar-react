@@ -1,7 +1,5 @@
 const NavbarNotifications = () => {
-    return (
-        <></>
-    );
-}
- 
+  return <></>;
+};
+
 export default NavbarNotifications;

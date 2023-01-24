@@ -1,91 +1,111 @@
-import { Backdrop, CircularProgress, Dialog, DialogContent, DialogActions, Button, DialogTitle } from "@material-ui/core";
+import {
+  Backdrop,
+  CircularProgress,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  Button,
+  DialogTitle
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { Fragment, useEffect, useState } from "react";
 import { database, functions } from "../services/firebase";
 
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: 9999999999999,
+    color: "#fff"
+  }
+}));
 
-const useStyles = makeStyles((theme) =>({
-    backdrop: {
-        zIndex: 9999999999999,
-        color: '#fff',
-    },
-}))
+const PrintBillets = ({ studentId, contractId, open, onClose }) => {
+  const classes = useStyles();
+  const [loading, setLoading] = useState(false);
 
-const PrintBillets = ({studentId, contractId, open, onClose}) => {
-    const classes = useStyles();
-    const [loading, setLoading] = useState(false);
+  async function segundaViaBoletos(matricula, codContrato) {
+    setLoading(true);
+    let alunoRef = database.ref("sistemaEscolar/alunos/" + matricula + "/");
+    let alunosDesativadosRef = database.ref("sistemaEscolar/alunosDesativados");
+    let contratoRef = database.ref("sistemaEscolar/infoEscola/contratos").child(codContrato);
+    let docsBoletosRef = database.ref("sistemaEscolar/docsBoletos");
+    let infoEscola = await database.ref("sistemaEscolar/infoEscola").once("value");
+    let dadosEscola = infoEscola.val();
+    console.log(dadosEscola);
+    let dadosAluno = await alunoRef.once("value");
+    dadosAluno = dadosAluno.exists()
+      ? dadosAluno
+      : await alunosDesativadosRef.child(matricula + "/dadosAluno").once("value");
+    let aluno = dadosAluno.val();
+    let contratos = aluno.contratos;
+    let contrato = contratos[contratos.indexOf(codContrato)];
+    let data = dadosEscola.contratos[codContrato].contratoConfigurado;
+    let plano = dadosEscola.contratos[codContrato].planoOriginal;
+    let mesInicio = Number(data["ano-mes"].split("-")[1]);
+    let anoInicio = Number(data["ano-mes"].split("-")[0]);
+    console.log(codContrato);
+    let docsSistema = dadosEscola.docsBoletos;
+    let qtdeDocs = 0;
 
-    async function segundaViaBoletos(matricula, codContrato) {
-        setLoading(true)
-        let alunoRef = database.ref('sistemaEscolar/alunos/' + matricula + '/')
-        let alunosDesativadosRef = database.ref('sistemaEscolar/alunosDesativados')
-        let contratoRef = database.ref('sistemaEscolar/infoEscola/contratos').child(codContrato)
-        let docsBoletosRef = database.ref('sistemaEscolar/docsBoletos')
-        let infoEscola = await database.ref('sistemaEscolar/infoEscola').once('value')
-        let dadosEscola = infoEscola.val()
-        console.log(dadosEscola)
-        let dadosAluno = await alunoRef.once('value')
-        dadosAluno = dadosAluno.exists() ? dadosAluno : await alunosDesativadosRef.child(matricula + '/dadosAluno').once('value')
-        let aluno = dadosAluno.val()
-        let contratos = aluno.contratos
-        let contrato = contratos[contratos.indexOf(codContrato)]
-        let data = dadosEscola.contratos[codContrato].contratoConfigurado
-        let plano = dadosEscola.contratos[codContrato].planoOriginal
-        let mesInicio = Number(data['ano-mes'].split('-')[1])
-        let anoInicio = Number(data['ano-mes'].split('-')[0])
-        console.log(codContrato)
-        let docsSistema = dadosEscola.docsBoletos
-        let qtdeDocs = 0
+    let timestampF = functions.httpsCallable("timestamp");
+    let timestamp = await timestampF();
+    console.log(timestamp);
+    var now = new Date(timestamp.data.timestamp._seconds * 1000);
+    console.log(now);
+    var dataProcessamento = `${Number(now.getDate()) <= 9 ? "0" + now.getDate() : now.getDate()}/${
+      Number(now.getMonth()) + 1 <= 9 ? "0" + (Number(now.getMonth()) + 1) : now.getMonth()
+    }/${now.getFullYear()}`;
+    for (const key in docsSistema) {
+      if (Object.hasOwnProperty.call(docsSistema, key)) {
+        qtdeDocs++;
+      }
+    }
+    let pag = 1;
+    let bol = 0;
 
-        let timestampF = functions.httpsCallable('timestamp')
-        let timestamp = await timestampF()
-        console.log(timestamp)
-        var now = new Date(timestamp.data.timestamp._seconds * 1000)
-        console.log(now)
-        var dataProcessamento = `${Number(now.getDate()) <= 9 ? '0' + now.getDate() : now.getDate()}/${Number(now.getMonth()) + 1 <= 9 ? '0' + (Number(now.getMonth()) + 1) : now.getMonth()}/${now.getFullYear()}`
-        for (const key in docsSistema) {
-            if (Object.hasOwnProperty.call(docsSistema, key)) {
-                qtdeDocs++
-                
-            }
+    try {
+      let docsBoletosGerados = await contratoRef.child("docsBoletos").once("value");
+      let numerosDeDoc = docsBoletosGerados.val();
+      if (numerosDeDoc == null) {
+        setLoading(false);
+        window.alert("Não foram gerados boletos para este contrato ainda.");
+        limpa();
+      }
+      let docsFiltrados = await docsBoletosRef
+        .orderByChild("numeroDoc")
+        .startAt(numerosDeDoc[0])
+        .endAt(numerosDeDoc[numerosDeDoc.length - 1])
+        .once("value");
+      let docsDoContrato = docsFiltrados.val();
+      console.log(docsDoContrato);
+      console.log(numerosDeDoc);
+
+      limpa();
+
+      for (const key in docsDoContrato) {
+        if (Object.hasOwnProperty.call(docsDoContrato, key)) {
+          const doc = docsDoContrato[key];
+          await addParcela(
+            doc.parcelaAtual,
+            doc.numDeParcelas,
+            doc.vencimento,
+            doc.numeroDoc,
+            doc.valorDoc,
+            doc.descontos,
+            doc.acrescimos,
+            doc.totalCobrado,
+            doc.dataProcessamento,
+            doc.informacoes
+          );
         }
-        let pag = 1
-        let bol = 0
+      }
 
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
 
-        try {
-            
-            let docsBoletosGerados = await contratoRef.child('docsBoletos').once('value')
-            let numerosDeDoc = docsBoletosGerados.val()
-            if (numerosDeDoc == null) {
-                setLoading(false)
-                window.alert('Não foram gerados boletos para este contrato ainda.')
-                limpa()
-            }
-            let docsFiltrados = await docsBoletosRef.orderByChild('numeroDoc').startAt(numerosDeDoc[0]).endAt(numerosDeDoc[numerosDeDoc.length - 1]).once('value')
-            let docsDoContrato = docsFiltrados.val()
-            console.log(docsDoContrato)
-            console.log(numerosDeDoc)
-
-            limpa()
-
-            for (const key in docsDoContrato) {
-                if (Object.hasOwnProperty.call(docsDoContrato, key)) {
-                    const doc = docsDoContrato[key];
-                    await addParcela(doc.parcelaAtual, doc.numDeParcelas, doc.vencimento, doc.numeroDoc, doc.valorDoc, doc.descontos, doc.acrescimos, doc.totalCobrado, doc.dataProcessamento, doc.informacoes)
-                }
-            }
-            
-            setLoading(false)
-            
-
-
-        } catch (error) {
-            console.log(error)
-        }
-
-        function limpa() {
-            document.getElementById('livro').innerHTML = `
+    function limpa() {
+      document.getElementById("livro").innerHTML = `
             <div class="page">
                 <div class="subpage">
                     <div id="boletos1">
@@ -114,34 +134,42 @@ const PrintBillets = ({studentId, contractId, open, onClose}) => {
                 </div>
             </div>
             
-            `
-        }
+            `;
+    }
 
-        function addParcela(parcelaAtual, numDeParcelas, vencimento, numeroDoc, valorDoc, descontos, acrescimos, totalCobrado, dataProcessamento, informacoes) {
-            
-            bol++
-            if (bol > 3 && pag >= 1) {
-                pag++
-                bol = 0
-                document.getElementById('livro').innerHTML += `
+    function addParcela(
+      parcelaAtual,
+      numDeParcelas,
+      vencimento,
+      numeroDoc,
+      valorDoc,
+      descontos,
+      acrescimos,
+      totalCobrado,
+      dataProcessamento,
+      informacoes
+    ) {
+      bol++;
+      if (bol > 3 && pag >= 1) {
+        pag++;
+        bol = 0;
+        document.getElementById("livro").innerHTML += `
                 <div class="page">
                     <div class="subpage">
                         <div id="boletos${pag}"></div>
                     </div>
                 </div>
-                `
-            }
-            let boletos = document.getElementById('boletos' + pag)
-            let gera = functions.httpsCallable('geraPix')
-            return gera({valor: totalCobrado, descricao: `DOC${numeroDoc}`}).then(function(lineCode) {
-            
-                
-                //divQr.src = lineCode.data;
-                console.log(lineCode)
-                //const code = new QRCode(divQr, { text: lineCode.data, width: 100, height: 100 });
-                // qrCodesArray.push({qrcode: lineCode.data, numeroDoc: numeroDoc})
-                
-                boletos.innerHTML += `
+                `;
+      }
+      let boletos = document.getElementById("boletos" + pag);
+      let gera = functions.httpsCallable("geraPix");
+      return gera({ valor: totalCobrado, descricao: `DOC${numeroDoc}` }).then(function (lineCode) {
+        //divQr.src = lineCode.data;
+        console.log(lineCode);
+        //const code = new QRCode(divQr, { text: lineCode.data, width: 100, height: 100 });
+        // qrCodesArray.push({qrcode: lineCode.data, numeroDoc: numeroDoc})
+
+        boletos.innerHTML += `
             <table style="height: 4.8cm; width: 100%; border-collapse: collapse; border-style: solid; margin-top: 18px;" border="1" >
                 <tbody>
                     <tr style="height: 10px; border-style: none;">
@@ -395,22 +423,15 @@ const PrintBillets = ({studentId, contractId, open, onClose}) => {
                     </tr>
                 </tbody>
                 </table>
-                `
-                return ;
-            })
-            
-            
-
-           
-        }
-
-        
-
+                `;
+        return;
+      });
     }
+  }
 
-    useEffect(() => {
-        setTimeout(() => {
-            document.getElementById('livro').innerHTML = `
+  useEffect(() => {
+    setTimeout(() => {
+      document.getElementById("livro").innerHTML = `
         <div class="page">
                         <div class="subpage">
                             <div id="boletos1">
@@ -484,29 +505,28 @@ const PrintBillets = ({studentId, contractId, open, onClose}) => {
                             </div>
                         </div>
                     </div>
-        `
-        segundaViaBoletos(studentId, contractId)
-        }, 0.5);
-        
-    }, [studentId, contractId])
+        `;
+      segundaViaBoletos(studentId, contractId);
+    }, 0.5);
+  }, [studentId, contractId]);
 
-    function handlePrint() {
-        var divContents = document.getElementById("livro").innerHTML;
-        var a = window.open('', '', );
-        a.document.write('<html>');
-        a.document.write('<body>');
-        a.document.write(divContents);
-        a.document.write('</body></html>');
-        a.document.close();
-        a.print();
-    }
+  function handlePrint() {
+    var divContents = document.getElementById("livro").innerHTML;
+    var a = window.open("", "");
+    a.document.write("<html>");
+    a.document.write("<body>");
+    a.document.write(divContents);
+    a.document.write("</body></html>");
+    a.document.close();
+    a.print();
+  }
 
-    function PrintElem() {
-        let elem = 'livro'
-        var mywindow = window.open('', 'PRINT', 'height=800,width=950');
-        
-        mywindow.document.write('<html><head><title>' + document.title  + '</title>');
-        mywindow.document.write(`
+  function PrintElem() {
+    let elem = "livro";
+    var mywindow = window.open("", "PRINT", "height=800,width=950");
+
+    mywindow.document.write("<html><head><title>" + document.title + "</title>");
+    mywindow.document.write(`
             <style>
             body {
                 -webkit-print-color-adjust: exact;
@@ -572,39 +592,44 @@ const PrintBillets = ({studentId, contractId, open, onClose}) => {
                 margin: 1cm auto;
             }
             </style>
-        `)
-        mywindow.document.write('</head><body > <div id="noprint" class="actionButtons" style="width: 100%; text-align: center; margin-top: 10px;"><button onclick="window.print()" style="align-self: center;" id="noprint">Imprimir/PDF</button></div>');
-        //mywindow.document.write('<h1>' + document.title  + '</h1>');
-        mywindow.document.write(document.getElementById(elem).innerHTML);
-        mywindow.document.write('</body></html>');
+        `);
+    mywindow.document.write(
+      '</head><body > <div id="noprint" class="actionButtons" style="width: 100%; text-align: center; margin-top: 10px;"><button onclick="window.print()" style="align-self: center;" id="noprint">Imprimir/PDF</button></div>'
+    );
+    //mywindow.document.write('<h1>' + document.title  + '</h1>');
+    mywindow.document.write(document.getElementById(elem).innerHTML);
+    mywindow.document.write("</body></html>");
 
-        mywindow.document.close(); // necessary for IE >= 10
-        mywindow.focus(); // necessary for IE >= 10*/
-        
-    
+    mywindow.document.close(); // necessary for IE >= 10
+    mywindow.focus(); // necessary for IE >= 10*/
+
     //mywindow.close();
 
     return true;
-}
+  }
 
-    return (
-        <Fragment>
-            
-            <Dialog open={open} fullScreen>
-                <DialogTitle>Boleto do contrato{loading && <CircularProgress style={{float: 'right'}} color="inherit" />}</DialogTitle>
-                <DialogContent>
-                
-                <div class="book" id="livro">
-                    
-                </div>
-                </DialogContent>
-                
-                
-                <DialogActions><Button id='noprint' onClick={() => PrintElem()} disabled={loading}>Imprimir/PDF {loading && <CircularProgress color="inherit" size={20} />}</Button><Button id='noprint' onClick={() => onClose(false)}>Fechar</Button></DialogActions>
-            </Dialog>
-            
-        </Fragment>
-    );
-}
- 
+  return (
+    <Fragment>
+      <Dialog open={open} fullScreen>
+        <DialogTitle>
+          Boleto do contrato
+          {loading && <CircularProgress style={{ float: "right" }} color="inherit" />}
+        </DialogTitle>
+        <DialogContent>
+          <div class="book" id="livro"></div>
+        </DialogContent>
+
+        <DialogActions>
+          <Button id="noprint" onClick={() => PrintElem()} disabled={loading}>
+            Imprimir/PDF {loading && <CircularProgress color="inherit" size={20} />}
+          </Button>
+          <Button id="noprint" onClick={() => onClose(false)}>
+            Fechar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Fragment>
+  );
+};
+
 export default PrintBillets;

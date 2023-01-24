@@ -1,17 +1,16 @@
 import { storage } from "./firebase";
 
 // Setting the paths of the storage bucket
-const rootPath = '/';
-const schoolPath = 'sistemaEscolar/';
+const rootPath = "/";
+const schoolPath = "sistemaEscolar/";
 
 // School paths
-const studentsPath = schoolPath + 'alunos/';
-const billetAttachmentsPath = schoolPath + 'billetAttachments/';
-const studentFilesPath = schoolPath + 'studentFiles/';
+const studentsPath = schoolPath + "alunos/";
+const billetAttachmentsPath = schoolPath + "billetAttachments/";
+const studentFilesPath = schoolPath + "studentFiles/";
 
 // More paths
-const usersPath = 'users/'
-
+const usersPath = "users/";
 
 // Setting the root ref
 const rootRef = storage.ref(rootPath);

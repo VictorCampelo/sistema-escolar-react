@@ -35,12 +35,12 @@ const ReactNotificationComponent = ({ title, body }) => {
 
 ReactNotificationComponent.defaultProps = {
   title: "This is title",
-  body: "Some body",
+  body: "Some body"
 };
 
 ReactNotificationComponent.propTypes = {
   title: PropTypes.string,
-  body: PropTypes.string,
+  body: PropTypes.string
 };
 
 export default ReactNotificationComponent;

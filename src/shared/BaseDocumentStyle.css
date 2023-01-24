@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #FAFAFA;
+  background-color: #fafafa;
   font: 12pt "Arial";
 }
 
@@ -19,7 +19,7 @@ body {
   min-height: 29.7cm;
   padding: 0.3cm;
   margin: 0.3cm auto;
-  border: 1px #D3D3D3 solid;
+  border: 1px #d3d3d3 solid;
   border-radius: 5px;
   background: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -38,17 +38,17 @@ body {
 
 @media print {
   .page {
-      margin: 0;
-      border: initial;
-      border-radius: initial;
-      width: initial;
-      min-height: initial;
-      box-shadow: initial;
-      background: initial;
-      page-break-after: always;
+    margin: 0;
+    border: initial;
+    border-radius: initial;
+    width: initial;
+    min-height: initial;
+    box-shadow: initial;
+    background: initial;
+    page-break-after: always;
   }
   .actionButtons {
-      display: none !important;
+    display: none !important;
   }
 }
 

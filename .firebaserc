@@ -1,16 +1,5 @@
 {
   "projects": {
-    "default": "projetoxagencia",
-    "learnup-prod": "learnupschool",
-    "prox-prod": "projetoxagencia"
-  },
-  "targets": {
-    "projetoxagencia": {
-      "hosting": {
-        "prox-prod": [
-          "escola-react"
-        ]
-      }
-    }
+    "default": "gestao-escolar-a04a7"
   }
 }

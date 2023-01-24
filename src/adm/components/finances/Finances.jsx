@@ -1,4 +1,11 @@
-import { Accordion, AccordionDetails, AccordionSummary, makeStyles, Paper, Typography } from "@material-ui/core";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  makeStyles,
+  Paper,
+  Typography
+} from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
 import { Fragment, useState } from "react";
 import AdditionalFieldsSetting from "./components/AdditionalFieldsSettings";
@@ -8,58 +15,59 @@ import SchoolBooks from "./components/SchoolBooks";
 import SchoolPlans from "./components/SchoolPlans";
 
 const useStyles = makeStyles((theme) => ({
-    paper: {
-        padding: '10px', 
-        minWidth: '250px',
-        marginBottom: '7px',
-    }, 
-    root: {
-        width: '100%',
-      },
-      heading: {
-        fontSize: theme.typography.pxToRem(15),
-        flexBasis: '33.33%',
-        flexShrink: 0,
-      },
-      secondaryHeading: {
-        fontSize: theme.typography.pxToRem(15),
-        color: theme.palette.text.secondary,
-      },
-}))
+  paper: {
+    padding: "10px",
+    minWidth: "250px",
+    marginBottom: "7px"
+  },
+  root: {
+    width: "100%"
+  },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    flexBasis: "33.33%",
+    flexShrink: 0
+  },
+  secondaryHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary
+  }
+}));
 
 const Finances = () => {
+  const classes = useStyles();
+  const [expanded, setExpanded] = useState(false);
 
-    const classes = useStyles()
-    const [expanded, setExpanded] = useState(false);
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
-    const handleChange = (panel) => (event, isExpanded) => {
-      setExpanded(isExpanded ? panel : false);
-    };
+  return (
+    <Fragment>
+      {/* <h2>Configurações da escola</h2> */}
 
-    return (
-        <Fragment>
-            {/* <h2>Configurações da escola</h2> */}
+      <div className={classes.root}>
+        <Accordion
+          expanded={expanded === "panel3"}
+          onChange={handleChange("panel3")}
+          TransitionProps={{ unmountOnExit: true }}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
+            aria-controls="panel3bh-content"
+            id="panel3bh-header"
+          >
+            <Typography className={classes.heading}>Planos</Typography>
+            <Typography className={classes.secondaryHeading}>
+              Planos de pagamento para contratos
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <SchoolPlans />
+          </AccordionDetails>
+        </Accordion>
 
-            
-
-            <div className={classes.root}>
-                <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')} TransitionProps={{ unmountOnExit: true }}>
-                    <AccordionSummary
-                    expandIcon={<ExpandMore />}
-                    aria-controls="panel3bh-content"
-                    id="panel3bh-header"
-                    >
-                        <Typography className={classes.heading}>Planos</Typography>
-                        <Typography className={classes.secondaryHeading}>
-                            Planos de pagamento para contratos
-                        </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <SchoolPlans />
-                    </AccordionDetails>
-                </Accordion>
-
-                {/* <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+        {/* <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
                     <AccordionSummary
                     expandIcon={<ExpandMore />}
                     aria-controls="panel1bh-content"
@@ -124,10 +132,9 @@ const Finances = () => {
                         <DaysCodeSet />
                     </AccordionDetails>
                 </Accordion> */}
-            </div>
-            
-        </Fragment>
-    );
-}
- 
+      </div>
+    </Fragment>
+  );
+};
+
 export default Finances;

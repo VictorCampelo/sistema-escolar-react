@@ -1,7 +1,5 @@
 const ProfessoresDashboard = () => {
-    return ( 
-        <></>
-    );
-}
- 
+  return <></>;
+};
+
 export default ProfessoresDashboard;

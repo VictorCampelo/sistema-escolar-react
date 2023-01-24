@@ -3,8 +3,7 @@ name: Improvement request
 about: Let us know something that could be improved
 title: "[IMPROVEMENT]"
 labels: improvement
-assignees: ''
-
+assignees: ""
 ---
 
 **Is your improvement request related to a problem? Please describe.**

@@ -1,7 +1,5 @@
 const AdministrationDashboard = () => {
-    return ( 
-        <></>
-    );
-}
- 
+  return <></>;
+};
+
 export default AdministrationDashboard;

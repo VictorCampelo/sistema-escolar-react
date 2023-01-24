@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 import { Dialog, DialogContent, Box, withStyles, DialogTitle, IconButton } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
 
-
-const styles = theme => ({
+const styles = (theme) => ({
   dialogPaper: {
     display: "flex",
     flexDirection: "column",
@@ -54,18 +53,24 @@ function FormDialog(props) {
       }}
       hideBackdrop={hideBackdrop ? hideBackdrop : false}
     >
-      <div style={{width: '100%'}}>
-      <DialogTitle>{headline}
-      {closeButton && (
-        <IconButton edge="start" color="inherit" style={{float: 'right'}} onClick={handleClose} aria-label="close">
-          <Close />
-        </IconButton>)}
-      </DialogTitle>
-        
+      <div style={{ width: "100%" }}>
+        <DialogTitle>
+          {headline}
+          {closeButton && (
+            <IconButton
+              edge="start"
+              color="inherit"
+              style={{ float: "right" }}
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <Close />
+            </IconButton>
+          )}
+        </DialogTitle>
       </div>
-      
+
       <DialogContent className={classes.dialogContent}>
-        
         <form onSubmit={onFormSubmit}>
           <div>{content}</div>
           <Box width="100%" className={classes.actions}>

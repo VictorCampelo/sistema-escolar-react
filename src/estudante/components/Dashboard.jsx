@@ -1,7 +1,5 @@
 const StudentDashboard = () => {
-    return ( 
-        <></>
-    );
-}
- 
+  return <></>;
+};
+
 export default StudentDashboard;
