@@ -93,6 +93,7 @@ function ResponsiveDrawer(props) {
         .once("value")
         .then((snapshot) => {
           try {
+            console.log(snapshot.val());
             let userAccess = snapshot.val().acessos;
             let localAreas = [];
 
@@ -141,10 +142,10 @@ function ResponsiveDrawer(props) {
       <List>
         {areas.map((elem, index) => (
           <Link
+            key={index}
             to={"/" + elem.to}
             style={{ textDecoration: "none", color: "black" }}
-            onClick={onClose}
-          >
+            onClick={onClose}>
             <ListItem button key={elem.text}>
               <ListItemIcon>{firstIcons[elem.icon]}</ListItemIcon>
               <ListItemText primary={elem.text} />
@@ -230,8 +231,7 @@ function ResponsiveDrawer(props) {
             }}
             ModalProps={{
               keepMounted: true // Better open performance on mobile.
-            }}
-          >
+            }}>
             {drawer}
           </SwipeableDrawer>
         </Hidden>
@@ -243,8 +243,7 @@ function ResponsiveDrawer(props) {
             variant="temporary"
             open={open}
             onClose={onClose}
-            disableSwipeToOpen={false}
-          >
+            disableSwipeToOpen={false}>
             {drawer}
           </SwipeableDrawer>
         </Hidden>

@@ -34,24 +34,29 @@ export default function Deposits() {
   return (
     <React.Fragment>
       <Title>Dados rápidos</Title>
-      <Typography component="p" variant="h6">
-        {data.students}
-      </Typography>
-      <Typography color="textSecondary" className={classes.depositContext}>
-        alunos ativos
-      </Typography>
-      <Typography component="p" variant="h6">
-        {data.classes}
-      </Typography>
-      <Typography color="textSecondary" className={classes.depositContext}>
-        turmas criadas
-      </Typography>
-      <Typography component="p" variant="h6">
-        {data.disabledStudents}
-      </Typography>
-      <Typography color="textSecondary" className={classes.depositContext}>
-        alunos desativados
-      </Typography>
+      {data && (
+        <div>
+          <Typography component="p" variant="h6">
+            {data.students}
+          </Typography>
+          <Typography color="textSecondary" className={classes.depositContext}>
+            alunos ativos
+          </Typography>
+          <Typography component="p" variant="h6">
+            {data.classes}
+          </Typography>
+          <Typography color="textSecondary" className={classes.depositContext}>
+            turmas criadas
+          </Typography>
+          <Typography component="p" variant="h6">
+            {data.disabledStudents}
+          </Typography>
+          <Typography color="textSecondary" className={classes.depositContext}>
+            alunos desativados
+          </Typography>
+        </div>
+      )}
+
       {/* <div>
         <Link color="primary" href="#" onClick={preventDefault}>
           View balance
