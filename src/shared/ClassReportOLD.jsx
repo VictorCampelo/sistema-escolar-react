@@ -53,25 +53,25 @@ export default function ClassReportOLD({ classCode, open, onClose }) {
 
   function title(title) {
     let titleRow = document.getElementById("title");
-    titleRow.innerHTML = `<td class="tg-wp8o" colspan="16"><span style="font-weight:bold">${title}</span></td>`;
+    titleRow.innerHTML = `<td className="tg-wp8o" colSpan="16"><span style="font-weight:bold">${title}</span></td>`;
   }
 
   function infoSchool(info) {
     let infoSchoolRow = document.getElementById("infoSchool");
     infoSchoolRow.innerHTML = `
-    <td class="tg-wp8o" colspan="16">${info.nomeEscola} | CNPJ: ${info.cnpjEscola} <br> ${info.enderecoEscola} - Telefone: ${info.telefoneEscola} - E-mail: ${info.emailEscola}</td>
+    <td className="tg-wp8o" colSpan="16">${info.nomeEscola} | CNPJ: ${info.cnpjEscola} <br> ${info.enderecoEscola} - Telefone: ${info.telefoneEscola} - E-mail: ${info.emailEscola}</td>
     `;
   }
 
   function infoDoc(info, curso) {
     const infoDocRow = document.getElementById("infoDoc");
     infoDocRow.innerHTML = `
-        <td class="tg-sg5v" colspan="4">
+        <td className="tg-sg5v" colSpan="4">
             <b>Curso:</b><br>
             <b>Professor:</b><br>
             <b>Início e Fim previstos:</b>
         </td>
-        <td class="tg-sg5v" colspan="4">
+        <td className="tg-sg5v" colSpan="4">
             ${curso}<br>
             ${info.professor[0].nome}<br>
             ${info.status.inicio.split("-").reverse().join("/")} - ${info.status.fim
@@ -80,12 +80,12 @@ export default function ClassReportOLD({ classCode, open, onClose }) {
       .reverse()
       .join("/")}
         </td>
-        <td class="tg-sg5v" style="text-align: end;" colspan="6">
+        <td className="tg-sg5v" style="text-align: end;" colSpan="6">
             <b>Turma:</b><br>
             <b>Período:</b><br>
             <b>Horário:</b>
         </td>
-        <td class="tg-sg5v" colspan="2">
+        <td className="tg-sg5v" colSpan="2">
             ${info.codigoSala}<br>
             ${info.status.nomePeriodo}<br>
             ${info.hora.split("_").join(":")}h
@@ -102,9 +102,9 @@ export default function ClassReportOLD({ classCode, open, onClose }) {
     rows.map((row) => {
       cells = "";
       row.map((cell) => {
-        cells += `<td class="tg-0lax" style="${cell.center && "text-align: center;"}" colspan="${
-          cell.size
-        }">${cell.text}</td>`;
+        cells += `<td className="tg-0lax" style="${
+          cell.center && "text-align: center;"
+        }" colSpan="${cell.size}">${cell.text}</td>`;
       });
       html += `<tr>${cells}</tr>`;
     });
@@ -119,7 +119,7 @@ export default function ClassReportOLD({ classCode, open, onClose }) {
 
     topics.map((topic, i) => {
       infoTopicsRow.innerHTML += `
-            <td class="tg-0pky" style="${topic.center && "text-align: center;"}" colspan="${
+            <td className="tg-0pky" style="${topic.center && "text-align: center;"}" colSpan="${
         topic.size
       }">${topic.text}</td>
         `;
@@ -131,7 +131,7 @@ export default function ClassReportOLD({ classCode, open, onClose }) {
     let html = "";
     let cells = "";
     row.map((cell) => {
-      cells += `<td class="tg-0lax" colspan="${cell.size}">${cell.text}</td>`;
+      cells += `<td className="tg-0lax" colSpan="${cell.size}">${cell.text}</td>`;
     });
     html = `<tr> ${cells}</tr>`;
     lastRowElem.innerHTML = html;
@@ -241,7 +241,7 @@ export default function ClassReportOLD({ classCode, open, onClose }) {
 
   function printElem() {
     let elem = "diary";
-    var mywindow = window.open("", "PRINT", "height=800,width=950");
+    let mywindow = window.open("", "PRINT", "height=800,width=950");
 
     mywindow.document.write("<html><head><title>" + document.title + "</title>");
     mywindow.document.write(`
@@ -335,7 +335,7 @@ export default function ClassReportOLD({ classCode, open, onClose }) {
         </style>
     `);
     mywindow.document.write(
-      '</head><body > <div id="noprint" class="actionButtons" style="width: 100%; text-align: center; margin-top: 10px;"><button onclick="window.print()" style="align-self: center;" id="noprint">Imprimir/PDF</button></div>'
+      `</head><body > <div id="noprint" className="actionButtons" style="width: 100%; text-align: center; margin-top: 10px;"><button onclick="window.print()" style="align-self: center;" id="noprint">Imprimir/PDF</button></div>`
     );
     //mywindow.document.write('<h1>' + document.title  + '</h1>');
     mywindow.document.write(document.getElementById(elem).innerHTML);
@@ -357,96 +357,96 @@ export default function ClassReportOLD({ classCode, open, onClose }) {
       <Dialog open={open} fullScreen>
         <DialogContent>
           <div id="diary">
-            <table class="tg">
+            <table className="tg">
               <thead id="head">
                 <tr>
-                  <th class="tg-m1nc" colspan="16" id="timestamp">
+                  <th className="tg-m1nc" colSpan="16" id="timestamp">
                     Data de emissão: --/--/-- --:--:--
                   </th>
                 </tr>
                 <tr id="title">
-                  <td class="tg-wp8o" colspan="16">
+                  <td className="tg-wp8o" colSpan="16">
                     <span style={{ fontWeight: "bold" }}>Carregando dados...</span>
                   </td>
                 </tr>
                 <tr id="infoSchool">
-                  <td class="tg-wp8o" colspan="16">
+                  <td className="tg-wp8o" colSpan="16">
                     INFORMAÇÕES DA ESCOLA
                   </td>
                 </tr>
                 <tr id="infoDoc">
-                  <td class="tg-sg5v" colspan="4">
+                  <td className="tg-sg5v" colSpan="4">
                     TOPICO DE INFORMAÇÕES
                   </td>
-                  <td class="tg-sg5v" colspan="4">
+                  <td className="tg-sg5v" colSpan="4">
                     INFORMAÇÕES
                   </td>
-                  <td class="tg-sg5v" colspan="4">
+                  <td className="tg-sg5v" colSpan="4">
                     TOPICO DE INFORMAÇÕES
                   </td>
-                  <td class="tg-sg5v" colspan="4">
+                  <td className="tg-sg5v" colSpan="4">
                     INFORMAÇÕES
                   </td>
                 </tr>
 
                 <tr id="infoTopics">
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
-                  <td class="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
+                  <td className="tg-0pky"></td>
                 </tr>
               </thead>
               <tbody id="rows">
                 <tr>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
                 </tr>
               </tbody>
 
               <tfoot id="lastRow">
                 <tr>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
-                  <td class="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
+                  <td className="tg-0lax"></td>
                 </tr>
               </tfoot>
             </table>

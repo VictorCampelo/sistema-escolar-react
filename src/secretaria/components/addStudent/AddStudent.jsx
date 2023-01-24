@@ -80,10 +80,10 @@ export default function AddStudent() {
 
   useEffect(() => {
     let index = activeStep;
-    let form_data = new FormData(document.getElementById("formAddStudent"));
+    let formData = new FormData(document.getElementById("formAddStudent"));
     let item = JSON.parse(sessionStorage.getItem(index));
     for (let key in item) {
-      form_data.append(key, item[key]);
+      formData.append(key, item[key]);
 
       $("#" + key).val(item[key]);
       setShrink(true);
@@ -219,9 +219,8 @@ export default function AddStudent() {
   const isStepOptional = (step) => {
     if (optionalSteps.indexOf(step) === -1) {
       return false;
-    } else {
-      return true;
     }
+    return true;
   };
 
   const handleSkip = () => {
@@ -421,8 +420,7 @@ export default function AddStudent() {
         open={openFinalDialog}
         onClose={() => setOpenFinalDialog(false)}
         aria-labelledby="responsive-dialog-title"
-        ba
-      >
+        ba>
         <DialogTitle id="responsive-dialog-title">
           {"Você confirma o cadastro do aluno?"}
         </DialogTitle>
@@ -471,8 +469,7 @@ export default function AddStudent() {
                 <StepButton
                   onClick={handleStep(index)}
                   completed={isStepComplete(index)}
-                  {...buttonProps}
-                >
+                  {...buttonProps}>
                   {label}
                 </StepButton>
               </Step>
@@ -509,8 +506,7 @@ export default function AddStudent() {
                     variant="contained"
                     color="primary"
                     onClick={handleSkip}
-                    className={classes.button}
-                  >
+                    className={classes.button}>
                     Pular
                   </Button>
                 )}

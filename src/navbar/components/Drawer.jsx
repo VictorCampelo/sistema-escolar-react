@@ -115,7 +115,6 @@ function ResponsiveDrawer(props) {
             console.log(error);
           }
         });
-    } else {
     }
   }, [user]);
 

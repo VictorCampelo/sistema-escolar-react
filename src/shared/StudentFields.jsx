@@ -88,7 +88,7 @@ function BasicDataFields({
 
   const handleCalculateAge = async (date) => {
     let birthdate = (date.hasOwnProperty("target") && date.target.valueAsDate) || new Date(date);
-    if (birthdate != null && !isNaN(birthdate.getDay())) {
+    if (birthdate !== null && !isNaN(birthdate.getDay())) {
       try {
         setLoader(true);
         setAge("Calculando idade...");
@@ -431,7 +431,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
             valorParcelaGlobal =
               parcela === 0 ? parseFloat(saldo / contadorParcelas).toFixed(2) : valorParcelaGlobal;
             if (parcela >= internPlan.quandoAplicar) {
-              // parcela == internData.quandoAplicar ? saldo = internData.valorFinal - somaParcelas : null
+              // parcela === internData.quandoAplicar ? saldo = internData.valorFinal - somaParcelas : null
               valorParcelaGlobal =
                 parcela === internPlan.quandoAplicar
                   ? parseFloat(saldo / contadorParcelas).toFixed(2)
@@ -1080,7 +1080,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
   const handleGetAddress = async (e) => {
     console.log(e.target.value);
     let cepNum = e.target.value;
-    if (cepNum != null) {
+    if (cepNum !== null) {
       try {
         setCep({ message: "Buscando CEP..." });
         let cepObj = await getAddress(cepNum);

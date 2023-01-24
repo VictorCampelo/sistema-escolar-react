@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, Fragment, useRef } from "react";
 import { TextField, Button, Typography, CircularProgress } from "@material-ui/core";
 import FormDialog from "../shared/FormDialog";
@@ -94,7 +95,6 @@ const LoginDialog = (props) => {
               fullWidth
               label="E-mail"
               inputRef={loginEmail}
-              autoFocus
               autoComplete="off"
               type="email"
               onChange={() => {
@@ -143,7 +143,8 @@ const LoginDialog = (props) => {
               color="secondary"
               disabled={isLoading}
               size="large"
-              endIcon={isLoading && <CircularProgress />}>
+              endIcon={isLoading && <CircularProgress />}
+            >
               Login
             </Button>
             <Typography
@@ -160,7 +161,8 @@ const LoginDialog = (props) => {
                 if ((!isLoading && event.keyCode === 13) || event.keyCode === 32) {
                   handlePasswordForgot();
                 }
-              }}>
+              }}
+            >
               Esqueceu sua senha?
             </Typography>
           </Fragment>
@@ -171,4 +173,3 @@ const LoginDialog = (props) => {
 };
 
 export default LoginDialog;
-

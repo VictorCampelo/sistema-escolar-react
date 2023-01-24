@@ -19,13 +19,12 @@ const app = admin.app();
 
 exports.verificadorDeAcesso = functions.https.onCall((data, context) => {
   try {
-    if (context.auth.token.master == true) {
+    if (context.auth.token.master === true) {
       return true;
-    } else if (context.auth.token[data.acesso] == true) {
+    } else if (context.auth.token[data.acesso] === true) {
       return true;
-    } else {
-      throw new functions.https.HttpsError("permission-denied", "Acesso não liberado.");
     }
+    throw new functions.https.HttpsError("permission-denied", "Acesso não liberado.");
   } catch (error) {
     console.log(error);
     throw new functions.https.HttpsError(
@@ -37,7 +36,7 @@ exports.verificadorDeAcesso = functions.https.onCall((data, context) => {
 });
 
 exports.liberaERemoveAcessos = functions.https.onCall((data, context) => {
-  if (context.auth.token.master == true) {
+  if (context.auth.token.master === true) {
     return admin
       .database()
       .ref(`sistemaEscolar/listaDeUsuarios/${data.uid}/acessos/${data.acesso}`)
@@ -56,7 +55,7 @@ exports.liberaERemoveAcessos = functions.https.onCall((data, context) => {
               .then(() => {
                 return admin
                   .database()
-                  .ref(`sistemaEscolar/registroGeral`)
+                  .ref("sistemaEscolar/registroGeral")
                   .push({
                     operacao: "Concessão e remoção de acessos aos usuários",
                     timestamp: admin.firestore.Timestamp.now(),
@@ -66,7 +65,7 @@ exports.liberaERemoveAcessos = functions.https.onCall((data, context) => {
                   .then(() => {
                     if (data.checked) {
                       console.log(admin.firestore.Timestamp.now().toDate());
-                      if (data.acesso == "professores") {
+                      if (data.acesso === "professores") {
                         return admin
                           .auth()
                           .getUser(data.uid)
@@ -90,25 +89,22 @@ exports.liberaERemoveAcessos = functions.https.onCall((data, context) => {
                                 );
                               });
                           });
-                      } else {
-                        return { acesso: "Acesso concedido!" };
                       }
-                    } else {
-                      if (data.acesso == "professores") {
-                        return admin
-                          .database()
-                          .ref(`sistemaEscolar/listaDeProfessores/${data.uid}/`)
-                          .remove()
-                          .then(() => {
-                            return { acesso: "Acesso removido" };
-                          })
-                          .catch((error) => {
-                            throw new functions.https.HttpsError("unknown", error.message, error);
-                          });
-                      } else {
-                        return { acesso: "Acesso removido!" };
-                      }
+                      return { acesso: "Acesso concedido!" };
                     }
+                    if (data.acesso === "professores") {
+                      return admin
+                        .database()
+                        .ref(`sistemaEscolar/listaDeProfessores/${data.uid}/`)
+                        .remove()
+                        .then(() => {
+                          return { acesso: "Acesso removido" };
+                        })
+                        .catch((error) => {
+                          throw new functions.https.HttpsError("unknown", error.message, error);
+                        });
+                    }
+                    return { acesso: "Acesso removido!" };
                   })
                   .catch((error) => {
                     throw new functions.https.HttpsError("unknown", error.message, error);
@@ -120,23 +116,22 @@ exports.liberaERemoveAcessos = functions.https.onCall((data, context) => {
         console.log(error);
         throw new functions.https.HttpsError("unknown", error.message);
       });
-  } else {
-    throw new functions.https.HttpsError(
-      "permission-denied",
-      "Você não têm permissão para realizar esta ação."
-    );
   }
+  throw new functions.https.HttpsError(
+    "permission-denied",
+    "Você não têm permissão para realizar esta ação."
+  );
 });
 
 exports.apagaContas = functions.https.onCall((data, context) => {
-  if (context.auth.token.master == true) {
+  if (context.auth.token.master === true) {
     return admin
       .auth()
       .deleteUser(data.uid)
       .then(function () {
         return admin
           .database()
-          .ref(`sistemaEscolar/registroGeral`)
+          .ref("sistemaEscolar/registroGeral")
           .push({
             operacao: "Conta deletada",
             timestamp: admin.firestore.Timestamp.now(),
@@ -153,12 +148,11 @@ exports.apagaContas = functions.https.onCall((data, context) => {
       .catch(function (error) {
         throw new functions.https.HttpsError("unknown", error.message);
       });
-  } else {
-    throw new functions.https.HttpsError(
-      "permission-denied",
-      "Você não tem permissão para executar essa ação"
-    );
   }
+  throw new functions.https.HttpsError(
+    "permission-denied",
+    "Você não tem permissão para executar essa ação"
+  );
 });
 
 exports.deletaUsersAutomatico = functions.auth.user().onDelete((user) => {
@@ -188,7 +182,7 @@ exports.deletaUsersAutomatico = functions.auth.user().onDelete((user) => {
 exports.criaContaAluno = functions.database
   .ref("sistemaEscolar/alunos/{registro}")
   .onCreate((snapshot, context) => {
-    var aluno = snapshot.after.val();
+    let aluno = snapshot.after.val();
     admin
       .auth()
       .createUser({
@@ -261,9 +255,9 @@ exports.modificaSenhaContaAluno = functions.database
 
 exports.cadastroUser = functions.auth.user().onCreate((user) => {
   console.log(user.displayName);
-  var dadosNoBanco = admin.database().ref(`sistemaEscolar/usuarios/${user.uid}/`);
-  var listaDeUsers = admin.database().ref(`sistemaEscolar/listaDeUsuarios`);
-  var usuariosMaster = admin.database().ref("sistemaEscolar/usuariosMaster");
+  let dadosNoBanco = admin.database().ref(`sistemaEscolar/usuarios/${user.uid}/`);
+  let listaDeUsers = admin.database().ref("sistemaEscolar/listaDeUsuarios");
+  let usuariosMaster = admin.database().ref("sistemaEscolar/usuariosMaster");
   let firestoreRef = admin.firestore().collection("mail");
 
   admin
@@ -274,8 +268,8 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
       let emailContent = {
         to: user.email,
         message: {
-          subject: `Verificação de segurança do Sistema Escolar`,
-          text: `Clique no link para verificar seu e-mail no sistema escolar`,
+          subject: "Verificação de segurança do Sistema Escolar",
+          text: "Clique no link para verificar seu e-mail no sistema escolar",
           html: `
                     <p>Olá, ${user.displayName || "usuário"}</p>
                     <p>Clique neste link para verificar seu endereço de e-mail.</p>
@@ -329,7 +323,7 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
     });
 
   usuariosMaster.once("value", (snapshot) => {
-    var acessosObj = {
+    let acessosObj = {
       acessos: {
         master: false,
         adm: false,
@@ -338,8 +332,8 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         aluno: false
       }
     };
-    var lista = snapshot.val();
-    if (lista.indexOf(user.email) != -1) {
+    let lista = snapshot.val();
+    if (lista.indexOf(user.email) !== -1) {
       listaDeUsers
         .child(user.uid + "/acessos/master")
         .set(true)
@@ -354,7 +348,7 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         professores: false,
         aluno: false
       };
-    } else if (user.uid.length == 5) {
+    } else if (user.uid.length === 5) {
       listaDeUsers
         .child(user.uid + "/acessos/aluno")
         .set(true)
@@ -383,8 +377,8 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
 exports.cadastraTurma = functions.https.onCall(async (data, context) => {
   /**{codigoSala: codPadrao, professor: professor, diasDaSemana: diasDaSemana, livros: books, hora: horarioCurso} */
   console.log(data);
-  if (context.auth.token.master == true || context.auth.token.secretaria == true) {
-    var dados = data;
+  if (context.auth.token.master === true || context.auth.token.secretaria === true) {
+    let dados = data;
     if (dados.hasOwnProperty("codTurmaAtual")) {
       let turma = dados.codTurmaAtual;
       return admin
@@ -430,7 +424,7 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
                 .then(() => {
                   return admin
                     .database()
-                    .ref(`sistemaEscolar/registroGeral`)
+                    .ref("sistemaEscolar/registroGeral")
                     .push({
                       operacao: "Edição das informações de turma do sistema",
                       timestamp: admin.firestore.Timestamp.now(),
@@ -438,9 +432,9 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
                       dados: { codTurma: turma }
                     })
                     .then(() => {
-                      var horario;
+                      let horario;
                       let hora =
-                        dados.hora.indexOf("_") == -1 ? dados.hora : dados.hora.split("_")[0];
+                        dados.hora.indexOf("_") === -1 ? dados.hora : dados.hora.split("_")[0];
                       if (hora >= 12 && hora <= 17) {
                         horario = "Tarde";
                       } else if (hora >= 18 && hora <= 23) {
@@ -472,7 +466,7 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
                                 .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
                                 .once("value")
                                 .then((snapshot) => {
-                                  if (snapshot.exists() == false) {
+                                  if (snapshot.exists() === false) {
                                     Object.assign(dadosTurmaAtual, dados);
                                     return admin
                                       .database()
@@ -481,9 +475,9 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
                                       .then(() => {
                                         admin
                                           .database()
-                                          .ref(`sistemaEscolar/numeros/turmasCadastradas`)
-                                          .transaction(function (current_value) {
-                                            return (current_value || 0) + 1;
+                                          .ref("sistemaEscolar/numeros/turmasCadastradas")
+                                          .transaction(function (currentValue) {
+                                            return (currentValue || 0) + 1;
                                           })
                                           .catch(function (error) {
                                             throw new functions.https.HttpsError(
@@ -494,7 +488,7 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
                                           });
                                         return admin
                                           .database()
-                                          .ref(`sistemaEscolar/registroGeral`)
+                                          .ref("sistemaEscolar/registroGeral")
                                           .push({
                                             operacao: "Cadastro de Turma",
                                             timestamp: admin.firestore.Timestamp.now(),
@@ -522,12 +516,11 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
                                           error
                                         );
                                       });
-                                  } else {
-                                    throw new functions.https.HttpsError(
-                                      "already-exists",
-                                      "Uma turma com o mesmo código já foi criada."
-                                    );
                                   }
+                                  throw new functions.https.HttpsError(
+                                    "already-exists",
+                                    "Uma turma com o mesmo código já foi criada."
+                                  );
                                 });
                             })
                             .catch((error) => {
@@ -553,100 +546,97 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
         .catch((error) => {
           throw new functions.https.HttpsError("unknown", error.message, error);
         });
-    } else {
-      data.id = data.codigoSala;
-      var horario;
-      let hora = dados.hora.indexOf("_") == -1 ? dados.hora : dados.hora.split("_")[0];
-      if (hora >= 12 && hora <= 17) {
-        horario = "Tarde";
-      } else if (hora >= 18 && hora <= 23) {
-        horario = "Noite";
-      } else if (hora >= 5 && hora <= 11) {
-        horario = "Manha";
-      } else {
-        throw new functions.https.HttpsError(
-          "invalid-argument",
-          "Você deve passar um horário válido"
-        );
-      }
-      return admin
-        .auth()
-        .getUserByEmail(data.professor)
-        .then(function (user) {
-          dados.professor = [{ nome: user.displayName, email: user.email }];
-          dados.timestamp = admin.firestore.Timestamp.now();
-          return admin
-            .database()
-            .ref(`sistemaEscolar/usuarios/${user.uid}/professor/turmas/${data.codigoSala}`)
-            .set(true)
-            .then(() => {
-              return admin
-                .database()
-                .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
-                .once("value")
-                .then((snapshot) => {
-                  if (snapshot.exists() == false) {
-                    return admin
-                      .database()
-                      .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
-                      .set(dados)
-                      .then(() => {
-                        admin
-                          .database()
-                          .ref(`sistemaEscolar/numeros/turmasCadastradas`)
-                          .transaction(function (current_value) {
-                            return (current_value || 0) + 1;
-                          })
-                          .catch(function (error) {
-                            throw new functions.https.HttpsError("unknown", error.message, error);
-                          });
-                        return admin
-                          .database()
-                          .ref(`sistemaEscolar/registroGeral`)
-                          .push({
-                            operacao: "Cadastro de Turma",
-                            timestamp: admin.firestore.Timestamp.now(),
-                            userCreator: context.auth.uid,
-                            dados: dados
-                          })
-                          .then(() => {
-                            return { answer: "Turma cadastrada com sucesso." };
-                          })
-                          .catch((error) => {
-                            throw new functions.https.HttpsError("unknown", error.message, error);
-                          });
-                      })
-                      .catch((error) => {
-                        throw new functions.https.HttpsError(error.code, error.message, error);
-                      });
-                  } else {
-                    throw new functions.https.HttpsError(
-                      "already-exists",
-                      "Uma turma com o mesmo código já foi criada."
-                    );
-                  }
-                });
-            })
-            .catch((error) => {
-              throw new functions.https.HttpsError("unknown", error.message, error);
-            });
-        })
-        .catch(function (error) {
-          throw new functions.https.HttpsError("unknown", error.message, error);
-        });
     }
-  } else {
-    throw new functions.https.HttpsError(
-      "permission-denied",
-      "Você não possui permissão para fazer alterações nesta área."
-    );
+    data.id = data.codigoSala;
+    let horario;
+    let hora = dados.hora.indexOf("_") === -1 ? dados.hora : dados.hora.split("_")[0];
+    if (hora >= 12 && hora <= 17) {
+      horario = "Tarde";
+    } else if (hora >= 18 && hora <= 23) {
+      horario = "Noite";
+    } else if (hora >= 5 && hora <= 11) {
+      horario = "Manha";
+    } else {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "Você deve passar um horário válido"
+      );
+    }
+    return admin
+      .auth()
+      .getUserByEmail(data.professor)
+      .then(function (user) {
+        dados.professor = [{ nome: user.displayName, email: user.email }];
+        dados.timestamp = admin.firestore.Timestamp.now();
+        return admin
+          .database()
+          .ref(`sistemaEscolar/usuarios/${user.uid}/professor/turmas/${data.codigoSala}`)
+          .set(true)
+          .then(() => {
+            return admin
+              .database()
+              .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
+              .once("value")
+              .then((snapshot) => {
+                if (snapshot.exists() === false) {
+                  return admin
+                    .database()
+                    .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
+                    .set(dados)
+                    .then(() => {
+                      admin
+                        .database()
+                        .ref("sistemaEscolar/numeros/turmasCadastradas")
+                        .transaction(function (currentValue) {
+                          return (currentValue || 0) + 1;
+                        })
+                        .catch(function (error) {
+                          throw new functions.https.HttpsError("unknown", error.message, error);
+                        });
+                      return admin
+                        .database()
+                        .ref("sistemaEscolar/registroGeral")
+                        .push({
+                          operacao: "Cadastro de Turma",
+                          timestamp: admin.firestore.Timestamp.now(),
+                          userCreator: context.auth.uid,
+                          dados: dados
+                        })
+                        .then(() => {
+                          return { answer: "Turma cadastrada com sucesso." };
+                        })
+                        .catch((error) => {
+                          throw new functions.https.HttpsError("unknown", error.message, error);
+                        });
+                    })
+                    .catch((error) => {
+                      throw new functions.https.HttpsError(error.code, error.message, error);
+                    });
+                }
+                throw new functions.https.HttpsError(
+                  "already-exists",
+                  "Uma turma com o mesmo código já foi criada."
+                );
+              });
+          })
+          .catch((error) => {
+            throw new functions.https.HttpsError("unknown", error.message, error);
+          });
+      })
+      .catch(function (error) {
+        throw new functions.https.HttpsError("unknown", error.message, error);
+      });
   }
+  throw new functions.https.HttpsError(
+    "permission-denied",
+    "Você não possui permissão para fazer alterações nesta área."
+  );
 });
 
 exports.cadastraAniversarios = functions.database
   .ref("sistemaEscolar/usuarios/{uid}/dataNascimento")
   .onWrite((snapshot, context) => {
-    var data = snapshot.after.val();
+    let data = snapshot.after.val();
     admin
       .auth()
       .getUserByEmail(data.email)
@@ -672,7 +662,7 @@ exports.cadastraAniversarios = functions.database
   });
 
 exports.addNovoProfTurma = functions.https.onCall((data, context) => {
-  if (context.auth.token.master == true || context.auth.token.secretaria == true) {
+  if (context.auth.token.master === true || context.auth.token.secretaria === true) {
     return admin
       .auth()
       .getUserByEmail(data.emailProf)
@@ -689,9 +679,9 @@ exports.addNovoProfTurma = functions.https.onCall((data, context) => {
               .child("professor")
               .once("value")
               .then((snapshot) => {
-                var listaProf = snapshot.val();
-                if (listaProf == null) {
-                  var listaProf = [];
+                let listaProf = snapshot.val();
+                if (listaProf === null) {
+                  listaProf = [];
                 }
                 listaProf.push({
                   email: data.emailProf,
@@ -706,7 +696,7 @@ exports.addNovoProfTurma = functions.https.onCall((data, context) => {
                   .then(() => {
                     return admin
                       .database()
-                      .ref(`sistemaEscolar/registroGeral`)
+                      .ref("sistemaEscolar/registroGeral")
                       .push({
                         operacao: "Professor conectado em uma turma",
                         timestamp: admin.firestore.Timestamp.now(),
@@ -735,12 +725,11 @@ exports.addNovoProfTurma = functions.https.onCall((data, context) => {
       .catch(function (error) {
         throw new functions.https.HttpsError("unknown", error.message, error);
       });
-  } else {
-    throw new functions.https.HttpsError(
-      "permission-denied",
-      "Você não possui permissão para fazer alterações nesta área."
-    );
   }
+  throw new functions.https.HttpsError(
+    "permission-denied",
+    "Você não possui permissão para fazer alterações nesta área."
+  );
 });
 
 exports.desconectaProf = functions.database
@@ -749,8 +738,8 @@ exports.desconectaProf = functions.database
     // context.params = { codTurma: 'KIDS-SAT08', iProf: '1' }
     // context.timestamp = context.timestamp
 
-    var turma = context.params.codTurma;
-    var professor = snapshot.val().email;
+    let turma = context.params.codTurma;
+    let professor = snapshot.val().email;
     return admin
       .auth()
       .getUserByEmail(professor)
@@ -806,11 +795,11 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
   }
   if (
     data.dados.tipoMatricula === "preMatricula" ||
-    context.auth.token.master == true ||
-    context.auth.token.secretaria == true
+    context.auth.token.master === true ||
+    context.auth.token.secretaria === true
   ) {
     let dadosAluno = data.dados;
-    if (dadosAluno.tipoMatricula == "preMatricula") {
+    if (dadosAluno.tipoMatricula === "preMatricula") {
       delete dadosAluno.tipoMatricula;
 
       let firestoreRef = admin.firestore().collection("mail");
@@ -819,10 +808,10 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
         .ref("sistemaEscolar/infoEscola/dadosBasicos")
         .once("value");
       let dadosEscola = infoEscola.val();
-      const responsavelPedagogico = { email: null };
+      let responsavelPedagogico = { email: null };
       try {
         responsavelPedagogico =
-          dadosAluno.responsaveis.find((responsavel) => responsavel.pedagogico == true) ||
+          dadosAluno.responsaveis.find((responsavel) => responsavel.pedagogico === true) ||
           dadosAluno.responsaveis[0];
       } catch (error) {
         console.log(error);
@@ -871,176 +860,173 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
         .catch((error) => {
           throw new functions.https.HttpsError("unknown", error.message, error);
         });
-    } else {
-      let preMatriculaKey = data.preMatricula;
-      delete dadosAluno.tipoMatricula;
-      let contratoConfigurado = data.contratoConfigurado;
-      let planoOriginal = data.planoOriginal;
-      let codContrato = !data.codContrato ? admin.database().ref("/").push().key : data.codContrato;
-      let contratos = [codContrato];
-      let ultimaMatricula = (
-        await admin.database().ref("sistemaEscolar/ultimaMatricula").once("value")
-      ).val();
-      dadosAluno.matriculaAluno = !dadosAluno.matriculaAluno
-        ? formataNumMatricula(String(Number(ultimaMatricula) + 1))
-        : dadosAluno.matriculaAluno;
-      let firestoreRef = admin.firestore().collection("mail");
-      let infoEscola = await admin
-        .database()
-        .ref("sistemaEscolar/infoEscola/dadosBasicos")
-        .once("value");
-      let dadosEscola = infoEscola.val();
-      let emailContent = {
-        to: dadosAluno.emailAluno,
-        cc: dadosAluno.emailResponsavelPedagogico || null,
-        message: {
-          subject: `${dadosEscola.nomeEscola}`,
-          text: `Olá ${
-            dadosAluno.nomeAluno.split(" ")[0]
-          }, você foi corretamente cadastrado(a) em nosso sistema e está pronto(a) para iniciar essa jornada conosco. Sistemas GrupoProX.`,
-          html: `<h3>Olá ${
-            dadosAluno.nomeAluno.split(" ")[0]
-          }!</h3><p>Você está matriculado(a) no nº de matrícula <b>${
-            dadosAluno.matriculaAluno
-          }</b>, e está pronto(a) para iniciar os estudos conosco. Use seu e-mail e senha cadastrados para acessar o sistema. Só lembrando, sua senha é: <b>${
-            dadosAluno.senhaAluno
-          }</b>. Fique atento aos e-mails, pois sua escola pode utilizar este canal para comunicação com você.</p><p>Em caso de dificuldades <b>entre em contato com a escola para maiores informações</b>.</p><p><b>Dados de contato da escola:</b><br>Telefone: ${
-            dadosEscola.telefoneEscola
-          }<br>E-mail: ${dadosEscola.emailEscola}<br>Endereço: ${
-            dadosEscola.enderecoEscola
-          }</p><p>Sistemas GrupoProX.</p>`
+    }
+    let preMatriculaKey = data.preMatricula;
+    delete dadosAluno.tipoMatricula;
+    let contratoConfigurado = data.contratoConfigurado;
+    let planoOriginal = data.planoOriginal;
+    let codContrato = !data.codContrato ? admin.database().ref("/").push().key : data.codContrato;
+    let contratos = [codContrato];
+    let ultimaMatricula = (
+      await admin.database().ref("sistemaEscolar/ultimaMatricula").once("value")
+    ).val();
+    dadosAluno.matriculaAluno = !dadosAluno.matriculaAluno
+      ? formataNumMatricula(String(Number(ultimaMatricula) + 1))
+      : dadosAluno.matriculaAluno;
+    let firestoreRef = admin.firestore().collection("mail");
+    let infoEscola = await admin
+      .database()
+      .ref("sistemaEscolar/infoEscola/dadosBasicos")
+      .once("value");
+    let dadosEscola = infoEscola.val();
+    let emailContent = {
+      to: dadosAluno.emailAluno,
+      cc: dadosAluno.emailResponsavelPedagogico || null,
+      message: {
+        subject: `${dadosEscola.nomeEscola}`,
+        text: `Olá ${
+          dadosAluno.nomeAluno.split(" ")[0]
+        }, você foi corretamente cadastrado(a) em nosso sistema e está pronto(a) para iniciar essa jornada conosco. Sistemas GrupoProX.`,
+        html: `<h3>Olá ${
+          dadosAluno.nomeAluno.split(" ")[0]
+        }!</h3><p>Você está matriculado(a) no nº de matrícula <b>${
+          dadosAluno.matriculaAluno
+        }</b>, e está pronto(a) para iniciar os estudos conosco. Use seu e-mail e senha cadastrados para acessar o sistema. Só lembrando, sua senha é: <b>${
+          dadosAluno.senhaAluno
+        }</b>. Fique atento aos e-mails, pois sua escola pode utilizar este canal para comunicação com você.</p><p>Em caso de dificuldades <b>entre em contato com a escola para maiores informações</b>.</p><p><b>Dados de contato da escola:</b><br>Telefone: ${
+          dadosEscola.telefoneEscola
+        }<br>E-mail: ${dadosEscola.emailEscola}<br>Endereço: ${
+          dadosEscola.enderecoEscola
+        }</p><p>Sistemas GrupoProX.</p>`
+      }
+    };
+    dadosAluno.userCreator = context.auth.uid;
+    dadosAluno.contratos = contratos;
+    dadosAluno.timestamp = admin.firestore.Timestamp.now();
+    return admin
+      .database()
+      .ref("sistemaEscolar/alunos")
+      .child(dadosAluno.matriculaAluno)
+      .once("value")
+      .then((alunoRecord) => {
+        if (alunoRecord.exists()) {
+          throw new functions.https.HttpsError(
+            "already-exists",
+            "Este número de matrícula já consta no sistema. Por favor, clique no botão azul no início deste formulário para atualizar o número de matrícula, para gerar um novo número de matrícula."
+          );
         }
-      };
-      dadosAluno.userCreator = context.auth.uid;
-      dadosAluno.contratos = contratos;
-      dadosAluno.timestamp = admin.firestore.Timestamp.now();
-      return admin
-        .database()
-        .ref("sistemaEscolar/alunos")
-        .child(dadosAluno.matriculaAluno)
-        .once("value")
-        .then((alunoRecord) => {
-          if (alunoRecord.exists()) {
-            throw new functions.https.HttpsError(
-              "already-exists",
-              "Este número de matrícula já consta no sistema. Por favor, clique no botão azul no início deste formulário para atualizar o número de matrícula, para gerar um novo número de matrícula."
-            );
-          }
-          return admin
-            .database()
-            .ref("sistemaEscolar/alunos/" + dadosAluno.matriculaAluno)
-            .set(dadosAluno)
-            .then(() => {
-              return admin
-                .database()
-                .ref("sistemaEscolar/infoEscola/contratos/" + codContrato)
-                .set({
-                  contratoConfigurado: contratoConfigurado,
-                  situacao: "Vigente",
-                  planoOriginal: planoOriginal,
-                  matricula: dadosAluno.matriculaAluno,
-                  timestamp: admin.firestore.Timestamp.now(),
-                  codContrato: codContrato
-                })
-                .then(() => {
-                  return admin
-                    .database()
-                    .ref("sistemaEscolar/turmas")
-                    .child(dadosAluno.turmaAluno + "/alunos")
-                    .child(dadosAluno.matriculaAluno)
-                    .set({
-                      nome: dadosAluno.nomeAluno,
-                      prof: dadosAluno.emailProfAluno || dadosAluno.profAluno.email
-                    })
-                    .then(() => {
-                      return admin
-                        .database()
-                        .ref("sistemaEscolar/ultimaMatricula")
-                        .set(dadosAluno.matriculaAluno)
-                        .then(() => {
-                          if (preMatriculaKey) {
-                            admin
-                              .database()
-                              .ref("sistemaEscolar/preMatriculas")
-                              .child(preMatriculaKey)
-                              .remove()
-                              .then(() => {})
-                              .catch((error) => {
-                                functions.logger.log(error);
-                              });
-                          }
-
+        return admin
+          .database()
+          .ref("sistemaEscolar/alunos/" + dadosAluno.matriculaAluno)
+          .set(dadosAluno)
+          .then(() => {
+            return admin
+              .database()
+              .ref("sistemaEscolar/infoEscola/contratos/" + codContrato)
+              .set({
+                contratoConfigurado: contratoConfigurado,
+                situacao: "Vigente",
+                planoOriginal: planoOriginal,
+                matricula: dadosAluno.matriculaAluno,
+                timestamp: admin.firestore.Timestamp.now(),
+                codContrato: codContrato
+              })
+              .then(() => {
+                return admin
+                  .database()
+                  .ref("sistemaEscolar/turmas")
+                  .child(dadosAluno.turmaAluno + "/alunos")
+                  .child(dadosAluno.matriculaAluno)
+                  .set({
+                    nome: dadosAluno.nomeAluno,
+                    prof: dadosAluno.emailProfAluno || dadosAluno.profAluno.email
+                  })
+                  .then(() => {
+                    return admin
+                      .database()
+                      .ref("sistemaEscolar/ultimaMatricula")
+                      .set(dadosAluno.matriculaAluno)
+                      .then(() => {
+                        if (preMatriculaKey) {
                           admin
                             .database()
-                            .ref("sistemaEscolar/numeros/alunosMatriculados")
-                            .transaction(
-                              function (current_value) {
-                                let numAtual = Number(current_value);
-                                if (current_value == null) {
-                                  return 1;
-                                } else {
-                                  return numAtual++;
-                                }
-                              },
-                              function (error, comitted, snapshot) {
-                                if (error) {
-                                  throw new functions.https.HttpsError(
-                                    error.code,
-                                    error.message,
-                                    error
-                                  );
-                                } else if (!comitted) {
-                                  throw new functions.https.HttpsError(
-                                    "already-exists",
-                                    "Já existe. Isso pode ser um erro. Tente novamente."
-                                  );
-                                }
-                              }
-                            );
-
-                          return firestoreRef
-                            .add(emailContent)
-                            .then(() => {
-                              console.log("Queued email for delivery to " + dadosAluno.emailAluno);
-                              return {
-                                answer:
-                                  "Aluno cadastrado na matrícula " +
-                                  dadosAluno.matriculaAluno +
-                                  " com sucesso! Os e-mails foram disparados.",
-                                codContrato: codContrato
-                              };
-                            })
+                            .ref("sistemaEscolar/preMatriculas")
+                            .child(preMatriculaKey)
+                            .remove()
+                            .then(() => {})
                             .catch((error) => {
-                              console.error(error);
-                              throw new Error(error.message);
+                              functions.logger.log(error);
                             });
-                        })
-                        .catch((error) => {
-                          throw new functions.https.HttpsError("unknown", error.message, error);
-                        });
-                    })
-                    .catch((error) => {
-                      throw new functions.https.HttpsError("unknown", error.message, error);
-                    });
-                })
-                .catch((error) => {
-                  throw new functions.https.HttpsError("unknown", error.message, error);
-                });
-            })
-            .catch((error) => {
-              throw new functions.https.HttpsError("unknown", error.message, error);
-            });
-        })
-        .catch((error) => {
-          throw new functions.https.HttpsError("unknown", error.message, error);
-        });
-    }
-  } else {
-    throw new functions.https.HttpsError(
-      "permission-denied",
-      "Você não possui permissão para fazer alterações nesta área."
-    );
+                        }
+
+                        admin
+                          .database()
+                          .ref("sistemaEscolar/numeros/alunosMatriculados")
+                          .transaction(
+                            function (currentValue) {
+                              let numAtual = Number(currentValue);
+                              if (currentValue === null) {
+                                return 1;
+                              }
+                              return numAtual++;
+                            },
+                            function (error, comitted, snapshot) {
+                              if (error) {
+                                throw new functions.https.HttpsError(
+                                  error.code,
+                                  error.message,
+                                  error
+                                );
+                              } else if (!comitted) {
+                                throw new functions.https.HttpsError(
+                                  "already-exists",
+                                  "Já existe. Isso pode ser um erro. Tente novamente."
+                                );
+                              }
+                            }
+                          );
+
+                        return firestoreRef
+                          .add(emailContent)
+                          .then(() => {
+                            console.log("Queued email for delivery to " + dadosAluno.emailAluno);
+                            return {
+                              answer:
+                                "Aluno cadastrado na matrícula " +
+                                dadosAluno.matriculaAluno +
+                                " com sucesso! Os e-mails foram disparados.",
+                              codContrato: codContrato
+                            };
+                          })
+                          .catch((error) => {
+                            console.error(error);
+                            throw new Error(error.message);
+                          });
+                      })
+                      .catch((error) => {
+                        throw new functions.https.HttpsError("unknown", error.message, error);
+                      });
+                  })
+                  .catch((error) => {
+                    throw new functions.https.HttpsError("unknown", error.message, error);
+                  });
+              })
+              .catch((error) => {
+                throw new functions.https.HttpsError("unknown", error.message, error);
+              });
+          })
+          .catch((error) => {
+            throw new functions.https.HttpsError("unknown", error.message, error);
+          });
+      })
+      .catch((error) => {
+        throw new functions.https.HttpsError("unknown", error.message, error);
+      });
   }
+  throw new functions.https.HttpsError(
+    "permission-denied",
+    "Você não possui permissão para fazer alterações nesta área."
+  );
 });
 
 exports.timestamp = functions.https.onCall((data, context) => {
@@ -1054,13 +1040,13 @@ exports.transfereAlunos = functions.https.onCall((data, context) => {
     numero = numero.slice(-5, -1) + numero.slice(-1);
     return numero;
   }
-  if (context.auth.token.master == true || context.auth.token.secretaria == true) {
+  if (context.auth.token.master === true || context.auth.token.secretaria === true) {
     let dados = data;
     let turmaAtual = dados.turmaAtual;
     let turmaParaTransferir = dados.turmaParaTransferir;
     let alunosSelecionados = dados.alunos;
     let alunos = {}; //Aqui onde será guardado os alunos e os dados dos mesmos, da turma para serem transferidos para outra turma
-    var timestamp = admin.firestore.Timestamp.now();
+    let timestamp = admin.firestore.Timestamp.now();
 
     return admin
       .database()
@@ -1204,13 +1190,12 @@ exports.transfereAlunos = functions.https.onCall((data, context) => {
       .catch((error) => {
         throw new functions.https.HttpsError("unknown", error.message, error);
       });
-  } else {
-    throw new functions.https.HttpsError("permission-denied", "Você não tem permissão.");
   }
+  throw new functions.https.HttpsError("permission-denied", "Você não tem permissão.");
 });
 
 exports.excluiTurma = functions.https.onCall((data, context) => {
-  if (context.auth.token.master == true || context.auth.token.secretaria == true) {
+  if (context.auth.token.master === true || context.auth.token.secretaria === true) {
     let turma = data.codTurma;
     return admin
       .database()
@@ -1238,7 +1223,7 @@ exports.excluiTurma = functions.https.onCall((data, context) => {
               .then(() => {
                 return admin
                   .database()
-                  .ref(`sistemaEscolar/registroGeral`)
+                  .ref("sistemaEscolar/registroGeral")
                   .push({
                     operacao: "Exclusão de turma do sistema",
                     timestamp: admin.firestore.Timestamp.now(),
@@ -1265,12 +1250,11 @@ exports.excluiTurma = functions.https.onCall((data, context) => {
       .catch((error) => {
         throw new functions.https.HttpsError("unknown", error.message, error);
       });
-  } else {
-    throw new functions.https.HttpsError(
-      "permission-denied",
-      "Você não possui permissão para fazer alterações nesta área."
-    );
   }
+  throw new functions.https.HttpsError(
+    "permission-denied",
+    "Você não possui permissão para fazer alterações nesta área."
+  );
 });
 
 exports.ativaDesativaAlunos = functions.https.onCall((data, context) => {
@@ -1280,11 +1264,11 @@ exports.ativaDesativaAlunos = functions.https.onCall((data, context) => {
     numero = numero.slice(-5, -1) + numero.slice(-1);
     return numero;
   }
-  if (context.auth.token.master == true || context.auth.token.secretaria == true) {
+  if (context.auth.token.master === true || context.auth.token.secretaria === true) {
     let alunos = data.alunos;
     let turma = data.codTurma;
-    var timestamp = admin.firestore.Timestamp.now();
-    if (data.modo == "ativa") {
+    let timestamp = admin.firestore.Timestamp.now();
+    if (data.modo === "ativa") {
       async function ativaAlunos() {
         let dadosAluno;
         let dadosTurma;
@@ -1391,7 +1375,7 @@ exports.ativaDesativaAlunos = functions.https.onCall((data, context) => {
         .catch((error) => {
           throw new functions.https.HttpsError("unknown", error.message, error);
         });
-    } else if (data.modo == "desativa") {
+    } else if (data.modo === "desativa") {
       async function desativaAlunos() {
         let dadosAluno;
         let dadosTurma;
@@ -1487,12 +1471,11 @@ exports.ativaDesativaAlunos = functions.https.onCall((data, context) => {
         .catch((error) => {
           throw new functions.https.HttpsError("unknown", error.message, error);
         });
-    } else {
-      throw new functions.https.HttpsError(
-        "aborted",
-        "A operação foi abortada pois não foi passado o modo da operação"
-      );
     }
+    throw new functions.https.HttpsError(
+      "aborted",
+      "A operação foi abortada pois não foi passado o modo da operação"
+    );
   } else {
     throw new functions.https.HttpsError(
       "permission-denied",
@@ -1503,19 +1486,19 @@ exports.ativaDesativaAlunos = functions.https.onCall((data, context) => {
 
 exports.lancarNotas = functions.https.onCall((data, context) => {
   // data: {alunos: {matricula: nomeAluno}, turma: codTurma, notas: {ativ1: 50, ativ2: 50}}
-  if (context.auth.token.master == true || context.auth.token.professores == true) {
+  if (context.auth.token.master === true || context.auth.token.professores === true) {
     function formataNumMatricula(num) {
       let numero = num;
       numero = "00000" + numero.replace(/\D/g, "");
       numero = numero.slice(-5, -1) + numero.slice(-1);
       return numero;
     }
-    var dados = data;
-    var alunos = dados.alunos;
-    var turma = dados.turma;
-    var notas = dados.notas;
+    let dados = data;
+    let alunos = dados.alunos;
+    let turma = dados.turma;
+    let notas = dados.notas;
 
-    var alunosTurmaRef = admin.database().ref("sistemaEscolar/turmas/" + turma + "/alunos");
+    let alunosTurmaRef = admin.database().ref("sistemaEscolar/turmas/" + turma + "/alunos");
     async function lancar() {
       for (const matricula in alunos) {
         if (Object.hasOwnProperty.call(alunos, matricula)) {
@@ -1526,7 +1509,7 @@ exports.lancarNotas = functions.https.onCall((data, context) => {
             .then(() => {
               return admin
                 .database()
-                .ref(`sistemaEscolar/registroGeral`)
+                .ref("sistemaEscolar/registroGeral")
                 .push({
                   operacao: "Lançamento de notas",
                   timestamp: admin.firestore.Timestamp.now(),
@@ -1554,12 +1537,11 @@ exports.lancarNotas = functions.https.onCall((data, context) => {
       .catch((error) => {
         throw new functions.https.HttpsError("unknown", error.message, error);
       });
-  } else {
-    throw new functions.https.HttpsError(
-      "permission-denied",
-      "Você não possui permissão para fazer alterações nesta área."
-    );
   }
+  throw new functions.https.HttpsError(
+    "permission-denied",
+    "Você não possui permissão para fazer alterações nesta área."
+  );
 });
 
 exports.lancaDesempenhos = functions.database
@@ -1568,8 +1550,8 @@ exports.lancaDesempenhos = functions.database
     // context.timestamp = context.timestamp
     // context.params = { codTurma: 'KIDS-SAT08', matricula: '00001' }
 
-    var notasDesempenho = snapshot.after.val();
-    var referencia = {
+    let notasDesempenho = snapshot.after.val();
+    let referencia = {
       turma: context.params.codTurma,
       matriculaAluno: context.params.matricula
     };
@@ -1611,25 +1593,23 @@ exports.lancaDesempenhos = functions.database
                   .catch((error) => {
                     throw new functions.https.HttpsError("unknown", error.message, error);
                   });
-              } else {
-                return (
-                  "A turma " +
-                  referencia.turma +
-                  "não possui nota de desempenho distribuída no somatório final das notas. A nota da matricula " +
-                  referencia.matriculaAluno +
-                  " não foi alterada."
-                );
               }
+              return (
+                "A turma " +
+                referencia.turma +
+                "não possui nota de desempenho distribuída no somatório final das notas. A nota da matricula " +
+                referencia.matriculaAluno +
+                " não foi alterada."
+              );
             })
             .catch((error) => {
               throw new functions.https.HttpsError("unknown", error.message, error);
             });
-        } else {
-          throw new functions.https.HttpsError(
-            "permission-denied",
-            "Você só pode lançar notas em uma turma aberta"
-          );
         }
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          "Você só pode lançar notas em uma turma aberta"
+        );
       })
       .catch((error) => {
         throw new functions.https.HttpsError("unknown", error.message, error);
@@ -1646,6 +1626,7 @@ exports.aberturaTurma = functions.database
 
     // checking if the class status is "opened"
     if (classState === "aberta") {
+      console.log("aberto");
     }
   });
 
@@ -1656,11 +1637,11 @@ exports.fechaTurma = functions.https.onCall((data, context) => {
     numero = numero.slice(-5, -1) + numero.slice(-1);
     return numero;
   }
-  if (context.auth.token.master == true || context.auth.token.professores == true) {
-    var turma = data;
-    var turmaRef = admin.database().ref(`sistemaEscolar/turmas/${turma}`);
-    var alunosRef = admin.database().ref(`sistemaEscolar/alunos/`);
-    var chave = alunosRef.push().key;
+  if (context.auth.token.master === true || context.auth.token.professores === true) {
+    let turma = data;
+    let turmaRef = admin.database().ref(`sistemaEscolar/turmas/${turma}`);
+    let alunosRef = admin.database().ref("sistemaEscolar/alunos/");
+    let chave = alunosRef.push().key;
     return turmaRef
       .once("value")
       .then((dadosTurma) => {
@@ -1733,7 +1714,7 @@ exports.fechaTurma = functions.https.onCall((data, context) => {
           }
           admin
             .database()
-            .ref(`sistemaEscolar/registroGeral`)
+            .ref("sistemaEscolar/registroGeral")
             .push({
               operacao: "Fechamento de Turma",
               timestamp: admin.firestore.Timestamp.now(),
@@ -1761,12 +1742,11 @@ exports.fechaTurma = functions.https.onCall((data, context) => {
       .catch((error) => {
         throw new functions.https.HttpsError("unknown", error.message, error);
       });
-  } else {
-    throw new functions.https.HttpsError(
-      "permission-denied",
-      "Você não possui permissão para fazer alterações nesta área."
-    );
   }
+  throw new functions.https.HttpsError(
+    "permission-denied",
+    "Você não possui permissão para fazer alterações nesta área."
+  );
 });
 
 exports.aberturaChamados = functions.database
@@ -1809,7 +1789,7 @@ exports.aberturaChamados = functions.database
       replyTo: emailSuporte,
       message: {
         subject: `Abertura de chamado: ${chamado.assunto}`,
-        text: `Notificação de abertura de chamado no sistema escolar.`,
+        text: "Notificação de abertura de chamado no sistema escolar.",
         html: `
             <h5>Abertura de chamado no sistema escolar</h5>
             <p> 
@@ -1881,52 +1861,52 @@ exports.removeCalendarios = functions.database
 
 exports.geraPix = functions.https.onCall((data, context) => {
   class BrCode {
-    constructor(key, amount, name, reference, key_type, city) {
+    constructor(key, amount, name, reference, keyType, city) {
       this.key = key;
       this.amount = amount;
       this.name = name;
       this.reference = reference;
-      this.key_type = key_type;
+      this.keyType = keyType;
       this.city = city;
     }
 
-    static format_text(text) {
+    static formatText(text) {
       return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
-    formated_name() {
-      return this.constructor.format_text(this.name);
+    formatedName() {
+      return this.constructor.formatText(this.name);
     }
 
-    formated_city() {
-      return this.constructor.format_text(this.city);
+    formatedCity() {
+      return this.constructor.formatText(this.city);
     }
 
-    formated_amount() {
+    formatedAmount() {
       return this.amount.replace(",", ".").replace(" ", "").replace("R$", "");
     }
 
-    formated_referance() {
-      return this.constructor.format_text(this.reference).replace(" ", "");
+    formatedReferance() {
+      return this.constructor.formatText(this.reference).replace(" ", "");
     }
 
-    formated_key() {
-      var rkey = this.key;
-      var ktype = this.key_type.toLowerCase();
+    formatedKey() {
+      let rkey = this.key;
+      let ktype = this.keyType.toLowerCase();
 
-      if (ktype == "telefone" || ktype == "cnpj" || ktype == "cpf") {
+      if (ktype === "telefone" || ktype === "cnpj" || ktype === "cpf") {
         rkey = rkey.replace(/\D/g, "");
       }
 
-      if (ktype == "telefone") {
+      if (ktype === "telefone") {
         rkey = "+55" + rkey;
       }
 
       return rkey;
     }
 
-    generate_qrcp() {
-      var emvqr = Merchant.buildEMVQR();
+    generateQrcp() {
+      let emvqr = Merchant.buildEMVQR();
 
       emvqr.setPayloadFormatIndicator("01");
       emvqr.setCountryCode("BR");
@@ -1935,26 +1915,26 @@ exports.geraPix = functions.https.onCall((data, context) => {
       const merchantAccountInformation = Merchant.buildMerchantAccountInformation();
       merchantAccountInformation.setGloballyUniqueIdentifier("BR.GOV.BCB.PIX");
 
-      merchantAccountInformation.addPaymentNetworkSpecific("01", this.formated_key());
+      merchantAccountInformation.addPaymentNetworkSpecific("01", this.formatedKey());
 
       emvqr.addMerchantAccountInformation("26", merchantAccountInformation);
 
       if (this.name) {
-        emvqr.setMerchantName(this.formated_name());
+        emvqr.setMerchantName(this.formatedName());
       }
 
       if (this.city) {
-        emvqr.setMerchantCity(this.formated_city());
+        emvqr.setMerchantCity(this.formatedCity());
       }
 
-      if (this.amount && this.amount != "") {
-        emvqr.setTransactionAmount(this.formated_amount());
+      if (this.amount && this.amount !== "") {
+        emvqr.setTransactionAmount(this.formatedAmount());
       }
 
       const additionalDataFieldTemplate = Merchant.buildAdditionalDataFieldTemplate();
 
       if (this.reference) {
-        additionalDataFieldTemplate.setReferenceLabel(this.formated_referance());
+        additionalDataFieldTemplate.setReferenceLabel(this.formatedReferance());
       } else {
         additionalDataFieldTemplate.setReferenceLabel("***");
       }
@@ -1978,7 +1958,7 @@ exports.geraPix = functions.https.onCall((data, context) => {
       dadosBasicos.cidadePix
     );
     console.log(lineCode);
-    const code = lineCode.generate_qrcp();
+    const code = lineCode.generateQrcp();
     console.log(code);
     const QR_CODE_SIZE = 400;
     return QRCode.toDataURL(code, { width: QR_CODE_SIZE, height: QR_CODE_SIZE })
@@ -2016,8 +1996,8 @@ exports.systemUpdate = functions.pubsub
     const emailContent = {
       to: "gustavo.resende@grupoprox.com",
       message: {
-        subject: `Job de domingo realizado`,
-        text: `Veja o log do job de domingo`,
+        subject: "Job de domingo realizado",
+        text: "Veja o log do job de domingo",
         html: `<h3>Olá!</h3><p>O Job de systemUpdate do Sistema Escolar foi executado.</p><p>Ano base: ${now.getFullYear()}</p><p> Timestamp: ${
           context.timestamp
         }</p><p> EventId: ${context.eventId}</p><p> EventType: ${
@@ -2090,8 +2070,8 @@ exports.dailyUpdate = functions.pubsub
         const emailContent = {
           to: "gustavo.resende@grupoprox.com",
           message: {
-            subject: `Job diário realizado`,
-            text: `Veja o log do job diário`,
+            subject: "Job diário realizado",
+            text: "Veja o log do job diário",
             html: `<h3>Olá!</h3><p>O Job de dailyUpdate do Sistema Escolar foi executado.</p><p> Alunos: ${
               result.students
             }</p><p> Turmas: ${result.classes}</p><p> Alunos Desativados: ${
@@ -2118,8 +2098,8 @@ exports.dailyUpdate = functions.pubsub
         const emailContent = {
           to: "gustavo.resende@grupoprox.com",
           message: {
-            subject: `Job diário falhou`,
-            text: `Veja o log do job diário`,
+            subject: "Job diário falhou",
+            text: "Veja o log do job diário",
             html: `<h3>Olá!</h3><p>O Job de dailyUpdate do Sistema Escolar foi executado, porém falhou.</p><p>Error message: ${
               error.message
             }</p><p>Ano base: ${now.getFullYear()}</p><p> Timestamp: ${
@@ -2171,8 +2151,8 @@ exports.newYear = functions.pubsub
         ]
          * @param {string} year The year to get the holidays
          * @returns array
-         * 
-         * 
+         *
+         *
          */
     const getBrazilianHolidays = async (year) => {
       const response = await axios.get(`https://brasilapi.com.br/api/feriados/v1/${year}`);
@@ -2221,8 +2201,8 @@ exports.newYear = functions.pubsub
     const emailContent = {
       to: "gustavo.resende@grupoprox.com",
       message: {
-        subject: `Job anual realizado`,
-        text: `Veja o log do job anual`,
+        subject: "Job anual realizado",
+        text: "Veja o log do job anual",
         html: `<h3>Olá!</h3><p>O Job de newYear do Sistema Escolar foi executado.</p><p>Ano base: ${now.getFullYear()}</p><p> Timestamp: ${
           context.timestamp
         }</p><p> EventId: ${context.eventId}</p><p> EventType: ${
@@ -2278,12 +2258,13 @@ exports.geraBoletos = functions.https.onCall((data, context) => {
     console.log(codContrato);
     let docsSistema = docsSistemaVal.val();
     let qtdeDocs = 0;
+    let numerosDeDoc;
 
     let timestamp = await admin.firestore.Timestamp.now();
     console.log(timestamp);
-    var now = new Date(timestamp._seconds * 1000);
+    let now = new Date(timestamp._seconds * 1000);
     console.log(now);
-    var dataProcessamento = `${Number(now.getDate()) <= 9 ? "0" + now.getDate() : now.getDate()}/${
+    let dataProcessamento = `${Number(now.getDate()) <= 9 ? "0" + now.getDate() : now.getDate()}/${
       Number(now.getMonth()) + 1 <= 9 ? "0" + (Number(now.getMonth()) + 1) : now.getMonth()
     }/${now.getFullYear()}`;
 
@@ -2297,9 +2278,9 @@ exports.geraBoletos = functions.https.onCall((data, context) => {
 
     try {
       let docsBoletosGerados = await contratoRef.child("docsBoletos").once("value");
-      var numerosDeDoc = docsBoletosGerados.val();
+      numerosDeDoc = docsBoletosGerados.val();
       let continuar = true;
-      // if (numerosDeDoc != null) {
+      // if (numerosDeDoc !== null) {
       //     continuar = window.confirm('O sistema identificou débitos ativos para este contrato. Deseja gerar novos débitos/boletos? (Para gerar, clique em OK)')
 
       // }
@@ -2321,19 +2302,323 @@ exports.geraBoletos = functions.https.onCall((data, context) => {
         let numDoc = qtdeDocs + 1;
         let numerosDeDoc = [];
 
+        async function addParcela(
+          parcelaAtual,
+          numDeParcelas,
+          vencimento,
+          numeroDoc,
+          valorDoc,
+          descontos,
+          acrescimos,
+          totalCobrado,
+          dataProcessamento,
+          informacoes
+        ) {
+          bol++;
+          if (bol > 3 && pag >= 1) {
+            pag++;
+            bol = 0;
+            // document.getElementById('livro').innerHTML += `
+            // <div class="page">
+            //     <div class="subpage">
+            //         <div id="boletos${pag}"></div>
+            //     </div>
+            // </div>
+            // `
+          }
+          //let boletos = document.getElementById('boletos' + pag)
+          await admin.database().ref("sistemaEscolar").child("docsBoletos").push({
+            numeroDoc: numeroDoc,
+            valorDoc: valorDoc,
+            vencimento: vencimento,
+            parcelaAtual: parcelaAtual,
+            numDeParcelas: numDeParcelas,
+            descontos: descontos,
+            acrescimos: acrescimos,
+            totalCobrado: totalCobrado,
+            dataProcessamento: dataProcessamento,
+            informacoes: data.descricaoPlano,
+            codContrato: codContrato,
+            matricula: matricula
+          });
+
+          //let gera = firebase.functions().httpsCallable('geraPix')
+          // return gera({valor: totalCobrado, descricao: `DOC${numeroDoc}`}).then(function(lineCode) {
+
+          //     //divQr.src = lineCode.data;
+          //     console.log(lineCode)
+          //     //const code = new QRCode(divQr, { text: lineCode.data, width: 100, height: 100 });
+          //     //qrCodesArray.push({qrcode: lineCode.data, numeroDoc: numeroDoc})
+          //     boletos.innerHTML += `
+          //     <table style="height: 241px; width: 100%; border-collapse: collapse; border-style: solid; margin-top: 18px;" border="1" >
+          //     <tbody>
+          //         <tr style="height: 10px; border-style: none;">
+          //             <td style="width: 4.97079%; height: 179px;" rowspan="9">&nbsp;</td>
+          //             <td style="width: 22.9045%; height: 20px; text-align: center;" rowspan="2">
+          //             <table style="height: 100%; width: 96.3454%; border-collapse: collapse; border-style: hidden;" border="1">
+          //             <tbody>
+          //             <tr style="height: 18px;">
+          //                 <td style="width: 38.8889%; height: 33px;" rowspan="2"><img src="${dadosEscola.logoEscola}" alt="Logo" width="30" height="30" /></td>
+          //                 <td style="width: 189.264%; height: 18px; border-left: hidden;">
+          //                     <section style="font-size: 8pt; text-align: center;">
+          //                         Parcela
+          //                     </section>
+
+          //                     <section style="font-size: x-small; text-align: center;">
+          //                         ${parcelaAtual}/${numDeParcelas}
+          //                     </section>
+          //                 </td>
+          //             </tr>
+          //             <tr style="height: 15px;">
+          //             <td style="width: 189.264%; height: 15px; border-left: hidden;">
+          //                     <section style="font-size: 8pt; text-align: center;">
+          //                         Vencimento
+          //                     </section>
+
+          //                     <section style="font-size: x-small; text-align: center;">
+          //                         ${vencimento}
+          //                     </section>
+          //             </td>
+          //         </tr>
+          //         </tbody>
+          //         </table>
+          //         </td>
+          //         <td style="width: 7.60226%; text-align: center; height: 20px; border-left: dotted;" rowspan="2"><img src="${dadosEscola.logoEscola}" alt="Logo" width="30" height="30" /></td>
+          //         <td style="height: 20px; width: 43.8475%;" colspan="3" rowspan="2">
+          //             <section style="font-size: 8pt;">
+          //                 &nbsp;<b>Cedente</b>
+          //             </section>
+          //             <section style="font-size: x-small;">
+          //                 &nbsp;${dadosEscola.dadosBasicos.nomeEscola}
+          //             </section>
+          //             <section style="font-size: x-small;">
+          //                 &nbsp;${dadosEscola.dadosBasicos.cnpjEscola}
+          //             </section>
+          //             <section style="font-size: x-small;">
+          //                 &nbsp;${dadosEscola.dadosBasicos.enderecoEscola}
+          //             </section>
+          //             <section style="font-size: x-small;">
+          //                 &nbsp;${dadosEscola.dadosBasicos.telefoneEscola}
+          //             </section>
+          //         </td>
+          //         <td style="width: 64.5223%; height: 10px; text-align: center;">
+          //             <section style="font-size: 8pt;">
+          //                 Parcela
+          //             </section>
+
+          //             <section style="font-size: x-small; text-align: center;">
+          //                 ${parcelaAtual}/${numDeParcelas}
+          //             </section>
+          //         </td>
+          //         </tr>
+          //         <tr style="height: 10px;">
+          //         <td style="width: 64.5223%; height: 10px;">
+          //             <section style="font-size: 8pt; text-align: center;">
+          //                 Vencimento
+          //             </section>
+
+          //             <section style="font-size: x-small; text-align: center;">
+          //                 ${vencimento}
+          //             </section>
+          //         </td>
+          //         </tr>
+          //         <tr style="height: 33px;">
+          //         <td style="width: 22.9045%; height: 33px; text-align: start;">
+          //             <section style="font-size: 8pt; text-align: center;">
+          //                 Documento
+          //             </section>
+
+          //             <section style="font-size: x-small; width: 100%; text-align: center;">
+          //                 ${numeroDoc}
+          //             </section>
+          //         </td>
+          //         <td style="width: 19.286%; height: 33px; border-left: dotted;" colspan="2">
+          //             <section style="font-size: 8pt; text-align: center;">
+          //                 Documento
+          //             </section>
+
+          //             <section style="font-size: x-small; width: 100%; text-align: center;">
+          //                 ${numeroDoc}
+          //             </section>
+          //         </td>
+          //         <td style="width: 14.2301%; height: 33px;">
+          //             <section style="font-size: 8pt; text-align: center;">
+          //                 Espécie
+          //             </section>
+
+          //             <section style="font-size: x-small; width: 100%; text-align: center;">
+          //                 R$
+          //             </section>
+          //         </td>
+          //         <td style="width: 17.9337%; height: 33px;">
+          //             <section style="font-size: 8pt; text-align: center;">
+          //                 Processamento
+          //             </section>
+
+          //             <section style="font-size: x-small; text-align: center;">
+          //                 ${dataProcessamento}
+          //             </section>
+          //         </td>
+          //         <td style="width: 64.5223%; height: 33px;">
+          //             <section style="font-size: 8pt; text-align: center;">
+          //                 (=) Valor do documento
+          //             </section>
+
+          //             <section style="font-size: x-small; width: 100%; text-align: center;">
+          //                 R$${valorDoc}
+          //             </section>
+          //         </td>
+          //         </tr>
+          //         <tr style="height: 24px;">
+          //         <td style="width: 22.9045%; height: 24px;">
+          //             <section style="font-size: 8pt; text-align: center;">
+          //                 (=) Valor do documento
+          //             </section>
+
+          //             <section style="font-size: x-small; width: 100%; text-align: center;">
+          //                 R$${valorDoc}
+          //             </section>
+          //         </td>
+          //         <td style="width: 51.4498%; height: 88px; border-left: dotted;" colspan="3" rowspan="4">
+          //             <section style="font-size: 8pt;">
+          //                 &nbsp;Informações
+          //             </section>
+
+          //             <section style="font-size: x-small;">
+          //                 &nbsp;${data.nomeCursoAdd}
+          //             </section>
+
+          //         <p style="font-size: x-small; width: 100%; text-align: start;">&nbsp;${data.descricaoPlano}</p>
+          //         </td>
+          //         <td style="width: 17.9337%; height: 88px;" rowspan="4" colspan="1">
+          //             <section style="font-size: 8pt; text-align: center;">
+          //                 Pague via PIX
+          //             </section>
+          //             <section style="font-size: 8pt; text-align: center;">
+          //                 <img id="qrcode${numeroDoc}" style="width: 80px;" src="${lineCode.data}">
+          //             </section>
+
+          //         </td>
+          //         <td style="width: 64.5223%; height: 24px;">
+          //             <section style="font-size: 8pt; text-align: center;">
+          //                 (-) Descontos
+          //             </section>
+
+          //             <section style="font-size: x-small; width: 100%; text-align: center;">
+          //                 ${descontos}
+          //             </section>
+          //         </td>
+          //         </tr>
+          //         <tr style="height: 22px;">
+          //             <td style="width: 22.9045%; height: 22px;">
+          //                 <section style="font-size: 8pt; text-align: center;">
+          //                     (-) Descontos
+          //                 </section>
+
+          //                 <section style="font-size: x-small; width: 100%; text-align: center;">
+          //                     R$${descontos}
+          //                 </section>
+          //             </td>
+          //             <td style="width: 64.5223%; height: 22px;">
+          //                 <section style="font-size: 8pt; text-align: center;">
+          //                     (+) Acréscimos
+          //                 </section>
+
+          //                 <section style="font-size: x-small; width: 100%; text-align: center;">
+          //                     R$${acrescimos}
+          //                 </section>
+          //             </td>
+          //         </tr>
+          //         <tr style="height: 21px;">
+          //             <td style="width: 22.9045%; height: 21px;">
+          //                 <section style="font-size: 8pt; text-align: center;">
+          //                     (+) Acréscimos
+          //                 </section>
+
+          //                 <section style="font-size: x-small; width: 100%; text-align: center;">
+          //                     R$${acrescimos}
+          //                 </section>
+          //             </td>
+          //             <td style="width: 64.5223%; height: 21px;">
+          //                 <section style="font-size: 8pt; text-align: center;">
+          //                     (=) Total Cobrado
+          //                 </section>
+
+          //                 <section style="font-size: x-small; width: 100%; text-align: center;">
+          //                     R$${totalCobrado}
+          //                 </section>
+          //             </td>
+          //         </tr>
+          //         <tr style="height: 21px;">
+          //             <td style="width: 22.9045%; height: 21px;">
+          //                 <section style="font-size: 8pt; text-align: center;">
+          //                     (=) Total Cobrado
+          //                 </section>
+
+          //                 <section style="font-size: x-small; width: 100%; text-align: center;">
+          //                     R$${totalCobrado}
+          //                 </section>
+          //             </td>
+          //             <td style="width: 64.5223%; height: 21px;">
+          //                 <section style="font-size: 8pt; text-align: center;">
+          //                     Data de Pagamento:
+          //                 </section>
+
+          //                 <section style="font-size: small; width: 100%; text-align: center;">
+          //                     ____/____/______
+          //                 </section>
+          //             </td>
+          //         </tr>
+          //         <tr style="height: 20px;">
+          //             <td style="width: 22.9045%; height: 20px;" rowspan="2">
+          //                 <section style="font-size: 8pt; text-align: center;">
+          //                     Data de Pagamento:
+          //                 </section>
+
+          //                 <section style="font-size: small; width: 100%; text-align: center;">
+          //                     ____/____/______
+          //                 </section>
+          //             </td>
+          //             <td style="width: 51.4498%; height: 38px; border-left: dotted;" colspan="4" rowspan="2">
+          //                 <section style="font-size: 8pt;">
+          //                     &nbsp;<b>Sacado</b>
+          //                 </section>
+
+          //                 <section style="font-size: x-small;">
+          //                     &nbsp;${aluno.nomeAluno}&nbsp;&nbsp;&nbsp; CPF Nº: ${aluno.cpfAluno}<br>
+          //                     &nbsp;${aluno.enderecoAluno}, ${aluno.numeroAluno}, ${aluno.bairroAluno}, ${aluno.cidadeAluno}-${aluno.estadoAluno}
+          //                 </section>
+          //             </td>
+          //             <td style="width: 64.5223%; height: 38px;" rowspan="2">
+          //                 <section style="font-size: 8pt; text-align: center;">
+          //                     Assinatura:
+          //                 </section>
+
+          //                 <section style="font-size: small; width: 100%; text-align: center;">
+          //                    &nbsp;
+          //                 </section>
+          //             </td>
+          //         </tr>
+          //     </tbody>
+          //     </table>
+          //     `
+          //     return ;
+          // })
+        }
+
         for (let parcela = 0; parcela < data.numeroParcelas; parcela++) {
           let valorParcela;
           let valorCobrado;
           let acrescimoParcela = 0;
           let descontoParcela = 0;
           numerosDeDoc.push(numDoc);
-          if (plano.distribuirAcrescimosEDescontos == "on") {
-            if (parcela == 0) {
+          if (plano.distribuirAcrescimosEDescontos === "on") {
+            if (parcela === 0) {
               valorParcelaGlobal = parseFloat(saldo / contadorParcelas).toFixed(2);
             }
             if (parcela >= plano.quandoAplicar) {
-              // parcela == data.quandoAplicar ? saldo = data.valorFinal - somaParcelas : null
-              if (parcela == plano.quandoAplicar) {
+              // parcela === data.quandoAplicar ? saldo = data.valorFinal - somaParcelas : null
+              if (parcela === plano.quandoAplicar) {
                 valorParcelaGlobal = parseFloat(saldo / contadorParcelas).toFixed(2);
               }
 
@@ -2349,8 +2634,8 @@ exports.geraBoletos = functions.https.onCall((data, context) => {
               descontoParcela = 0;
             }
 
-            saldoAcrescimo = saldoAcrescimo - acrescimoParcela;
-            saldoDesconto = saldoDesconto - descontoParcela;
+            saldoAcrescimo -= acrescimoParcela;
+            saldoDesconto -= descontoParcela;
 
             valorCobrado = (Number(valorParcela) + (acrescimoParcela - descontoParcela)).toFixed(2);
             somaParcelas += Number(valorParcela) + (acrescimoParcela - descontoParcela);
@@ -2369,7 +2654,7 @@ exports.geraBoletos = functions.https.onCall((data, context) => {
           console.log(saldo);
           mesParcela = mesInicio + parcela;
           if (mesInicio + parcela > 12) {
-            mesParcela = mesParcela - 12;
+            mesParcela -= 12;
           }
           if (mesParcela === 1 && parcela !== 0) {
             anoInicio++;
@@ -2419,310 +2704,6 @@ exports.geraBoletos = functions.https.onCall((data, context) => {
       }
     } catch (error) {
       console.log(error);
-    }
-
-    async function addParcela(
-      parcelaAtual,
-      numDeParcelas,
-      vencimento,
-      numeroDoc,
-      valorDoc,
-      descontos,
-      acrescimos,
-      totalCobrado,
-      dataProcessamento,
-      informacoes
-    ) {
-      bol++;
-      if (bol > 3 && pag >= 1) {
-        pag++;
-        bol = 0;
-        // document.getElementById('livro').innerHTML += `
-        // <div class="page">
-        //     <div class="subpage">
-        //         <div id="boletos${pag}"></div>
-        //     </div>
-        // </div>
-        // `
-      }
-      //let boletos = document.getElementById('boletos' + pag)
-      await admin.database().ref("sistemaEscolar").child("docsBoletos").push({
-        numeroDoc: numeroDoc,
-        valorDoc: valorDoc,
-        vencimento: vencimento,
-        parcelaAtual: parcelaAtual,
-        numDeParcelas: numDeParcelas,
-        descontos: descontos,
-        acrescimos: acrescimos,
-        totalCobrado: totalCobrado,
-        dataProcessamento: dataProcessamento,
-        informacoes: data.descricaoPlano,
-        codContrato: codContrato,
-        matricula: matricula
-      });
-
-      //let gera = firebase.functions().httpsCallable('geraPix')
-      // return gera({valor: totalCobrado, descricao: `DOC${numeroDoc}`}).then(function(lineCode) {
-
-      //     //divQr.src = lineCode.data;
-      //     console.log(lineCode)
-      //     //const code = new QRCode(divQr, { text: lineCode.data, width: 100, height: 100 });
-      //     //qrCodesArray.push({qrcode: lineCode.data, numeroDoc: numeroDoc})
-      //     boletos.innerHTML += `
-      //     <table style="height: 241px; width: 100%; border-collapse: collapse; border-style: solid; margin-top: 18px;" border="1" >
-      //     <tbody>
-      //         <tr style="height: 10px; border-style: none;">
-      //             <td style="width: 4.97079%; height: 179px;" rowspan="9">&nbsp;</td>
-      //             <td style="width: 22.9045%; height: 20px; text-align: center;" rowspan="2">
-      //             <table style="height: 100%; width: 96.3454%; border-collapse: collapse; border-style: hidden;" border="1">
-      //             <tbody>
-      //             <tr style="height: 18px;">
-      //                 <td style="width: 38.8889%; height: 33px;" rowspan="2"><img src="${dadosEscola.logoEscola}" alt="Logo" width="30" height="30" /></td>
-      //                 <td style="width: 189.264%; height: 18px; border-left: hidden;">
-      //                     <section style="font-size: 8pt; text-align: center;">
-      //                         Parcela
-      //                     </section>
-
-      //                     <section style="font-size: x-small; text-align: center;">
-      //                         ${parcelaAtual}/${numDeParcelas}
-      //                     </section>
-      //                 </td>
-      //             </tr>
-      //             <tr style="height: 15px;">
-      //             <td style="width: 189.264%; height: 15px; border-left: hidden;">
-      //                     <section style="font-size: 8pt; text-align: center;">
-      //                         Vencimento
-      //                     </section>
-
-      //                     <section style="font-size: x-small; text-align: center;">
-      //                         ${vencimento}
-      //                     </section>
-      //             </td>
-      //         </tr>
-      //         </tbody>
-      //         </table>
-      //         </td>
-      //         <td style="width: 7.60226%; text-align: center; height: 20px; border-left: dotted;" rowspan="2"><img src="${dadosEscola.logoEscola}" alt="Logo" width="30" height="30" /></td>
-      //         <td style="height: 20px; width: 43.8475%;" colspan="3" rowspan="2">
-      //             <section style="font-size: 8pt;">
-      //                 &nbsp;<b>Cedente</b>
-      //             </section>
-      //             <section style="font-size: x-small;">
-      //                 &nbsp;${dadosEscola.dadosBasicos.nomeEscola}
-      //             </section>
-      //             <section style="font-size: x-small;">
-      //                 &nbsp;${dadosEscola.dadosBasicos.cnpjEscola}
-      //             </section>
-      //             <section style="font-size: x-small;">
-      //                 &nbsp;${dadosEscola.dadosBasicos.enderecoEscola}
-      //             </section>
-      //             <section style="font-size: x-small;">
-      //                 &nbsp;${dadosEscola.dadosBasicos.telefoneEscola}
-      //             </section>
-      //         </td>
-      //         <td style="width: 64.5223%; height: 10px; text-align: center;">
-      //             <section style="font-size: 8pt;">
-      //                 Parcela
-      //             </section>
-
-      //             <section style="font-size: x-small; text-align: center;">
-      //                 ${parcelaAtual}/${numDeParcelas}
-      //             </section>
-      //         </td>
-      //         </tr>
-      //         <tr style="height: 10px;">
-      //         <td style="width: 64.5223%; height: 10px;">
-      //             <section style="font-size: 8pt; text-align: center;">
-      //                 Vencimento
-      //             </section>
-
-      //             <section style="font-size: x-small; text-align: center;">
-      //                 ${vencimento}
-      //             </section>
-      //         </td>
-      //         </tr>
-      //         <tr style="height: 33px;">
-      //         <td style="width: 22.9045%; height: 33px; text-align: start;">
-      //             <section style="font-size: 8pt; text-align: center;">
-      //                 Documento
-      //             </section>
-
-      //             <section style="font-size: x-small; width: 100%; text-align: center;">
-      //                 ${numeroDoc}
-      //             </section>
-      //         </td>
-      //         <td style="width: 19.286%; height: 33px; border-left: dotted;" colspan="2">
-      //             <section style="font-size: 8pt; text-align: center;">
-      //                 Documento
-      //             </section>
-
-      //             <section style="font-size: x-small; width: 100%; text-align: center;">
-      //                 ${numeroDoc}
-      //             </section>
-      //         </td>
-      //         <td style="width: 14.2301%; height: 33px;">
-      //             <section style="font-size: 8pt; text-align: center;">
-      //                 Espécie
-      //             </section>
-
-      //             <section style="font-size: x-small; width: 100%; text-align: center;">
-      //                 R$
-      //             </section>
-      //         </td>
-      //         <td style="width: 17.9337%; height: 33px;">
-      //             <section style="font-size: 8pt; text-align: center;">
-      //                 Processamento
-      //             </section>
-
-      //             <section style="font-size: x-small; text-align: center;">
-      //                 ${dataProcessamento}
-      //             </section>
-      //         </td>
-      //         <td style="width: 64.5223%; height: 33px;">
-      //             <section style="font-size: 8pt; text-align: center;">
-      //                 (=) Valor do documento
-      //             </section>
-
-      //             <section style="font-size: x-small; width: 100%; text-align: center;">
-      //                 R$${valorDoc}
-      //             </section>
-      //         </td>
-      //         </tr>
-      //         <tr style="height: 24px;">
-      //         <td style="width: 22.9045%; height: 24px;">
-      //             <section style="font-size: 8pt; text-align: center;">
-      //                 (=) Valor do documento
-      //             </section>
-
-      //             <section style="font-size: x-small; width: 100%; text-align: center;">
-      //                 R$${valorDoc}
-      //             </section>
-      //         </td>
-      //         <td style="width: 51.4498%; height: 88px; border-left: dotted;" colspan="3" rowspan="4">
-      //             <section style="font-size: 8pt;">
-      //                 &nbsp;Informações
-      //             </section>
-
-      //             <section style="font-size: x-small;">
-      //                 &nbsp;${data.nomeCursoAdd}
-      //             </section>
-
-      //         <p style="font-size: x-small; width: 100%; text-align: start;">&nbsp;${data.descricaoPlano}</p>
-      //         </td>
-      //         <td style="width: 17.9337%; height: 88px;" rowspan="4" colspan="1">
-      //             <section style="font-size: 8pt; text-align: center;">
-      //                 Pague via PIX
-      //             </section>
-      //             <section style="font-size: 8pt; text-align: center;">
-      //                 <img id="qrcode${numeroDoc}" style="width: 80px;" src="${lineCode.data}">
-      //             </section>
-
-      //         </td>
-      //         <td style="width: 64.5223%; height: 24px;">
-      //             <section style="font-size: 8pt; text-align: center;">
-      //                 (-) Descontos
-      //             </section>
-
-      //             <section style="font-size: x-small; width: 100%; text-align: center;">
-      //                 ${descontos}
-      //             </section>
-      //         </td>
-      //         </tr>
-      //         <tr style="height: 22px;">
-      //             <td style="width: 22.9045%; height: 22px;">
-      //                 <section style="font-size: 8pt; text-align: center;">
-      //                     (-) Descontos
-      //                 </section>
-
-      //                 <section style="font-size: x-small; width: 100%; text-align: center;">
-      //                     R$${descontos}
-      //                 </section>
-      //             </td>
-      //             <td style="width: 64.5223%; height: 22px;">
-      //                 <section style="font-size: 8pt; text-align: center;">
-      //                     (+) Acréscimos
-      //                 </section>
-
-      //                 <section style="font-size: x-small; width: 100%; text-align: center;">
-      //                     R$${acrescimos}
-      //                 </section>
-      //             </td>
-      //         </tr>
-      //         <tr style="height: 21px;">
-      //             <td style="width: 22.9045%; height: 21px;">
-      //                 <section style="font-size: 8pt; text-align: center;">
-      //                     (+) Acréscimos
-      //                 </section>
-
-      //                 <section style="font-size: x-small; width: 100%; text-align: center;">
-      //                     R$${acrescimos}
-      //                 </section>
-      //             </td>
-      //             <td style="width: 64.5223%; height: 21px;">
-      //                 <section style="font-size: 8pt; text-align: center;">
-      //                     (=) Total Cobrado
-      //                 </section>
-
-      //                 <section style="font-size: x-small; width: 100%; text-align: center;">
-      //                     R$${totalCobrado}
-      //                 </section>
-      //             </td>
-      //         </tr>
-      //         <tr style="height: 21px;">
-      //             <td style="width: 22.9045%; height: 21px;">
-      //                 <section style="font-size: 8pt; text-align: center;">
-      //                     (=) Total Cobrado
-      //                 </section>
-
-      //                 <section style="font-size: x-small; width: 100%; text-align: center;">
-      //                     R$${totalCobrado}
-      //                 </section>
-      //             </td>
-      //             <td style="width: 64.5223%; height: 21px;">
-      //                 <section style="font-size: 8pt; text-align: center;">
-      //                     Data de Pagamento:
-      //                 </section>
-
-      //                 <section style="font-size: small; width: 100%; text-align: center;">
-      //                     ____/____/______
-      //                 </section>
-      //             </td>
-      //         </tr>
-      //         <tr style="height: 20px;">
-      //             <td style="width: 22.9045%; height: 20px;" rowspan="2">
-      //                 <section style="font-size: 8pt; text-align: center;">
-      //                     Data de Pagamento:
-      //                 </section>
-
-      //                 <section style="font-size: small; width: 100%; text-align: center;">
-      //                     ____/____/______
-      //                 </section>
-      //             </td>
-      //             <td style="width: 51.4498%; height: 38px; border-left: dotted;" colspan="4" rowspan="2">
-      //                 <section style="font-size: 8pt;">
-      //                     &nbsp;<b>Sacado</b>
-      //                 </section>
-
-      //                 <section style="font-size: x-small;">
-      //                     &nbsp;${aluno.nomeAluno}&nbsp;&nbsp;&nbsp; CPF Nº: ${aluno.cpfAluno}<br>
-      //                     &nbsp;${aluno.enderecoAluno}, ${aluno.numeroAluno}, ${aluno.bairroAluno}, ${aluno.cidadeAluno}-${aluno.estadoAluno}
-      //                 </section>
-      //             </td>
-      //             <td style="width: 64.5223%; height: 38px;" rowspan="2">
-      //                 <section style="font-size: 8pt; text-align: center;">
-      //                     Assinatura:
-      //                 </section>
-
-      //                 <section style="font-size: small; width: 100%; text-align: center;">
-      //                    &nbsp;
-      //                 </section>
-      //             </td>
-      //         </tr>
-      //     </tbody>
-      //     </table>
-      //     `
-      //     return ;
-      // })
     }
 
     return numerosDeDoc;
@@ -2911,15 +2892,14 @@ exports.escutaContratos = functions.database
           message = " e eu coloquei mais um";
         }
         return "Já tinha contrato no aluno" + message;
-      } else {
-        await admin
-          .database()
-          .ref("sistemaEscolar/alunos")
-          .child(studentId)
-          .child("contratos")
-          .set([key]);
-        return "Estava sem nada no aluno";
       }
+      await admin
+        .database()
+        .ref("sistemaEscolar/alunos")
+        .child(studentId)
+        .child("contratos")
+        .set([key]);
+      return "Estava sem nada no aluno";
     };
 
     return setContract().then((result) => {
@@ -3029,7 +3009,7 @@ exports.escutaFollowUp = functions.database
 //     functions.logger.log(filePath);
 //     functions.logger.log(path.dirname(filePath));
 
-//     if (!contentType.startsWith('image/') && filePath.indexOf('alunos') == -1) {
+//     if (!contentType.startsWith('image/') && filePath.indexOf('alunos') === -1) {
 //         return functions.logger.log('This is not an image.');
 
 //     }

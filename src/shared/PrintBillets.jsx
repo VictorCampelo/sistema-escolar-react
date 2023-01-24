@@ -49,9 +49,9 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
     let timestampF = functions.httpsCallable("timestamp");
     let timestamp = await timestampF();
     console.log(timestamp);
-    var now = new Date(timestamp.data.timestamp._seconds * 1000);
+    let now = new Date(timestamp.data.timestamp._seconds * 1000);
     console.log(now);
-    var dataProcessamento = `${Number(now.getDate()) <= 9 ? "0" + now.getDate() : now.getDate()}/${
+    let dataProcessamento = `${Number(now.getDate()) <= 9 ? "0" + now.getDate() : now.getDate()}/${
       Number(now.getMonth()) + 1 <= 9 ? "0" + (Number(now.getMonth()) + 1) : now.getMonth()
     }/${now.getFullYear()}`;
     for (const key in docsSistema) {
@@ -65,7 +65,7 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
     try {
       let docsBoletosGerados = await contratoRef.child("docsBoletos").once("value");
       let numerosDeDoc = docsBoletosGerados.val();
-      if (numerosDeDoc == null) {
+      if (numerosDeDoc === null) {
         setLoading(false);
         window.alert("Não foram gerados boletos para este contrato ainda.");
         limpa();
@@ -106,8 +106,8 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
 
     function limpa() {
       document.getElementById("livro").innerHTML = `
-            <div class="page">
-                <div class="subpage">
+            <div className="page">
+                <div className="subpage">
                     <div id="boletos1">
                         <table style="height: 4.8cm; width: 100%; border-collapse: collapse; border-style: solid; margin-top: 18px;" border="1" >
                         <tbody>
@@ -154,8 +154,8 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
         pag++;
         bol = 0;
         document.getElementById("livro").innerHTML += `
-                <div class="page">
-                    <div class="subpage">
+                <div className="page">
+                    <div className="subpage">
                         <div id="boletos${pag}"></div>
                     </div>
                 </div>
@@ -432,8 +432,8 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
   useEffect(() => {
     setTimeout(() => {
       document.getElementById("livro").innerHTML = `
-        <div class="page">
-                        <div class="subpage">
+        <div className="page">
+                        <div className="subpage">
                             <div id="boletos1">
                                 <table style="height: 179px; width: 100%; border-collapse: collapse; border-style: solid;" border="1">
                                     <tbody>
@@ -511,8 +511,8 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
   }, [studentId, contractId]);
 
   function handlePrint() {
-    var divContents = document.getElementById("livro").innerHTML;
-    var a = window.open("", "");
+    let divContents = document.getElementById("livro").innerHTML;
+    let a = window.open("", "");
     a.document.write("<html>");
     a.document.write("<body>");
     a.document.write(divContents);
@@ -521,9 +521,9 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
     a.print();
   }
 
-  function PrintElem() {
+  function printElem() {
     let elem = "livro";
-    var mywindow = window.open("", "PRINT", "height=800,width=950");
+    let mywindow = window.open("", "PRINT", "height=800,width=950");
 
     mywindow.document.write("<html><head><title>" + document.title + "</title>");
     mywindow.document.write(`
@@ -594,7 +594,7 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
             </style>
         `);
     mywindow.document.write(
-      '</head><body > <div id="noprint" class="actionButtons" style="width: 100%; text-align: center; margin-top: 10px;"><button onclick="window.print()" style="align-self: center;" id="noprint">Imprimir/PDF</button></div>'
+      '</head><body > <div id="noprint" className="actionButtons" style="width: 100%; text-align: center; margin-top: 10px;"><button onclick="window.print()" style="align-self: center;" id="noprint">Imprimir/PDF</button></div>'
     );
     //mywindow.document.write('<h1>' + document.title  + '</h1>');
     mywindow.document.write(document.getElementById(elem).innerHTML);
@@ -616,11 +616,11 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
           {loading && <CircularProgress style={{ float: "right" }} color="inherit" />}
         </DialogTitle>
         <DialogContent>
-          <div class="book" id="livro"></div>
+          <div className="book" id="livro"></div>
         </DialogContent>
 
         <DialogActions>
-          <Button id="noprint" onClick={() => PrintElem()} disabled={loading}>
+          <Button id="noprint" onClick={() => printElem()} disabled={loading}>
             Imprimir/PDF {loading && <CircularProgress color="inherit" size={20} />}
           </Button>
           <Button id="noprint" onClick={() => onClose(false)}>

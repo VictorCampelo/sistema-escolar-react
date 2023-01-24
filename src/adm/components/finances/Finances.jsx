@@ -98,9 +98,6 @@ const Finances = () => {
                     </AccordionDetails>
                 </Accordion>
 
-
-                
-
                 <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')} TransitionProps={{ unmountOnExit: true }}>
                     <AccordionSummary
                     expandIcon={<ExpandMore />}

@@ -105,7 +105,7 @@ const BasicSchoolData = () => {
         }
       }
     }
-    basicDataObj["permitirDistribuiNotas"] = basicDataObj["permitirDistribuiNotas"] ? true : false;
+    basicDataObj.permitirDistribuiNotas = basicDataObj.permitirDistribuiNotas ? true : false;
     console.log(basicDataObj);
     try {
       await basicDataRef.update(basicDataObj);

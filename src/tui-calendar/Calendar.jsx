@@ -1,5 +1,5 @@
 import Calendar from "@toast-ui/react-calendar";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useRef } from "react";
 import { Fragment } from "react";
 import "tui-calendar/dist/tui-calendar.css";
@@ -129,8 +129,8 @@ const TuiCalendar = () => {
             return "Update";
           },
           // popupDetailDate: function(isAllDay, start, end) {
-          //   var isSameDate = moment(start).isSame(end);
-          //   var endFormat = (isSameDate ? '' : 'YYYY.MM.DD ') + 'hh:mm a';
+          //   let isSameDate = moment(start).isSame(end);
+          //   let endFormat = (isSameDate ? '' : 'YYYY.MM.DD ') + 'hh:mm a';
 
           //   if (isAllDay) {
           //     return moment(start).format('YYYY.MM.DD') + (isSameDate ? '' : ' - ' + moment(end).format('YYYY.MM.DD'));

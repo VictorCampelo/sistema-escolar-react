@@ -99,12 +99,12 @@ const BilletAttachments = ({ docKeyPath, open, setOpen }) => {
     // Create the file metadata
     const file = files[0];
     console.log(file);
-    var metadata = {
+    let metadata = {
       contentType: file.type
     };
 
     // Upload file and metadata to the object 'images/mountains.jpg'
-    var uploadTask = billetAttachmentsRef.child(docKeyPath + "/" + file.name).put(file, metadata);
+    let uploadTask = billetAttachmentsRef.child(docKeyPath + "/" + file.name).put(file, metadata);
 
     // Listen for state changes, errors, and completion of the upload.
     uploadTask.on(

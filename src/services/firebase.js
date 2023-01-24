@@ -12,10 +12,10 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
-var app = firebase.initializeApp(firebaseConfig);
+let app = firebase.initializeApp(firebaseConfig);
 
 if (window.location.hostname === "localhost") {
-  app.functions().useEmulator("localhost", 4400);
+  app.functions().useEmulator("localhost", 5001);
   app.auth().useEmulator("http://localhost:9099");
   app.firestore().settings({
     host: "localhost:8080",
@@ -28,7 +28,7 @@ if (window.location.hostname === "localhost") {
 const authNormal = firebase.auth;
 const auth = firebase.auth();
 const database = firebase.database();
-const functions = firebase.app().functions("southamerica-east1");
+const functions = firebase.app().functions();
 const storage = firebase.storage();
 let messaging;
 try {

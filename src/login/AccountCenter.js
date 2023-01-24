@@ -82,12 +82,6 @@ const AccountCenter = ({ history, onClose, openChangePasswordDialog }) => {
 
   const [user, loading, error] = useAuthState(auth);
 
-  useEffect(() => {
-    if (user) {
-      verifyAdminAccess();
-    }
-  }, [user]);
-
   const verifyAdminAccess = async () => {
     try {
       setVerifyingAccess(true);
@@ -98,6 +92,12 @@ const AccountCenter = ({ history, onClose, openChangePasswordDialog }) => {
     }
     setVerifyingAccess(false);
   };
+
+  useEffect(() => {
+    if (user) {
+      verifyAdminAccess();
+    }
+  }, [user]);
 
   const handleChangePhoto = async (files) => {
     try {

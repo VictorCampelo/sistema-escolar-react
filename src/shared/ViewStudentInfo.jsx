@@ -175,9 +175,77 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
   const [openSpeedDial, setOpenSpeedDial] = useState(false);
   const [openFilesDialog, setOpenFilesDialog] = useState(false);
 
-  useEffect(() => {
-    getData();
-  }, [classCode, studentId, openEditStudentsInfo]);
+  const handleConfirmTransfer = () => {
+    setDesablingStudent(false);
+    setOpenDialog(true);
+  };
+
+
+  const handleOpenParentsDialog = () => {
+    setOpenParentsDialog(true);
+  };
+
+  const handleOpenEditStudentInfo = () => {
+    setOpenEditStudentsInfo(true);
+  };
+
+  const handleOpenFollowUp = () => {
+    setOpenFollowUp(true);
+    //enqueueSnackbar('O FollowUp está em fase de desenvolvimento 😊', {title: 'Info', variant: 'info', key:"0", action: <Button onClick={() => closeSnackbar('0')} color="inherit">Fechar</Button> })
+  };
+
+  const handleOpenContractsDialog = () => {
+    setOpenContractsDialog(true);
+  };
+
+  const handleOpenStudentPDF = () => {
+    window.location.hash = `fichaCadastral?${studentId}`;
+    setOpenStudentPDF(true);
+  };
+
+  const handleOpenStudentHistory = () => {
+    setOpenStudentHistory(true);
+  };
+
+  const handleOpenChecklist = () => {
+    enqueueSnackbar("O Checklist está em fase de desenvolvimento 😊", {
+      title: "Info",
+      variant: "info",
+      key: "0",
+      action: (
+        <Button onClick={() => closeSnackbar("0")} color="inherit">
+          Fechar
+        </Button>
+      )
+    });
+  };
+
+  const handleOpenReleaseGrades = () => {
+    setOpenReleaseGrades(true);
+  };
+  const handleOpenReleasePerformanceGrades = () => {
+    setOpenReleasePerformanceGrades(true);
+  };
+
+  const handleVisibilitySpeedDial = () => {
+    setHiddenSpeedDial((prevHidden) => !prevHidden);
+  };
+
+  const handleOpenSpeedDial = () => {
+    setOpenSpeedDial(true);
+  };
+
+  const handleCloseSpeedDial = () => {
+    setOpenSpeedDial(false);
+  };
+
+  const handleOpenFilesDialog = () => {
+    setOpenFilesDialog(true);
+  };
+
+  const handleCloseFilesDialog = () => {
+    setOpenFilesDialog(false);
+  };
 
   const getData = async () => {
     setLoading(true);
@@ -270,6 +338,43 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
     setLoading(false);
   };
 
+  const handleTransfer = async () => {
+    setOpenDialog(false);
+    setLoading(true);
+    try {
+      let message = await handleTransferStudents(classCode, classCodeTransfer, studentId);
+      getData();
+      enqueueSnackbar(message, {
+        title: "Sucesso",
+        variant: "success",
+        key: "0",
+        action: (
+          <Button onClick={() => closeSnackbar("0")} color="inherit">
+            Fechar
+          </Button>
+        )
+      });
+      setLoading(false);
+    } catch (error) {
+      getData();
+      enqueueSnackbar(error.message, {
+        title: "Sucesso",
+        variant: "error",
+        key: "0",
+        action: (
+          <Button onClick={() => closeSnackbar("0")} color="inherit">
+            Fechar
+          </Button>
+        )
+      });
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, [classCode, studentId, openEditStudentsInfo]);
+
   const calculateGrade = (grades) => {
     let finalGrade = 0;
     for (const name in grades) {
@@ -353,110 +458,6 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
       });
       setLoading(false);
     }
-  };
-
-  const handleConfirmTransfer = () => {
-    setDesablingStudent(false);
-    setOpenDialog(true);
-  };
-
-  const handleTransfer = async () => {
-    setOpenDialog(false);
-    setLoading(true);
-    try {
-      let message = await handleTransferStudents(classCode, classCodeTransfer, studentId);
-      getData();
-      enqueueSnackbar(message, {
-        title: "Sucesso",
-        variant: "success",
-        key: "0",
-        action: (
-          <Button onClick={() => closeSnackbar("0")} color="inherit">
-            Fechar
-          </Button>
-        )
-      });
-      setLoading(false);
-    } catch (error) {
-      getData();
-      enqueueSnackbar(error.message, {
-        title: "Sucesso",
-        variant: "error",
-        key: "0",
-        action: (
-          <Button onClick={() => closeSnackbar("0")} color="inherit">
-            Fechar
-          </Button>
-        )
-      });
-      setLoading(false);
-    }
-  };
-
-  const handleOpenParentsDialog = () => {
-    setOpenParentsDialog(true);
-  };
-
-  const handleOpenEditStudentInfo = () => {
-    setOpenEditStudentsInfo(true);
-  };
-
-  const handleOpenFollowUp = () => {
-    setOpenFollowUp(true);
-    //enqueueSnackbar('O FollowUp está em fase de desenvolvimento 😊', {title: 'Info', variant: 'info', key:"0", action: <Button onClick={() => closeSnackbar('0')} color="inherit">Fechar</Button> })
-  };
-
-  const handleOpenContractsDialog = () => {
-    setOpenContractsDialog(true);
-  };
-
-  const handleOpenStudentPDF = () => {
-    window.location.hash = `fichaCadastral?${studentId}`;
-    setOpenStudentPDF(true);
-  };
-
-  const handleOpenStudentHistory = () => {
-    setOpenStudentHistory(true);
-  };
-
-  const handleOpenChecklist = () => {
-    enqueueSnackbar("O Checklist está em fase de desenvolvimento 😊", {
-      title: "Info",
-      variant: "info",
-      key: "0",
-      action: (
-        <Button onClick={() => closeSnackbar("0")} color="inherit">
-          Fechar
-        </Button>
-      )
-    });
-  };
-
-  const handleOpenReleaseGrades = () => {
-    setOpenReleaseGrades(true);
-  };
-  const handleOpenReleasePerformanceGrades = () => {
-    setOpenReleasePerformanceGrades(true);
-  };
-
-  const handleVisibilitySpeedDial = () => {
-    setHiddenSpeedDial((prevHidden) => !prevHidden);
-  };
-
-  const handleOpenSpeedDial = () => {
-    setOpenSpeedDial(true);
-  };
-
-  const handleCloseSpeedDial = () => {
-    setOpenSpeedDial(false);
-  };
-
-  const handleOpenFilesDialog = () => {
-    setOpenFilesDialog(true);
-  };
-
-  const handleCloseFilesDialog = () => {
-    setOpenFilesDialog(false);
   };
 
   return (

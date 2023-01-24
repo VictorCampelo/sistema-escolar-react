@@ -1,7 +1,5 @@
 const SecretariaDashboard = () => {
-    return ( 
-        
-    );
-}
- 
+  return null;
+};
+
 export default SecretariaDashboard;

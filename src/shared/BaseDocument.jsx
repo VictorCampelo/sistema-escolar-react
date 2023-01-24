@@ -36,25 +36,24 @@ export default function BaseDocument({ classCode, open, onClose }) {
 
   const getData = async () => {
     const timestamp = functions.httpsCallable("timestamp");
-    var logoEscola = document.getElementById("logoEscola");
-    var nomeEscola = document.getElementById("nomeEscola");
-    var dataEmissao = document.getElementById("dataEmissao");
-    var logoSecundaria = document.getElementById("logoSecundaria");
-    var imagemAluno = document.getElementById("imagemAluno");
-    var tipoDocumento = document.getElementById("tipoDocumento");
-    var nomeAluno = document.getElementById("nomeAluno");
-    var matriculaAluno = document.getElementById("matriculaAluno");
+    let logoEscola = document.getElementById("logoEscola");
+    let nomeEscola = document.getElementById("nomeEscola");
+    let dataEmissao = document.getElementById("dataEmissao");
+    let logoSecundaria = document.getElementById("logoSecundaria");
+    let imagemAluno = document.getElementById("imagemAluno");
+    let tipoDocumento = document.getElementById("tipoDocumento");
+    let nomeAluno = document.getElementById("nomeAluno");
+    let matriculaAluno = document.getElementById("matriculaAluno");
 
-    var previousMatricula = document.getElementById("previousMatricula");
-    var previousId = document.getElementById("previousId");
-    var nextId = document.getElementById("nextId");
-    var previousId = document.getElementById("previousId");
-    var nextMatricula = document.getElementById("nextMatricula");
-    var cabecalho = document.getElementById("cabecalho");
-    var tituloSecao = document.getElementById("tituloSecao");
-    var dadosTabela = document.getElementById("dadosTabela");
-    var dadosFinais = document.getElementById("dadosFinais");
-    var espacoFinal = document.getElementById("espacoFinal");
+    let previousMatricula = document.getElementById("previousMatricula");
+    let previousId = document.getElementById("previousId");
+    let nextId = document.getElementById("nextId");
+    let nextMatricula = document.getElementById("nextMatricula");
+    let cabecalho = document.getElementById("cabecalho");
+    let tituloSecao = document.getElementById("tituloSecao");
+    let dadosTabela = document.getElementById("dadosTabela");
+    let dadosFinais = document.getElementById("dadosFinais");
+    let espacoFinal = document.getElementById("espacoFinal");
 
     const timeNow = await timestamp();
     setTime(timeNow);
@@ -116,28 +115,32 @@ export default function BaseDocument({ classCode, open, onClose }) {
     let timestampNow = functions.httpsCallable("timestamp");
     return timestampNow()
       .then(function (result) {
-        var now = new Date(result.data.timestamp._seconds * 1000);
+        let now = new Date(result.data.timestamp._seconds * 1000);
 
-        var yearNow = now.getYear();
-        var monthNow = now.getMonth();
-        var dateNow = now.getDate();
+        let yearNow = now.getYear();
+        let monthNow = now.getMonth();
+        let dateNow = now.getDate();
 
-        var yearDob = data.getYear();
-        var monthDob = data.getMonth();
-        var dateDob = data.getDate();
-        var age = {};
-        var yearAge = yearNow - yearDob;
+        let yearDob = data.getYear();
+        let monthDob = data.getMonth();
+        let dateDob = data.getDate();
+        let age = {};
+        let yearAge = yearNow - yearDob;
+        let monthAge = 0;
+        let dateAge = 0;
 
-        if (monthNow >= monthDob) var monthAge = monthNow - monthDob;
-        else {
+        if (monthNow >= monthDob) {
+          monthAge = monthNow - monthDob;
+        } else {
           yearAge--;
-          var monthAge = 12 + monthNow - monthDob;
+          monthAge = 12 + monthNow - monthDob;
         }
 
-        if (dateNow >= dateDob) var dateAge = dateNow - dateDob;
-        else {
+        if (dateNow >= dateDob) {
+          dateAge = dateNow - dateDob;
+        } else {
           monthAge--;
-          var dateAge = 31 + dateNow - dateDob;
+          dateAge = 31 + dateNow - dateDob;
 
           if (monthAge < 0) {
             monthAge = 11;
@@ -168,8 +171,8 @@ export default function BaseDocument({ classCode, open, onClose }) {
     colspan = null,
     id = ""
   ) {
-    var cabecalho = document.getElementById("cabecalho");
-    if (colspan != null) {
+    let cabecalho = document.getElementById("cabecalho");
+    if (colspan !== null) {
       cabecalho.innerHTML += `
                 <tr style="height: 20px;" id="cabecalho${id}">
                     <th ${colspan} style="width: 35.7142%; height: 20px; border-style: hidden; text-align: start; font-weight: normal; "><label><b>${texto1}</b></label>&nbsp;<label>${texto2}</label></td>
@@ -186,14 +189,14 @@ export default function BaseDocument({ classCode, open, onClose }) {
   }
 
   function adicionaDadosTabela(texto1 = "", texto2 = "", id = "") {
-    var dadosTabela = document.getElementById("dadosTabela");
-    if (texto1[0] == true) {
+    let dadosTabela = document.getElementById("dadosTabela");
+    if (texto1[0] === true) {
       dadosTabela.innerHTML += `
                 <tr style="height: 20px; " id="${id}">
                     <th colspan=2 style="height: 33px; width: 100%;  text-align: center;"><b>${texto1[1]}</b></th>
                 </tr>
                 `;
-    } else if (texto1[0] == false) {
+    } else if (texto1[0] === false) {
       dadosTabela.innerHTML += `
                 <tr style="height: 20px; " id="${id}">
                     <th colspan=2 style="height: 33px; width: 100%;  text-align: start;">&nbsp;<b>${texto1[1]}</b></th>
@@ -214,12 +217,12 @@ export default function BaseDocument({ classCode, open, onClose }) {
   }
 
   async function geraBoletim(matriculas, ids, infos) {
-    var dadosTabela = document.getElementById("dadosTabela");
-    var previousMatricula = document.getElementById("previousMatricula");
+    let dadosTabela = document.getElementById("dadosTabela");
+    let previousMatricula = document.getElementById("previousMatricula");
 
-    var nextId = document.getElementById("nextId");
-    var previousId = document.getElementById("previousId");
-    var nextMatricula = document.getElementById("nextMatricula");
+    let nextId = document.getElementById("nextId");
+    let previousId = document.getElementById("previousId");
+    let nextMatricula = document.getElementById("nextMatricula");
     let c = 0;
     if (matriculas.indexOf(",") !== -1) {
       matriculas = matriculas.split(",");
@@ -236,7 +239,7 @@ export default function BaseDocument({ classCode, open, onClose }) {
     } else {
       nextMatricula.style.display = "none";
       previousMatricula.style.display = "none";
-      if (ids.indexOf(",") == -1) {
+      if (ids.indexOf(",") === -1) {
         nextId.style.display = "none";
         previousId.style.display = "none";
       } else {
@@ -248,9 +251,9 @@ export default function BaseDocument({ classCode, open, onClose }) {
     }
 
     async function gerador(matricula, id) {
-      var imagemAluno = document.getElementById("imagemAluno");
-      var tituloSecao = document.getElementById("tituloSecao");
-      var espacoFinal = document.getElementById("espacoFinal");
+      let imagemAluno = document.getElementById("imagemAluno");
+      let tituloSecao = document.getElementById("tituloSecao");
+      let espacoFinal = document.getElementById("espacoFinal");
 
       dadosTabela.innerHTML = "";
       let alunoInfo = await studentsRef.child(matricula).once("value");
@@ -351,7 +354,7 @@ export default function BaseDocument({ classCode, open, onClose }) {
         ["Frequência (%)", "Faltas"],
         [
           porcentagemFrequencia + "%",
-          faltas == 0
+          faltas === 0
             ? "Nenhuma falta"
             : `${faltas} de um total de ${historico.infoAluno.qtdeAulas} aulas ministradas`
         ]
@@ -423,12 +426,12 @@ export default function BaseDocument({ classCode, open, onClose }) {
   }
 
   async function geraFichaCadastral(matriculas, tipo = "matricula") {
-    var tituloSecao = document.getElementById("tituloSecao");
-    var imagemAluno = document.getElementById("imagemAluno");
-    var previousMatricula = document.getElementById("previousMatricula");
-    var previousId = document.getElementById("previousId");
-    var nextId = document.getElementById("nextId");
-    var nextMatricula = document.getElementById("nextMatricula");
+    let tituloSecao = document.getElementById("tituloSecao");
+    let imagemAluno = document.getElementById("imagemAluno");
+    let previousMatricula = document.getElementById("previousMatricula");
+    let previousId = document.getElementById("previousId");
+    let nextId = document.getElementById("nextId");
+    let nextMatricula = document.getElementById("nextMatricula");
     let c = 0;
     if (matriculas.indexOf(",") !== -1) {
       matriculas = matriculas.split(",");
@@ -547,9 +550,9 @@ export default function BaseDocument({ classCode, open, onClose }) {
     });
   }
 
-  function PrintElem() {
+  function printElem() {
     let elem = "livro";
-    var mywindow = window.open("", "PRINT", "height=800,width=950");
+    let mywindow = window.open("", "PRINT", "height=800,width=950");
 
     mywindow.document.write("<html><head><title>" + document.title + "</title>");
     mywindow.document.write(`
@@ -620,7 +623,7 @@ export default function BaseDocument({ classCode, open, onClose }) {
                 </style>
             `);
     mywindow.document.write(
-      '</head><body > <div id="noprint" class="actionButtons" style="width: 100%; text-align: center; margin-top: 10px;"><button onclick="window.print()" style="align-self: center;" id="noprint">Imprimir/PDF</button></div>'
+      '</head><body > <div id="noprint" className="actionButtons" style="width: 100%; text-align: center; margin-top: 10px;"><button onclick="window.print()" style="align-self: center;" id="noprint">Imprimir/PDF</button></div>'
     );
     //mywindow.document.write('<h1>' + document.title  + '</h1>');
     mywindow.document.write(document.getElementById(elem).innerHTML);
@@ -642,7 +645,7 @@ export default function BaseDocument({ classCode, open, onClose }) {
       <Dialog open={open} fullScreen>
         <DialogTitle>Visualizar documento</DialogTitle>
         <DialogContent>
-          <div class="actionButtons">
+          <div className="actionButtons">
             <table border="1" style={{ width: "100%", borderStyle: "hidden" }}>
               <tbody>
                 <tr>
@@ -663,9 +666,9 @@ export default function BaseDocument({ classCode, open, onClose }) {
               </tbody>
             </table>
           </div>
-          <div class="book" id="livro">
-            <div class="page">
-              <div class="subpage">
+          <div className="book" id="livro">
+            <div className="page">
+              <div className="subpage">
                 <table
                   border="1"
                   style={{ height: "73px", width: "100%", borderCollapse: "collapse" }}
@@ -772,7 +775,7 @@ export default function BaseDocument({ classCode, open, onClose }) {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button id="noprint" onClick={() => PrintElem()}>
+          <Button id="noprint" onClick={() => printElem()}>
             Imprimir/PDF
           </Button>
           <Button id="noprint" onClick={() => onClose(false)}>

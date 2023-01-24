@@ -1084,8 +1084,6 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                         </ListItem>
                       ))}
                       
-                      
-                      
                     </List> */}
           </CardContent>
         </Card>

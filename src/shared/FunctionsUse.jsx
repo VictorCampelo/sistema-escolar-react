@@ -18,17 +18,21 @@ async function calculateAge(birthdate) {
     let dateDob = date.getDate();
     let age = {};
     let yearAge = yearNow - yearDob;
+    let monthAge = 0;
+    let dateAge = 0;
 
-    if (monthNow >= monthDob) var monthAge = monthNow - monthDob;
-    else {
+    if (monthNow >= monthDob) {
+      monthAge = monthNow - monthDob;
+    } else {
       yearAge--;
-      var monthAge = 12 + monthNow - monthDob;
+      monthAge = 12 + monthNow - monthDob;
     }
 
-    if (dateNow >= dateDob) var dateAge = dateNow - dateDob;
-    else {
+    if (dateNow >= dateDob) {
+      dateAge = dateNow - dateDob;
+    } else {
       monthAge--;
-      var dateAge = 31 + dateNow - dateDob;
+      dateAge = 31 + dateNow - dateDob;
 
       if (monthAge < 0) {
         monthAge = 11;

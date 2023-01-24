@@ -115,12 +115,11 @@ const ShowFiles = (props) => {
           <Container className={classes.container}>
             <iframe
               src={url}
-              frameborder="0"
+              frameBorder="0"
               className={classes.iframe}
               title="Arquivo"
               name="fileIframe"
-              id="fileIframe"
-            ></iframe>
+              id="fileIframe"></iframe>
           </Container>
         </Fragment>
         {!hideButton && (
@@ -133,8 +132,7 @@ const ShowFiles = (props) => {
               icon={<SpeedDialIcon />}
               onClose={handleClose}
               onOpen={handleOpen}
-              open={openDial}
-            >
+              open={openDial}>
               {actions.map((action) => (
                 <SpeedDialAction
                   key={action.name}

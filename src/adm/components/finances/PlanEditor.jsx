@@ -106,8 +106,8 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
 
     let internData = {};
     try {
-      var formData = new FormData(form);
-      var fieldsData = $("#contractForm").serializeArray();
+      let formData = new FormData(form);
+      let fieldsData = $("#contractForm").serializeArray();
       console.log(fieldsData);
 
       fieldsData.forEach((field) => {
@@ -215,7 +215,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
           valorParcelaGlobal =
             parcela === 0 ? parseFloat(saldo / contadorParcelas).toFixed(2) : valorParcelaGlobal;
           if (parcela >= internData.quandoAplicar) {
-            // parcela == internData.quandoAplicar ? saldo = internData.valorFinal - somaParcelas : null
+            // parcela === internData.quandoAplicar ? saldo = internData.valorFinal - somaParcelas : null
             valorParcelaGlobal =
               parcela === internData.quandoAplicar
                 ? parseFloat(saldo / contadorParcelas).toFixed(2)

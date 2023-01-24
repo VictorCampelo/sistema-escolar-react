@@ -360,7 +360,7 @@ const Students = () => {
         <Grid item>
           <Button variant="contained" color="primary" onClick={() => setOpenFollowUp(true)}>
             <Assignment />
-            Follow Up's
+            Follow Up`&apos;`s
           </Button>
         </Grid>
         <Grid item>

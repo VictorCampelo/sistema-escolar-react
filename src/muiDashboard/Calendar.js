@@ -213,9 +213,22 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
   const openPop = Boolean(anchorElPop);
   const openRightClick = Boolean(anchorElRightClick);
 
-  const id = openPop ? "simple-popover" : undefined;
+  const id = openPop ? "simple-popover" : null;
 
   const calendarEl = useRef();
+
+  const getApi = () => {
+    const { current: calendarDom } = calendarEl;
+    console.log(calendarEl.current);
+
+    return calendarDom ? calendarDom.getApi() : null;
+  };
+
+  const handlePreviousYear = (e) => {
+    const API = getApi();
+    console.log(API);
+    API && API.prevYear();
+  };
 
   const RightClickContent = () => {
     return (
@@ -241,15 +254,6 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
     setAnchorElCal(e.dayEl);
   };
 
-  const handleEventClick = (e) => {
-    console.log(e);
-    setEvent(e.event);
-    setAnchorElEventInfo(e.el);
-    console.log(e.event);
-    const API = getApi();
-    setApi(API);
-  };
-
   // const handleSelection = (e) => {
   //     console.log(e)
 
@@ -266,11 +270,13 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
     localStorage.setItem("view", e.view.type);
   };
 
-  const getApi = () => {
-    const { current: calendarDom } = calendarEl;
-    console.log(calendarEl.current);
-
-    return calendarDom ? calendarDom.getApi() : null;
+  const handleEventClick = (e) => {
+    console.log(e);
+    setEvent(e.event);
+    setAnchorElEventInfo(e.el);
+    console.log(e.event);
+    const API = getApi();
+    setApi(API);
   };
 
   const handleNextMonth = () => {
@@ -289,12 +295,6 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
       e.preventDefault();
       setAnchorElRightClick(e.currentTarget);
     }
-  };
-
-  const handlePreviousYear = (e) => {
-    const API = getApi();
-    console.log(API);
-    API && API.prevYear();
   };
 
   const handleToday = () => {
@@ -510,6 +510,7 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
               {eventsSources &&
                 eventsSources.map((calendar, i) => (
                   <FormControlLabel
+                    key={i}
                     control={
                       <Checkbox
                         checked={viewSources.indexOf(calendar) !== -1}
@@ -585,7 +586,7 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
       {/* <div className={classes.navigationButtons}>
                 <Button variant='outlined' onClick={handlePreviousMonth}><ChevronLeft /></Button>
                 <Button variant='outlined' onClick={handleNextMonth}><ChevronRight /></Button>
-                
+
             </div> */}
       <div style={{ width: "100%" }}>
         <FullCalendar
