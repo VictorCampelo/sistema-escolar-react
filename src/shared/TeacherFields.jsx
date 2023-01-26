@@ -67,9 +67,7 @@ function BasicDataFields({
 
     try {
       handleOptionalSteps(1, true);
-      if (basicData?.dataNascimentoProfessor) {
-        handleCalculateAge(basicData?.dataNascimentoProfessor);
-      }
+      handleCalculateAge(basicData.dataNascimentoProfessor);
     } catch (error) {
       console.log(error);
     }

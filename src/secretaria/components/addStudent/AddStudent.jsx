@@ -420,7 +420,8 @@ export default function AddStudent() {
         open={openFinalDialog}
         onClose={() => setOpenFinalDialog(false)}
         aria-labelledby="responsive-dialog-title"
-        ba>
+        ba
+      >
         <DialogTitle id="responsive-dialog-title">
           {"Você confirma o cadastro do aluno?"}
         </DialogTitle>
@@ -469,7 +470,8 @@ export default function AddStudent() {
                 <StepButton
                   onClick={handleStep(index)}
                   completed={isStepComplete(index)}
-                  {...buttonProps}>
+                  {...buttonProps}
+                >
                   {label}
                 </StepButton>
               </Step>
@@ -506,7 +508,8 @@ export default function AddStudent() {
                     variant="contained"
                     color="primary"
                     onClick={handleSkip}
-                    className={classes.button}>
+                    className={classes.button}
+                  >
                     Pular
                   </Button>
                 )}

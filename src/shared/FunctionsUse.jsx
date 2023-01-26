@@ -109,11 +109,25 @@ const enrollStudent = async (studentData, classData, contractData, otherData) =>
     };
   }
 
-  console.log(data);
-
   try {
     let cadastraAluno = functions.httpsCallable("cadastraAluno");
     const message = await cadastraAluno(data);
+    return message.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+const enrollTeacher = async (teacherData) => {
+  let data;
+  data = {
+    dados: teacherData
+  };
+
+  try {
+    let registerTeacher = functions.httpsCallable("cadastraProf");
+    const message = await registerTeacher(data);
     return message.data;
   } catch (error) {
     console.log(error);
@@ -699,5 +713,6 @@ export {
   createBilletView,
   grantAndRevokeAccess,
   releaseFaults,
-  removeFaults
+  removeFaults,
+  enrollTeacher
 };

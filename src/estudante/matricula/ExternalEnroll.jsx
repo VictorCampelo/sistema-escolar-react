@@ -326,7 +326,8 @@ export default function ExternalEnroll() {
         open={openFinalDialog}
         onClose={() => setOpenFinalDialog(false)}
         aria-labelledby="responsive-dialog-title"
-        ba>
+        ba
+      >
         <DialogTitle id="responsive-dialog-title">{"Confirmação"}</DialogTitle>
         <DialogContent>
           <DialogContentText>Você deseja enviar sua pré-matricula?</DialogContentText>
@@ -364,7 +365,8 @@ export default function ExternalEnroll() {
                   <StepButton
                     onClick={handleStep(index)}
                     completed={isStepComplete(index)}
-                    {...buttonProps}>
+                    {...buttonProps}
+                  >
                     {label}
                   </StepButton>
                 </Step>
@@ -400,7 +402,8 @@ export default function ExternalEnroll() {
                       variant="contained"
                       color="primary"
                       onClick={handleSkip}
-                      className={classes.button}>
+                      className={classes.button}
+                    >
                       Pular
                     </Button>
                   )}

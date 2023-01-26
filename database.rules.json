@@ -17,6 +17,10 @@
         ".write": "auth.uid != null && auth.token.master == true || auth.token.secretaria == true || auth.token.adm == true",
         ".read": "auth.uid != null && auth.token.master == true || auth.token.secretaria == true || auth.token.adm == true"
       },
+      "professores": {
+        ".write": "auth.uid != null && auth.token.master == true || auth.token.secretaria == true || auth.token.adm == true",
+        ".read": "auth.uid != null && auth.token.master == true || auth.token.secretaria == true || auth.token.adm == true"
+      },
       "chamados": {
         ".write": "auth.uid != null && auth.token.master == true",
         ".read": "auth.uid != null && auth.token.master == true"
@@ -57,8 +61,8 @@
         ".read": "auth.uid != null"
       },
       "alunos": {
-        ".write": false,
-        ".read": "auth.uid != null && auth.token.master == true || auth.token.secretaria == true",
+        ".write": true,
+        ".read": "auth.uid != null",
         "$registro": {
           ".indexOn": ["emailAluno", "emailResponsavelPedagogico", "emailresponsavelFinanceiro"],
 

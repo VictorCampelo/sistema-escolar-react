@@ -446,7 +446,8 @@ const WriteOffBillets = ({ docId }) => {
             endIcon={<Pageview />}
             size="small"
             style={{ float: "right" }}
-            onClick={() => setDialog(true)}>
+            onClick={() => setDialog(true)}
+          >
             Procurar boleto
           </Button>
         </Typography>
@@ -469,7 +470,8 @@ const WriteOffBillets = ({ docId }) => {
                   <Grid item>
                     <Avatar
                       className={classes.orange}
-                      style={{ backgroundColor: billetColors[doc.status] }}>
+                      style={{ backgroundColor: billetColors[doc.status] }}
+                    >
                       <ConfirmationNumber />
                     </Avatar>
                   </Grid>
@@ -634,7 +636,8 @@ const WriteOffBillets = ({ docId }) => {
                     onClick={handleWriteOff}
                     startIcon={<Gavel />}
                     style={{ backgroundColor: doc.status !== 0 ? "" : billetColors[2] }}
-                    disabled={doc.status !== 0}>
+                    disabled={doc.status !== 0}
+                  >
                     Efetuar baixa
                   </Button>
                 </Box>
@@ -647,7 +650,8 @@ const WriteOffBillets = ({ docId }) => {
                     onClick={handleChallenge}
                     startIcon={<ReportProblem />}
                     style={{ backgroundColor: billetColors[3] }}
-                    disabled={doc.status === 4 || doc.status === 3}>
+                    disabled={doc.status === 4 || doc.status === 3}
+                  >
                     Contestar boleto
                   </Button>
                 </Box>
@@ -659,7 +663,8 @@ const WriteOffBillets = ({ docId }) => {
                     onClick={handleUnChallenge}
                     startIcon={<RemoveCircle />}
                     style={{ backgroundColor: billetColors[0] }}
-                    disabled={doc.status !== 3}>
+                    disabled={doc.status !== 3}
+                  >
                     Retirar contestação
                   </Button>
                 </Box>
@@ -671,7 +676,8 @@ const WriteOffBillets = ({ docId }) => {
                     onClick={handleCancel}
                     startIcon={<Cancel />}
                     style={{ backgroundColor: billetColors[4] }}
-                    disabled={doc.status === 4}>
+                    disabled={doc.status === 4}
+                  >
                     Cancelar boleto
                   </Button>
                 </Box>
@@ -682,7 +688,8 @@ const WriteOffBillets = ({ docId }) => {
                     color="primary"
                     fullWidth
                     onClick={handleShowBilletView}
-                    startIcon={<Print />}>
+                    startIcon={<Print />}
+                  >
                     Visualizar boleto
                   </Button>
                 </Box>
@@ -692,7 +699,8 @@ const WriteOffBillets = ({ docId }) => {
                     color="primary"
                     fullWidth
                     onClick={handleShowHistory}
-                    startIcon={<History />}>
+                    startIcon={<History />}
+                  >
                     Visualizar histórico
                   </Button>
                 </Box>
@@ -702,7 +710,8 @@ const WriteOffBillets = ({ docId }) => {
                     color="primary"
                     fullWidth
                     onClick={handleShowAttachments}
-                    startIcon={<Attachment />}>
+                    startIcon={<Attachment />}
+                  >
                     Anexos
                   </Button>
                 </Box>

@@ -250,7 +250,6 @@ exports.modificaSenhaContaAluno = functions.database
 
 exports.cadastroUser = functions.auth.user().onCreate((user) => {
   console.log(user.displayName);
-
   let dadosNoBanco = admin.database().ref(`sistemaEscolar/usuarios/${user.uid}/`);
   let listaDeUsers = admin.database().ref("sistemaEscolar/listaDeUsuarios");
   let usuariosMaster = admin.database().ref("sistemaEscolar/usuariosMaster");
@@ -328,9 +327,7 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         aluno: false
       }
     };
-
     let lista = snapshot.val();
-
     if (lista.indexOf(user.email) !== -1) {
       listaDeUsers
         .child(user.uid + "/acessos/master")
@@ -339,11 +336,10 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         .catch((error) => {
           throw new functions.https.HttpsError("unknown", error.message);
         });
-
       acessosObj = {
         master: true,
         adm: false,
-        secretaria: false,
+        secretria: false,
         professores: false,
         aluno: false
       };
@@ -355,16 +351,14 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         .catch((error) => {
           throw new functions.https.HttpsError("unknown", error.message);
         });
-
       acessosObj = {
         master: false,
         adm: false,
-        secretaria: false,
+        secretria: false,
         professores: false,
         aluno: true
       };
     }
-
     admin
       .auth()
       .setCustomUserClaims(user.uid, acessosObj)
@@ -372,7 +366,7 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
       .catch((error) => {
         throw new functions.https.HttpsError("unknown", error.message);
       });
-  };
+  });
 });
 
 exports.cadastraTurma = functions.https.onCall(async (data, context) => {
@@ -548,17 +542,21 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
           throw new functions.https.HttpsError("unknown", error.message, error);
         });
     }
-
     data.id = data.codigoSala;
-
+    let horario;
     let hora = dados.hora.indexOf("_") === -1 ? dados.hora : dados.hora.split("_")[0];
-    if (!(hora >= 12 && hora <= 17) || !(hora >= 18 && hora) <= 23 || !(hora >= 5 && hora <= 11)) {
+    if (hora >= 12 && hora <= 17) {
+      horario = "Tarde";
+    } else if (hora >= 18 && hora <= 23) {
+      horario = "Noite";
+    } else if (hora >= 5 && hora <= 11) {
+      horario = "Manha";
+    } else {
       throw new functions.https.HttpsError(
         "invalid-argument",
         "Você deve passar um horário válido"
       );
     }
-
     return admin
       .auth()
       .getUserByEmail(data.professor)
@@ -661,13 +659,10 @@ exports.cadastraAniversarios = functions.database
 exports.cadastraProf = functions.https.onCall(async (data, context) => {
   console.log(context.auth.token);
   if (context.auth.token.master === true || context.auth.token.secretaria === true) {
-
     let dadosProfessor = data.dados;
     let codContrato = Math.random().toString(36).slice(-10);
     let contratos = [codContrato];
     dadosProfessor.matriculaProfessor = Math.random().toString(36).slice(-10);
-    
-    const userProfessor = await admin.auth().createUserWithEmailAndPassword(dadosProfessor.emailProfessor, dadosProfessor.senhaProfessor, dadosProfessor.nomeProfessor);
 
     let firestoreRef = admin.firestore().collection("mail");
 
@@ -742,7 +737,7 @@ exports.cadastraProf = functions.https.onCall(async (data, context) => {
 
           return {
             answer:
-              "Professor cadastrado na matrícula " +
+              "Aluno cadastrado na matrícula " +
               dadosProfessor.matriculaProfessor +
               " com sucesso! Os e-mails foram disparados.",
             codContrato: codContrato

@@ -18,11 +18,16 @@ import {
   useMediaQuery
 } from "@material-ui/core";
 import { enrollTeacher } from "../../../shared/FunctionsUse";
-import { AddressAndParentsFields, BasicDataFields } from "../../../shared/TeacherFields";
+import {
+  AddressAndParentsFields,
+  BasicDataFields,
+  CourseDataFields
+} from "../../../shared/TeacherFields";
 import $ from "jquery";
+import { classesRef } from "../../../services/databaseRefs";
 import ErrorDialog from "../../../shared/ErrorDialog";
 import { useSnackbar } from "notistack";
-import { ArrowForward } from "@material-ui/icons";
+import { ArrowForward, Save } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,32 +57,26 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddTeacher() {
   const classes = useStyles();
-
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState(new Set());
   const [skipped, setSkipped] = useState(new Set());
   const [loader, setLoader] = useState(false);
   const [shrink, setShrink] = useState();
   const [optionalSteps, setOptionalSteps] = useState([]);
-  const [parentsRequired, setParentsRequired] = useState();
-  const fabStyle = {
-    margin: 0,
-    top: "auto",
-    right: 20,
-    bottom: 20,
-    left: "auto",
-    position: "fixed"
-  };
-
-  function getSteps() {
-    return ["Dados básicos"];
-  }
-
+  const [parentsRequired, setParentsRequired] = useState(undefined);
   const steps = getSteps();
 
-  const [errorMessage, setErrorMessage] = useState();
-
+  const [errorMessage, setErrorMessage] = useState("Error");
+  const [courseTable, setCourseTable] = useState({
+    rows: [{ id: 1, col1: "Hello", col2: "World" }],
+    columns: [
+      { field: "col1", headerName: "Column 1", width: 150 },
+      { field: "col2", headerName: "Column 2", width: 150 }
+    ]
+  });
   const [openFinalDialog, setOpenFinalDialog] = useState(false);
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     let index = activeStep;
@@ -104,7 +103,20 @@ export default function AddTeacher() {
     console.log(sessionStorage.getItem("0"));
   };
 
-  const { enqueueSnackbar } = useSnackbar();
+  const fabStyle = {
+    margin: 0,
+    top: "auto",
+    right: 20,
+    bottom: 20,
+    left: "auto",
+    position: "fixed"
+  };
+
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  function getSteps() {
+    return ["Dados básicos"];
+  }
 
   const handleOptionalSteps = (step, remove = false) => {
     let optionalArray = optionalSteps;
@@ -188,6 +200,10 @@ export default function AddTeacher() {
     if (!isLastStep()) {
       setActiveStep(newActiveStep);
     }
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep);
   };
 
   const handleStep = (step) => () => {
@@ -334,17 +350,14 @@ export default function AddTeacher() {
           {steps.map((label, index) => {
             const stepProps = {};
             const buttonProps = {};
-
             if (isStepOptional(index)) {
               buttonProps.optional = <Typography variant="caption">Opcional</Typography>;
             }
-
             if (isStepSkipped(index)) {
               stepProps.completed = false;
             }
-
             return (
-              <Step key={index} {...stepProps}>
+              <Step key={label} {...stepProps}>
                 <StepButton
                   onClick={handleStep(index)}
                   completed={isStepComplete(index)}
