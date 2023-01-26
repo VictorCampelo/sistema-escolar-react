@@ -248,14 +248,14 @@ exports.modificaSenhaContaAluno = functions.database
   });
 
 exports.cadastroUser = functions.auth.user().onCreate((user) => {
-  console.log(user.displayName);
+  console.log("USER DADOS ---->", user);
 
   let dadosNoBanco = admin.database().ref(`sistemaEscolar/usuarios/${user.uid}/`);
   let listaDeUsers = admin.database().ref("sistemaEscolar/listaDeUsuarios");
   let usuariosMaster = admin.database().ref("sistemaEscolar/usuariosMaster");
   let firestoreRef = admin.firestore().collection("mail");
 
-  if (user.type !== "professor") {
+  if (!user.uid.includes("PROF-")) {
     sendMailToNewUser();
   }
 
@@ -279,7 +279,7 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
 
       let lista = snapshot.val();
 
-      if (lista.indexOf(user.email) !== -1) {
+      if (lista && lista.indexOf(user.email) !== -1) {
         listaDeUsers
           .child(user.uid + "/acessos/master")
           .set(true)
@@ -295,10 +295,11 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
           professores: false,
           aluno: false
         };
-      } else if (user.uid.length === 5) {
-        let type = user.type === "professor" ? "/acessos/professor" : "/acessos/aluno";
+      } else {
+        let isProf = user.uid.includes("PROF-") ? true : false;
+        let path = isProf ? "/acessos/professores" : "/acessos/aluno";
         listaDeUsers
-          .child(user.uid + type)
+          .child(user.uid + path)
           .set(true)
           .then(() => {})
           .catch((error) => {
@@ -308,8 +309,8 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
           master: false,
           adm: false,
           secretria: false,
-          professores: user.type === "professor",
-          aluno: user.type !== "professor"
+          professores: user.isProf,
+          aluno: !user.isProf
         };
       }
 
@@ -684,9 +685,9 @@ exports.cadastraProf = functions.https.onCall(async (data, context) => {
   if (context.auth.token.master === true || context.auth.token.secretaria === true) {
     try {
       let dadosProfessor = data.dados;
-      let codContrato = Math.random().toString(36).slice(-10);
+      let codContrato = Math.random().toString(36).slice(2);
       let contratos = [codContrato];
-      dadosProfessor.matriculaProfessor = Math.random().toString(36).slice(-10);
+      dadosProfessor.matriculaProfessor = "PROF-" + Math.random().toString(36).slice(2);
 
       let user = await admin.auth().createUser({
         uid: dadosProfessor.matriculaProfessor,
@@ -694,8 +695,7 @@ exports.cadastraProf = functions.https.onCall(async (data, context) => {
         emailVerified: false,
         password: dadosProfessor.senhaProfessor,
         displayName: dadosProfessor.nomeProfessor,
-        phoneNumber: "+55" + dadosProfessor.celularProfessor,
-        type: "professor"
+        phoneNumber: "+55" + dadosProfessor.celularProfessor
       });
 
       let firestoreRef = admin.firestore().collection("mail");
@@ -735,7 +735,7 @@ exports.cadastraProf = functions.https.onCall(async (data, context) => {
 
       return admin
         .database()
-        .ref("sistemaEscolar/usuarios")
+        .ref("sistemaEscolar/professores")
         .child(user.uid)
         .once("value")
         .then(async (professorRecord) => {
@@ -746,23 +746,20 @@ exports.cadastraProf = functions.https.onCall(async (data, context) => {
             );
           }
 
-          await admin
-            .database()
-            .ref(`sistemaEscolar/usuarios/${user.uid}/professor`)
-            .set(dadosProfessor);
+          await admin.database().ref(`sistemaEscolar/professores/${user.uid}`).set(dadosProfessor);
 
-          await admin
-            .database()
-            .ref("sistemaEscolar/infoEscola/contratos/" + codContrato)
-            .set({
-              // contratoConfigurado: contratoConfigurado,
-              situacao: "Vigente",
-              // planoOriginal: planoOriginal,
-              matricula: dadosProfessor.matriculaProfessor,
-              timestamp: admin.firestore.Timestamp.now(),
-              codContrato: codContrato,
-              tipo: "professor"
-            });
+          // await admin
+          //   .database()
+          //   .ref("sistemaEscolar/infoEscola/contratos/" + codContrato)
+          //   .set({
+          //     // contratoConfigurado: contratoConfigurado,
+          //     situacao: "Vigente",
+          //     // planoOriginal: planoOriginal,
+          //     matricula: dadosProfessor.matriculaProfessor,
+          //     timestamp: admin.firestore.Timestamp.now(),
+          //     codContrato: codContrato,
+          //     tipo: "professor"
+          //   });
 
           await firestoreRef.add(emailContent);
 
@@ -770,7 +767,7 @@ exports.cadastraProf = functions.https.onCall(async (data, context) => {
 
           return {
             answer:
-              "Aluno cadastrado na matrícula " +
+              "Professor cadastrado na matrícula " +
               dadosProfessor.matriculaProfessor +
               " com sucesso! Os e-mails foram disparados.",
             codContrato: codContrato
@@ -791,7 +788,7 @@ exports.addNovoProfTurma = functions.https.onCall((data, context) => {
     return admin
       .auth()
       .getUserByEmail(data.emailProf)
-      .then(function (user) {
+      .then((user) => {
         return admin
           .database()
           .ref(`sistemaEscolar/usuarios/${user.uid}/professor/turmas/${data.codSala}`)
