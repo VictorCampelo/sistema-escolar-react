@@ -74,9 +74,10 @@ export default function AddStudent() {
       { field: "col2", headerName: "Column 2", width: 150 }
     ]
   });
+
   const [openFinalDialog, setOpenFinalDialog] = useState(false);
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   useEffect(() => {
     let index = activeStep;
@@ -112,7 +113,7 @@ export default function AddStudent() {
     position: "fixed"
   };
 
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleGetCourseData = async () => {
     try {
@@ -258,8 +259,8 @@ export default function AddStudent() {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
         ? // It's the last step, but not all steps have been completed
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !completed.has(i))
+        // find the first step that has been completed
+        steps.findIndex((step, i) => !completed.has(i))
         : activeStep + 1;
     if (!isLastStep()) {
       setActiveStep(newActiveStep);
@@ -420,8 +421,7 @@ export default function AddStudent() {
         open={openFinalDialog}
         onClose={() => setOpenFinalDialog(false)}
         aria-labelledby="responsive-dialog-title"
-        ba
-      >
+        ba>
         <DialogTitle id="responsive-dialog-title">
           {"Você confirma o cadastro do aluno?"}
         </DialogTitle>
@@ -441,14 +441,14 @@ export default function AddStudent() {
         </DialogActions>
       </Dialog>
 
-      {errorMessage && (
+      {errorMessage &&
         <ErrorDialog
           title="Erro"
           message={errorMessage}
           isOpen={true}
           onClose={handleOnCloseErrorDialog}
         />
-      )}
+      }
       <div style={{ position: "absolute" }}>
         <Backdrop className={classes.backdrop} open={loader}>
           <CircularProgress color="inherit" />
@@ -470,8 +470,7 @@ export default function AddStudent() {
                 <StepButton
                   onClick={handleStep(index)}
                   completed={isStepComplete(index)}
-                  {...buttonProps}
-                >
+                  {...buttonProps}>
                   {label}
                 </StepButton>
               </Step>
@@ -503,22 +502,21 @@ export default function AddStudent() {
                 >
                     {completedSteps() === totalSteps() - 1 ? 'Cadastrar Aluno' : 'Próximo'}
                 </Button> */}
-                {isStepOptional(activeStep) && !completed.has(activeStep) && (
+                {isStepOptional(activeStep) && !completed.has(activeStep) &&
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={handleSkip}
-                    className={classes.button}
-                  >
+                    className={classes.button}>
                     Pular
                   </Button>
-                )}
+                }
 
-                {activeStep !== steps.length && completed.has(activeStep) && (
+                {activeStep !== steps.length && completed.has(activeStep) &&
                   <Typography variant="caption" className={classes.completed}>
                     Passo {activeStep + 1} salvo
                   </Typography>
-                )}
+                }
               </div>
             </div>
           </form>

@@ -211,11 +211,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
       title: "Info",
       variant: "info",
       key: "0",
-      action: (
+      action:
         <Button onClick={() => closeSnackbar("0")} color="inherit">
           Fechar
         </Button>
-      )
+
     });
   };
 
@@ -347,11 +347,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
         title: "Sucesso",
         variant: "success",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       setLoading(false);
     } catch (error) {
@@ -360,11 +360,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
         title: "Sucesso",
         variant: "error",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       setLoading(false);
     }
@@ -400,11 +400,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
         title: "Sucesso",
         variant: "success",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       setLoading(false);
     } catch (error) {
@@ -412,11 +412,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
         title: "Sucesso",
         variant: "error",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       setLoading(false);
     }
@@ -437,11 +437,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
         title: "Sucesso",
         variant: "success",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       setLoading(false);
     } catch (error) {
@@ -449,11 +449,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
         title: "Sucesso",
         variant: "error",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       setLoading(false);
     }
@@ -461,7 +461,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
 
   return (
     <Fragment>
-      {!disabledStudent && (
+      {!disabledStudent &&
         <ReleasePerformance
           classCode={classCode}
           studentsIds={[studentId]}
@@ -469,8 +469,8 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
           open={openReleasePerformanceGrades}
           refresh={getData}
         />
-      )}
-      {!disabledStudent && (
+      }
+      {!disabledStudent &&
         <ReleaseGrades
           classCode={classCode}
           studentsIds={[studentId]}
@@ -478,7 +478,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
           open={openReleaseGrades}
           refresh={getData}
         />
-      )}
+      }
 
       {openStudentPDF && <BaseDocument open={openStudentPDF} onClose={setOpenStudentPDF} />}
 
@@ -519,24 +519,22 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
         studentId={studentId}
       />
 
-      {!teacherView && (
+      {!teacherView &&
         <Fab
           variant="extended"
           color="primary"
           onClick={handleOpenFilesDialog}
-          className={classes.fab}
-        >
+          className={classes.fab}>
           <AttachFile className={classes.extendedIcon} />
           Arquivos
         </Fab>
-      )}
+      }
 
       <Dialog
         fullScreen={fullScreen}
         open={openFilesDialog}
         onClose={handleCloseFilesDialog}
-        aria-labelledby="responsive-dialog-title"
-      >
+        aria-labelledby="responsive-dialog-title">
         <DialogTitle id="responsive-dialog-title">
           Arquivos{" "}
           <IconButton style={{ float: "right" }} onClick={handleCloseFilesDialog}>
@@ -556,16 +554,15 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
       <Dialog
         aria-labelledby="confirmation-dialog-title"
         open={openDialog}
-        onClose={() => setOpenDialog(false)}
-      >
+        onClose={() => setOpenDialog(false)}>
         <DialogTitle id="confirmation-dialog-title">Você confirma esta ação?</DialogTitle>
         <DialogContent>
           <DialogContentText>
             {desablingStudent
               ? `Você está ${disabledStudent ? "ativando" : "desativando"} este aluno.`
-              : `Você está transferindo este aluno. Escolha a turma de destino:`}
+              : "Você está transferindo este aluno. Escolha a turma de destino:"}
           </DialogContentText>
-          {(disabledStudent || !desablingStudent) && (
+          {(disabledStudent || !desablingStudent) &&
             <Select
               autoFocus
               fullWidth
@@ -575,13 +572,12 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                   ? (e) => setClassCodeTransfer(e.target.value)
                   : (e) => setClassCodeEnable(e.target.value)
               }
-              value={!desablingStudent ? classCodeTransfer : classCodeEnable}
-            >
-              {classesCodes.map((id, i) => (
+              value={!desablingStudent ? classCodeTransfer : classCodeEnable}>
+              {classesCodes.map((id, i) =>
                 <MenuItem value={id}>{id}</MenuItem>
-              ))}
+              )}
             </Select>
-          )}
+          }
         </DialogContent>
 
         <DialogActions>
@@ -598,8 +594,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
             }
             variant="contained"
             color="primary"
-            autoFocus
-          >
+            autoFocus>
             Sim, continuar
           </Button>
         </DialogActions>
@@ -620,7 +615,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                   onOpen={handleOpenSpeedDial}
                   open={openSpeedDial}
                   direction="left"
-                  
+
                 >
                   {actions.map((action) => (
                     <SpeedDialAction
@@ -628,7 +623,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                       icon={action.icon}
                       tooltipTitle={action.name}
                       tooltipPlacement="top"
-                      
+
                       className={classes.actionButtons}
                       onClick={() => {handleCloseSpeedDial(); action.onClick()}}
                     />
@@ -654,7 +649,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                 </Grid>
               </Grid>
               <hr />
-              {!teacherView && (
+              {!teacherView &&
                 <Box m={1}>
                   <Button
                     fullWidth
@@ -663,13 +658,12 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                     color="primary"
                     startIcon={<TransferWithinAStation />}
                     disabled={disabledStudent}
-                    onClick={handleConfirmTransfer}
-                  >
+                    onClick={handleConfirmTransfer}>
                     Transferir
                   </Button>
                 </Box>
-              )}
-              {!teacherView && (
+              }
+              {!teacherView &&
                 <Box m={1}>
                   <Button
                     fullWidth
@@ -677,13 +671,12 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                     variant="contained"
                     color="primary"
                     startIcon={<Edit />}
-                    onClick={handleOpenEditStudentInfo}
-                  >
+                    onClick={handleOpenEditStudentInfo}>
                     Editar dados
                   </Button>
                 </Box>
-              )}
-              {!teacherView && (
+              }
+              {!teacherView &&
                 <Box m={1}>
                   <Button
                     fullWidth
@@ -692,13 +685,12 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                     color="primary"
                     startIcon={<DoneAll />}
                     disabled={disabledStudent}
-                    onClick={handleOpenChecklist}
-                  >
+                    onClick={handleOpenChecklist}>
                     Checklist
                   </Button>
                 </Box>
-              )}
-              {!teacherView && (
+              }
+              {!teacherView &&
                 <Box m={1}>
                   <Button
                     fullWidth
@@ -706,13 +698,12 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                     variant="contained"
                     color="primary"
                     onClick={handleOpenContractsDialog}
-                    startIcon={<Description />}
-                  >
+                    startIcon={<Description />}>
                     Contratos
                   </Button>
                 </Box>
-              )}
-              {!teacherView && (
+              }
+              {!teacherView &&
                 <Box m={1}>
                   <Button
                     fullWidth
@@ -720,12 +711,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                     variant="contained"
                     color="primary"
                     onClick={handleOpenStudentPDF}
-                    startIcon={<Print />}
-                  >
+                    startIcon={<Print />}>
                     Ficha de Matrícula
                   </Button>
                 </Box>
-              )}
+              }
               <Box m={1}>
                 <Button
                   fullWidth
@@ -733,8 +723,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                   variant="contained"
                   color="primary"
                   onClick={handleOpenFollowUp}
-                  startIcon={<Assignment />}
-                >
+                  startIcon={<Assignment />}>
                   Follow Up
                 </Button>
               </Box>
@@ -745,12 +734,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                   variant="contained"
                   color="primary"
                   startIcon={<SupervisedUserCircle />}
-                  onClick={handleOpenParentsDialog}
-                >
+                  onClick={handleOpenParentsDialog}>
                   Responsáveis
                 </Button>
               </Box>
-              {!teacherView && (
+              {!teacherView &&
                 <Box m={1}>
                   <Button
                     fullWidth
@@ -758,13 +746,12 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                     variant="contained"
                     color={"secondary"}
                     startIcon={disabledStudent ? <Check /> : <NotInterested />}
-                    onClick={disabledStudent ? handleConfirmEnable : handleConfirmDisable}
-                  >
+                    onClick={disabledStudent ? handleConfirmEnable : handleConfirmDisable}>
                     {disabledStudent ? "Reativar" : "Desativar"}
                   </Button>
                 </Box>
-              )}
-              {teacherView && (
+              }
+              {teacherView &&
                 <Box m={1}>
                   <Button
                     fullWidth
@@ -772,13 +759,12 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                     variant="contained"
                     color={"secondary"}
                     startIcon={<Star />}
-                    onClick={handleOpenReleaseGrades}
-                  >
+                    onClick={handleOpenReleaseGrades}>
                     Notas
                   </Button>
                 </Box>
-              )}
-              {teacherView && (
+              }
+              {teacherView &&
                 <Box m={1}>
                   <Button
                     fullWidth
@@ -786,12 +772,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                     variant="contained"
                     color={"secondary"}
                     startIcon={<Speed />}
-                    onClick={handleOpenReleasePerformanceGrades}
-                  >
+                    onClick={handleOpenReleasePerformanceGrades}>
                     Desempenho
                   </Button>
                 </Box>
-              )}
+              }
               <Box m={1}>
                 <Button
                   fullWidth
@@ -799,8 +784,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                   variant="outlined"
                   color={"primary"}
                   startIcon={<Refresh />}
-                  onClick={getData}
-                >
+                  onClick={getData}>
                   Atualizar dados
                 </Button>
               </Box>
@@ -832,11 +816,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                 Notas de Desempenho
               </Typography>
               {academicData.hasOwnProperty("desempenho")
-                ? Object.keys(academicData.desempenho).map((name, i) => (
-                    <Typography className={classes.grades} color="textSecondary">
-                      {name}: {academicData.desempenho[name]}
-                    </Typography>
-                  ))
+                ? Object.keys(academicData.desempenho).map((name, i) =>
+                  <Typography className={classes.grades} color="textSecondary">
+                    {name}: {academicData.desempenho[name]}
+                  </Typography>
+                )
                 : "Notas não lançadas"}
               <Typography variant="h6" component="h6">
                 Somatório Geral
@@ -849,19 +833,19 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
               </Typography>
               {academicData.hasOwnProperty("frequencia")
                 ? Object.keys(academicData.frequencia).map((name, i) => {
-                    let date = new Date(name);
-                    let dateConverted = date
-                      .toISOString()
-                      .substring(0, 10)
-                      .split("-")
-                      .reverse()
-                      .join("/");
-                    return (
-                      <Typography className={classes.grades} color="textSecondary">
-                        {i + 1}: {dateConverted}
-                      </Typography>
-                    );
-                  })
+                  let date = new Date(name);
+                  let dateConverted = date
+                    .toISOString()
+                    .substring(0, 10)
+                    .split("-")
+                    .reverse()
+                    .join("/");
+                  return (
+                    <Typography className={classes.grades} color="textSecondary">
+                      {i + 1}: {dateConverted}
+                    </Typography>
+                  );
+                })
                 : "Não há registro de faltas"}
             </CardContent>
             <CardActions>
@@ -871,8 +855,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                 color="primary"
                 onClick={handleOpenStudentHistory}
                 fullWidth
-                startIcon={<ChromeReaderMode />}
-              >
+                startIcon={<ChromeReaderMode />}>
                 Acessar histórico escolar
               </Button>
             </CardActions>
@@ -880,7 +863,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
 
           {/* {!teacherView && <Card className={classes.smallCards} variant="outlined">
                         <CardContent>
-                        <Grid 
+                        <Grid
                           justifyContent="flex-start"
                           direction="row"
                           container
@@ -896,14 +879,14 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                             <Typography variant="h5" component="h2">
                               Arquivos
                             </Typography>
-                            
-                            
+
+
                           </Grid>
                         </Grid>
                         <hr />
-                        
+
                           <StudentFiles studentId={studentId} disabledStudent={disabledStudent} />
-                          
+
                         </CardContent>
                         <CardActions>
                           <Button size="small"></Button>

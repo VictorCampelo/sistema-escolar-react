@@ -14,7 +14,16 @@ admin.initializeApp();
 
 exports.verificadorDeAcesso = functions.https.onCall((data, context) => {
   try {
-    if (context.auth.token.master === true || context.auth.token[data.acesso] === true) {
+    let accessList = ["master", "professores", "adm", "secretaria"];
+
+    let hasAccess = accessList.some((access) => {
+      if (context.auth.token[access] === true) {
+        return true;
+      }
+      return false;
+    });
+
+    if (hasAccess) {
       return true;
     }
 
@@ -291,13 +300,14 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         acessosObj = {
           master: true,
           adm: false,
-          secretria: false,
+          secretaria: false,
           professores: false,
           aluno: false
         };
       } else {
         let isProf = user.uid.includes("PROF-") ? true : false;
         let path = isProf ? "/acessos/professores" : "/acessos/aluno";
+
         listaDeUsers
           .child(user.uid + path)
           .set(true)
@@ -305,10 +315,11 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
           .catch((error) => {
             throw new functions.https.HttpsError("unknown", error.message);
           });
+
         acessosObj = {
           master: false,
           adm: false,
-          secretria: false,
+          secretaria: false,
           professores: user.isProf,
           aluno: !user.isProf
         };

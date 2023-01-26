@@ -144,12 +144,11 @@ const SeeEventPopover = ({
           vertical: "top",
           horizontal: "right"
         }}
-        style={{ maxWidth: "70vw" }}
-      >
+        style={{ maxWidth: "70vw" }}>
         <DialogTitle>
           <Grid justifyContent="space-between" container spacing={24} alignItems="center">
             <Grid item>
-              {!isFromClassCode && (
+              {!isFromClassCode &&
                 <>
                   <Tooltip title={"Editar evento"}>
                     <IconButton variant="outlined" edge="end" color="inherit">
@@ -161,21 +160,20 @@ const SeeEventPopover = ({
                       variant="outlined"
                       edge="end"
                       color="inherit"
-                      onClick={handleDeleteEvent}
-                    >
+                      onClick={handleDeleteEvent}>
                       <Delete />
                     </IconButton>
                   </Tooltip>
                 </>
-              )}
-              {isFromClassCode && (
+              }
+              {isFromClassCode &&
                 <Tooltip title={"Lançar faltas para os alunos selecionados"}>
                   <Fab variant="extended" onClick={handleReleaseFault} size="medium">
                     <PersonOutline />
                     Lançar faltas
                   </Fab>
                 </Tooltip>
-              )}
+              }
             </Grid>
             <Grid item>
               <Tooltip title={"Fechar"}>
@@ -187,7 +185,7 @@ const SeeEventPopover = ({
                   color="inherit"
                   edge="end"
 
-                  //style={{maxWidth: '34px'}}
+                //style={{maxWidth: '34px'}}
                 >
                   <Close />
                 </IconButton>
@@ -196,7 +194,7 @@ const SeeEventPopover = ({
           </Grid>
         </DialogTitle>
         <DialogContent>
-          {event && (
+          {event &&
             <>
               <Typography variant="h5">{event.title}</Typography>
               <Typography variant="p" component={"p"}>
@@ -205,15 +203,15 @@ const SeeEventPopover = ({
                 </Typography>
                 <Typography variant="span"> ⋅ </Typography>
                 <Typography variant="label">
-                  {event.allDay
+                  {event?.allDay
                     ? "O dia inteiro"
-                    : event.start.toLocaleTimeString() + " - " + event.end.toLocaleTimeString()}
+                    : event?.start?.toLocaleTimeString() + " - " + event?.end?.toLocaleTimeString()}
                 </Typography>
               </Typography>
             </>
-          )}
+          }
 
-          {recurrence && (
+          {recurrence &&
             <Typography variant="p">
               {recurrence.daysOfWeek &&
                 " Repete " + recurrence.daysOfWeek.map((day) => " " + daysOfWeek[day])}{" "}
@@ -221,27 +219,27 @@ const SeeEventPopover = ({
                 ? "e termina em " + recurrence.endRecur.toLocaleDateString()
                 : ", e nunca termina"}
             </Typography>
-          )}
+          }
         </DialogContent>
         {isFromClassCode && <DialogTitle>Faltas</DialogTitle>}
-        {isFromClassCode && (
+        {isFromClassCode &&
           <DialogContent>
             <div>
               <List>
-                {faults.map((fault, i) => (
+                {faults.map((fault, i) =>
                   <ListItem>
                     <ListItemAvatar>
                       <Tooltip title={fault.id}>
                         <Avatar>
-                          {fault.avatar ? (
+                          {fault.avatar ?
                             <img
                               src={fault.avatar}
                               style={{ width: "40px", height: "40px", borderRadius: "50%" }}
                               alt=""
                             />
-                          ) : (
+                           :
                             <Avatar />
-                          )}
+                          }
                         </Avatar>
                       </Tooltip>
                     </ListItemAvatar>
@@ -251,19 +249,18 @@ const SeeEventPopover = ({
                         <IconButton
                           edge="end"
                           aria-label="delete"
-                          onClick={() => handleRemoveFault(fault)}
-                        >
+                          onClick={() => handleRemoveFault(fault)}>
                           <Delete />
                         </IconButton>
                       </Tooltip>
                     </ListItemSecondaryAction>
                   </ListItem>
-                ))}
+                )}
                 {faults.length === 0 && "Não há faltas registradas para este dia"}
               </List>
             </div>
           </DialogContent>
-        )}
+        }
 
         {/*  */}
       </Popover>
