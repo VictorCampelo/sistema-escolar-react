@@ -3,5 +3,8 @@
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.defaultProfile.windows": "PowerShell",
-  "cSpell.words": ["notistack"]
+  "cSpell.words": [
+    "notistack"
+  ],
+  "cSpell.enabled": false
 }

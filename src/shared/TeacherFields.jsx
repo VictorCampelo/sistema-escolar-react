@@ -67,14 +67,16 @@ function BasicDataFields({
 
     try {
       handleOptionalSteps(1, true);
-      handleCalculateAge(basicData.dataNascimentoProfessor);
+      if (basicData) {
+        handleCalculateAge(basicData.dataNascimentoProfessor);
+      }
     } catch (error) {
       console.log(error);
     }
   }, []);
 
   const handleCalculateAge = async (date) => {
-    let birthdate = (date.hasOwnProperty("target") && date.target.valueAsDate) || new Date(date);
+    let birthdate = date.hasOwnProperty("target") && date.target.valueAsDate || new Date(date);
     if (birthdate !== null && !isNaN(birthdate.getDay())) {
       try {
         setLoader(true);
@@ -92,7 +94,7 @@ function BasicDataFields({
         setLoader(false);
       } catch (error) {
         error.message === "permission-denied"
-          ? setAge(`Você não possui permissão.`)
+          ? setAge("Você não possui permissão.")
           : setAge(error.message);
         document.getElementById("dataNascimentoProfessor").value = "";
       }
@@ -216,7 +218,7 @@ function BasicDataFields({
                 error={validCpf}
                 onChange={handleCheckCpf}
                 onBlur={() =>
-                  validCpf ? (document.getElementById("cpfProfessor").value = null) : null
+                  validCpf ? document.getElementById("cpfProfessor").value : null
                 }
                 type="text"
                 id="cpfProfessor"
@@ -346,9 +348,8 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
     } else if (internData.numeroParcelas < internPlan.quandoAplicar + 1) {
       setOpenDialogError({
         title: "Parcelamento não permitido",
-        message: `O contrato deve possuir pelo menos ${
-          Number(internPlan.quandoAplicar) + 1
-        } parcelas. Para outros tipos de parcelamento ou pagamento á vista, tente usar outro plano compatível com sua necessidade, ou solicite ao setor Administrativo/Financeiro para possível mudança de parcelamento deste plano.`
+        message: `O contrato deve possuir pelo menos ${Number(internPlan.quandoAplicar) + 1
+          } parcelas. Para outros tipos de parcelamento ou pagamento á vista, tente usar outro plano compatível com sua necessidade, ou solicite ao setor Administrativo/Financeiro para possível mudança de parcelamento deste plano.`
       });
       internData.numeroParcelas = "";
     } else {
@@ -399,31 +400,25 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
               descontoParcela = 0;
             }
 
-            saldoAcrescimo = saldoAcrescimo - acrescimoParcela;
-            saldoDesconto = saldoDesconto - descontoParcela;
+            saldoAcrescimo -= acrescimoParcela;
+            saldoDesconto -= descontoParcela;
 
-            row =
-              internPlan.quandoAplicar !== undefined
-                ? {
-                    id: parcela,
-                    col1: parcela + 1,
-                    col2: `R$${valorParcela}`,
-                    col3: ` ${
-                      acrescimoParcela !== 0 || acrescimoParcela !== ""
-                        ? "+ R$" + acrescimoParcela
-                        : ""
-                    }`,
-                    col4: ` ${
-                      descontoParcela !== 0 || descontoParcela !== ""
-                        ? "- R$" + descontoParcela
-                        : ""
-                    }`,
-                    col5: `R$${(
-                      Number(valorParcela) +
-                      (acrescimoParcela - descontoParcela)
-                    ).toFixed(2)}`
-                  }
-                : { id: parcela };
+            row = internPlan.quandoAplicar
+              ? {
+                id: parcela,
+                col1: parcela + 1,
+                col2: `R$${valorParcela}`,
+                col3: ` ${acrescimoParcela !== 0 || acrescimoParcela !== ""
+                  ? "+ R$" + acrescimoParcela
+                  : ""
+                  }`,
+                col4: ` ${descontoParcela !== 0 || descontoParcela !== "" ? "- R$" + descontoParcela : ""
+                  }`,
+                col5: `R$${(Number(valorParcela) + (acrescimoParcela - descontoParcela)).toFixed(
+                  2
+                )}`
+              }
+              : { id: parcela };
             console.log(row);
             somaParcelas += Number(valorParcela) + (acrescimoParcela - descontoParcela);
           } else {
@@ -504,8 +499,11 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
       }
     }
     setShrink(true);
-    if (planId !== "") setSaveDisabled(false);
-    else setSaveDisabled(true);
+    if (planId !== "") {
+      setSaveDisabled(false);
+    } else {
+      setSaveDisabled(true);
+    }
   };
 
   const [day, setDay] = useState(1);
@@ -530,7 +528,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
 
   return (
     <Fragment>
-      {openDialogError && (
+      {openDialogError &&
         <ErrorDialog
           onClose={() => {
             setOpenDialogError(false);
@@ -539,7 +537,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
           title={openDialogError.title}
           message={openDialogError.message}
         />
-      )}
+      }
       <FullScreenDialog
         isOpen={isOpen}
         onClose={() => {
@@ -551,11 +549,11 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
         title={"Configurar contrato"}
         saveButton={"Salvar"}
         saveButtonDisabled={saveDisabled}>
-        {!data ? (
+        {!data ?
           <div style={{ width: "100%" }}>
             <LinearProgress />
           </div>
-        ) : (
+          :
           <>
             <div style={{ textAlign: "center", width: "100%" }}>
               <h3>Escolha um plano</h3>
@@ -572,11 +570,11 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                   id: "listaPlanos"
                 }}>
                 <option aria-label="None" value="" />
-                {plans.map((plan) => (
+                {plans.map((plan) =>
                   <option value={plan.value} key={plan.value}>
                     {plan.label}
                   </option>
-                ))}
+                )}
               </Select>
             </FormControl>
             <Container>
@@ -877,7 +875,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
               </form>
             </Container>
           </>
-        )}
+        }
       </FullScreenDialog>
     </Fragment>
   );
@@ -946,15 +944,15 @@ function CourseDataFields(props) {
         <Grid item xs sm={3}>
           <Paper style={{ padding: "10px", alignItems: "center" }} elevation={5}>
             <h4>
-              {courseChosen && courseChosen.turmaProfessor !== "" ? (
+              {courseChosen && courseChosen.turmaProfessor !== "" ?
                 <label>Turma escolhida: {courseChosen.turmaProfessor}</label>
-              ) : (
+                :
                 <label>Turma não escolhida</label>
-              )}
+              }
             </h4>
             <hr />
             <h4>{contractState ? "Contrato configurado" : "Contrato não configurado"}</h4>
-            {contractState && (
+            {contractState &&
               <Box>
                 <FormControl className={classes.fields}>
                   <TextField
@@ -977,13 +975,13 @@ function CourseDataFields(props) {
                   </FormHelperText>
                 </FormControl>
               </Box>
-            )}
-            {contractState && (
+            }
+            {contractState &&
               <FormHelperText>
                 O Contrato já está configurado. Caso queira alterar, basta clicar na turma novamente
                 e refazer o contrato.
               </FormHelperText>
-            )}
+            }
           </Paper>
         </Grid>
       </Grid>
@@ -1039,7 +1037,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
       } catch (error) {
         console.log(error);
         error.message === "permission-denied"
-          ? setCep(`Você não possui permissão.`)
+          ? setCep("Você não possui permissão.")
           : setCep(error.message);
       }
     }
@@ -1068,11 +1066,11 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
         {
           variant: "warning",
           key: "0",
-          action: (
+          action:
             <Button onClick={() => closeSnackbar("0")} color="inherit">
               Fechar
             </Button>
-          )
+
         }
       );
     } else {
@@ -1417,7 +1415,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
             </FormControl>
           </Grid>
         </Grid>
-        {!editMode && (
+        {!editMode &&
           <>
             <h4>Responsáveis</h4>
             <Button
@@ -1429,10 +1427,10 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
               <PlusOneRounded /> Cadastrar Responsável{" "}
             </Button>
           </>
-        )}
+        }
 
         <Fragment>
-          {parentsFields.map((field) => (
+          {parentsFields.map((field) =>
             <Typography key={field.id}>
               <hr />
               <Grid justifyContent="flex-start" container direction="row" spacing={2}>
@@ -1527,7 +1525,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                       error={validCpf}
                       onChange={handleCheckCpf}
                       onBlur={() =>
-                        validCpf ? (document.getElementById("cpf").value = null) : null
+                        validCpf ? document.getElementById("cpf").value : null
                       }
                       type="text"
                       aria-describedby="my-helper-text"
@@ -1602,13 +1600,13 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                 </Grid>
               </Grid>
             </Typography>
-          ))}
+          )}
         </Fragment>
 
         <h4>Dados adicionais</h4>
         {additionalFields &&
-          additionalFields.map((field) => (
-            <FormControl className={classes.fields} style={{ width: "100%" }}>
+          additionalFields.map((field) =>
+            <FormControl key={field.id} className={classes.fields} style={{ width: "100%" }}>
               <TextField
                 required={field.required}
                 placeholder={field.placeholder}
@@ -1622,7 +1620,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                 aria-describedby={field.placeholder}
               />
             </FormControl>
-          ))}
+          )}
       </div>
     </>
   );

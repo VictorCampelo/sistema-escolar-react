@@ -8,11 +8,6 @@ import Typography from "@material-ui/core/Typography";
 import {
   Backdrop,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Fab,
   Paper,
   useMediaQuery
@@ -20,14 +15,13 @@ import {
 import { enrollTeacher } from "../../../shared/FunctionsUse";
 import {
   AddressAndParentsFields,
-  BasicDataFields,
-  CourseDataFields
+  BasicDataFields
 } from "../../../shared/TeacherFields";
 import $ from "jquery";
-import { classesRef } from "../../../services/databaseRefs";
 import ErrorDialog from "../../../shared/ErrorDialog";
 import { useSnackbar } from "notistack";
-import { ArrowForward, Save } from "@material-ui/icons";
+import { ArrowForward } from "@material-ui/icons";
+import { DialogComponent } from "./DialogComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,20 +57,12 @@ export default function AddTeacher() {
   const [loader, setLoader] = useState(false);
   const [shrink, setShrink] = useState();
   const [optionalSteps, setOptionalSteps] = useState([]);
-  const [parentsRequired, setParentsRequired] = useState(undefined);
+  const [parentsRequired, setParentsRequired] = useState();
   const steps = getSteps();
 
-  const [errorMessage, setErrorMessage] = useState("Error");
-  const [courseTable, setCourseTable] = useState({
-    rows: [{ id: 1, col1: "Hello", col2: "World" }],
-    columns: [
-      { field: "col1", headerName: "Column 1", width: 150 },
-      { field: "col2", headerName: "Column 2", width: 150 }
-    ]
-  });
-  const [openFinalDialog, setOpenFinalDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
 
-  useEffect(() => {}, []);
+  const [openFinalDialog, setOpenFinalDialog] = useState(false);
 
   useEffect(() => {
     let index = activeStep;
@@ -153,10 +139,7 @@ export default function AddTeacher() {
   };
 
   const isStepOptional = (step) => {
-    if (optionalSteps.indexOf(step) === -1) {
-      return false;
-    }
-    return true;
+    return optionalSteps.indexOf(step) !== -1;
   };
 
   const handleSkip = () => {
@@ -194,8 +177,8 @@ export default function AddTeacher() {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
         ? // It's the last step, but not all steps have been completed
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !completed.has(i))
+        // find the first step that has been completed
+        steps.findIndex((step, i) => !completed.has(i))
         : activeStep + 1;
     if (!isLastStep()) {
       setActiveStep(newActiveStep);
@@ -305,39 +288,21 @@ export default function AddTeacher() {
 
   return (
     <>
-      <Dialog
+      <DialogComponent
         fullScreen={fullScreen}
-        open={openFinalDialog}
-        onClose={() => setOpenFinalDialog(false)}
-        aria-labelledby="responsive-dialog-title"
-        ba>
-        <DialogTitle id="responsive-dialog-title">
-          {"Você confirma o cadastro do Professor?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Todos os dados digitados serão enviados aos servidores, e você será identificado como
-            usuário que realizou este cadastro para consultas futuras.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenFinalDialog(false)} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={handleSendData} color="primary">
-            Cadastrar Professor
-          </Button>
-        </DialogActions>
-      </Dialog>
+        openFinalDialog={openFinalDialog}
+        setOpenFinalDialog={setOpenFinalDialog}
+        handleSendData={handleSendData}
+      />
 
-      {errorMessage && (
+      {errorMessage &&
         <ErrorDialog
           title="Erro"
           message={errorMessage}
           isOpen={true}
           onClose={handleOnCloseErrorDialog}
         />
-      )}
+      }
 
       <div style={{ position: "absolute" }}>
         <Backdrop className={classes.backdrop} open={loader}>
@@ -386,7 +351,7 @@ export default function AddTeacher() {
                   <ArrowForward className={classes.extendedIcon} />
                 </Fab>
 
-                {isStepOptional(activeStep) && !completed.has(activeStep) && (
+                {isStepOptional(activeStep) && !completed.has(activeStep) &&
                   <Button
                     variant="contained"
                     color="primary"
@@ -394,13 +359,13 @@ export default function AddTeacher() {
                     className={classes.button}>
                     Pular
                   </Button>
-                )}
+                }
 
-                {activeStep !== steps.length && completed.has(activeStep) && (
+                {activeStep !== steps.length && completed.has(activeStep) &&
                   <Typography variant="caption" className={classes.completed}>
                     Passo {activeStep + 1} salvo
                   </Typography>
-                )}
+                }
               </div>
             </div>
           </form>

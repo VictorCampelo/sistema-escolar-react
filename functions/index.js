@@ -14,11 +14,10 @@ admin.initializeApp();
 
 exports.verificadorDeAcesso = functions.https.onCall((data, context) => {
   try {
-    if (context.auth.token.master === true) {
-      return true;
-    } else if (context.auth.token[data.acesso] === true) {
+    if (context.auth.token.master === true || context.auth.token[data.acesso] === true) {
       return true;
     }
+
     throw new functions.https.HttpsError("permission-denied", "Acesso não liberado.");
   } catch (error) {
     console.log(error);
@@ -250,123 +249,147 @@ exports.modificaSenhaContaAluno = functions.database
 
 exports.cadastroUser = functions.auth.user().onCreate((user) => {
   console.log(user.displayName);
+
   let dadosNoBanco = admin.database().ref(`sistemaEscolar/usuarios/${user.uid}/`);
   let listaDeUsers = admin.database().ref("sistemaEscolar/listaDeUsuarios");
   let usuariosMaster = admin.database().ref("sistemaEscolar/usuariosMaster");
   let firestoreRef = admin.firestore().collection("mail");
 
-  admin
-    .auth()
-    .generateEmailVerificationLink(user.email)
-    .then((value) => {
-      functions.logger.log(value);
-      let emailContent = {
-        to: user.email,
-        message: {
-          subject: "Verificação de segurança do Sistema Escolar",
-          text: "Clique no link para verificar seu e-mail no sistema escolar",
-          html: `
-                    <p>Olá, ${user.displayName || "usuário"}</p>
-                    <p>Clique neste link para verificar seu endereço de e-mail.</p>
-                    <p><a href="${value}">${value}</a></p>
-                    <p>Se você não solicitou a verificação deste endereço, ignore este e-mail.</p>
-                    <p>Obrigado,</p>
-                    <p>Equipe do GrupoProX</p>
-                `
+  if (user.type !== "professor") {
+    sendMailToNewUser();
+  }
+
+  addInitialUserData();
+
+  addUserToListOfUsers();
+
+  setAccessToNewUser();
+
+  function setAccessToNewUser() {
+    usuariosMaster.once("value", (snapshot) => {
+      let acessosObj = {
+        acessos: {
+          master: false,
+          adm: false,
+          secretaria: false,
+          professores: false,
+          aluno: false
         }
       };
-      firestoreRef
-        .add(emailContent)
-        .then(() => {
-          console.log("Queued email for delivery to " + user.email);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    })
-    .catch((error) => {
-      functions.logger.log(error);
-    });
 
-  dadosNoBanco
-    .set({
-      nome: user.displayName,
-      email: user.email,
+      let lista = snapshot.val();
 
-      timestamp: admin.firestore.Timestamp.now()
-    })
-    .then(() => {})
-    .catch((error) => {
-      throw new functions.https.HttpsError("unknown", error.message);
-    });
+      if (lista.indexOf(user.email) !== -1) {
+        listaDeUsers
+          .child(user.uid + "/acessos/master")
+          .set(true)
+          .then(() => {})
+          .catch((error) => {
+            throw new functions.https.HttpsError("unknown", error.message);
+          });
 
-  listaDeUsers
-    .child(user.uid)
-    .set({
-      acessos: {
-        master: false,
-        adm: false,
-        secretaria: false,
-        professores: false,
-        aluno: false
-      },
-      email: user.email
-    })
-    .then(() => {})
-    .catch((error) => {
-      throw new functions.https.HttpsError("unknown", error.message);
-    });
-
-  usuariosMaster.once("value", (snapshot) => {
-    let acessosObj = {
-      acessos: {
-        master: false,
-        adm: false,
-        secretaria: false,
-        professores: false,
-        aluno: false
+        acessosObj = {
+          master: true,
+          adm: false,
+          secretria: false,
+          professores: false,
+          aluno: false
+        };
+      } else if (user.uid.length === 5) {
+        let type = user.type === "professor" ? "/acessos/professor" : "/acessos/aluno";
+        listaDeUsers
+          .child(user.uid + type)
+          .set(true)
+          .then(() => {})
+          .catch((error) => {
+            throw new functions.https.HttpsError("unknown", error.message);
+          });
+        acessosObj = {
+          master: false,
+          adm: false,
+          secretria: false,
+          professores: user.type === "professor",
+          aluno: user.type !== "professor"
+        };
       }
-    };
-    let lista = snapshot.val();
-    if (lista.indexOf(user.email) !== -1) {
-      listaDeUsers
-        .child(user.uid + "/acessos/master")
-        .set(true)
+
+      admin
+        .auth()
+        .setCustomUserClaims(user.uid, acessosObj)
         .then(() => {})
         .catch((error) => {
           throw new functions.https.HttpsError("unknown", error.message);
         });
-      acessosObj = {
-        master: true,
-        adm: false,
-        secretria: false,
-        professores: false,
-        aluno: false
-      };
-    } else if (user.uid.length === 5) {
-      listaDeUsers
-        .child(user.uid + "/acessos/aluno")
-        .set(true)
-        .then(() => {})
-        .catch((error) => {
-          throw new functions.https.HttpsError("unknown", error.message);
-        });
-      acessosObj = {
-        master: false,
-        adm: false,
-        secretria: false,
-        professores: false,
-        aluno: true
-      };
-    }
-    admin
-      .auth()
-      .setCustomUserClaims(user.uid, acessosObj)
+    });
+  }
+
+  function addUserToListOfUsers() {
+    listaDeUsers
+      .child(user.uid)
+      .set({
+        acessos: {
+          master: false,
+          adm: false,
+          secretaria: false,
+          professores: false,
+          aluno: false
+        },
+        email: user.email
+      })
       .then(() => {})
       .catch((error) => {
         throw new functions.https.HttpsError("unknown", error.message);
       });
-  });
+  }
+
+  function addInitialUserData() {
+    dadosNoBanco
+      .set({
+        nome: user.displayName,
+        email: user.email,
+
+        timestamp: admin.firestore.Timestamp.now()
+      })
+      .then(() => {})
+      .catch((error) => {
+        throw new functions.https.HttpsError("unknown", error.message);
+      });
+  }
+
+  function sendMailToNewUser() {
+    admin
+      .auth()
+      .generateEmailVerificationLink(user.email)
+      .then((value) => {
+        functions.logger.log(value);
+        let emailContent = {
+          to: user.email,
+          message: {
+            subject: "Verificação de segurança do Sistema Escolar",
+            text: "Clique no link para verificar seu e-mail no sistema escolar",
+            html: `
+                      <p>Olá, ${user.displayName || "usuário"}</p>
+                      <p>Clique neste link para verificar seu endereço de e-mail.</p>
+                      <p><a href="${value}">${value}</a></p>
+                      <p>Se você não solicitou a verificação deste endereço, ignore este e-mail.</p>
+                      <p>Obrigado,</p>
+                      <p>Equipe do GrupoProX</p>
+                  `
+          }
+        };
+        firestoreRef
+          .add(emailContent)
+          .then(() => {
+            console.log("Queued email for delivery to " + user.email);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      })
+      .catch((error) => {
+        functions.logger.log(error);
+      });
+  }
 });
 
 exports.cadastraTurma = functions.https.onCall(async (data, context) => {
@@ -401,7 +424,6 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
                     .ref("sistemaEscolar/alunos/" + matricula + "/turmaAluno")
                     .set(dados.codigoSala);
                 });
-                return;
               }
 
               if (
@@ -658,64 +680,75 @@ exports.cadastraAniversarios = functions.database
 
 exports.cadastraProf = functions.https.onCall(async (data, context) => {
   console.log(context.auth.token);
+
   if (context.auth.token.master === true || context.auth.token.secretaria === true) {
-    let dadosProfessor = data.dados;
-    let codContrato = Math.random().toString(36).slice(-10);
-    let contratos = [codContrato];
-    dadosProfessor.matriculaProfessor = Math.random().toString(36).slice(-10);
+    try {
+      let dadosProfessor = data.dados;
+      let codContrato = Math.random().toString(36).slice(-10);
+      let contratos = [codContrato];
+      dadosProfessor.matriculaProfessor = Math.random().toString(36).slice(-10);
 
-    let firestoreRef = admin.firestore().collection("mail");
+      let user = await admin.auth().createUser({
+        uid: dadosProfessor.matriculaProfessor,
+        email: dadosProfessor.emailProfessor,
+        emailVerified: false,
+        password: dadosProfessor.senhaProfessor,
+        displayName: dadosProfessor.nomeProfessor,
+        phoneNumber: "+55" + dadosProfessor.celularProfessor,
+        type: "professor"
+      });
 
-    let infoEscola = await admin
-      .database()
-      .ref("sistemaEscolar/infoEscola/dadosBasicos")
-      .once("value");
+      let firestoreRef = admin.firestore().collection("mail");
 
-    let dadosEscola = infoEscola.val();
+      let infoEscola = await admin
+        .database()
+        .ref("sistemaEscolar/infoEscola/dadosBasicos")
+        .once("value");
 
-    let emailContent = {
-      to: dadosProfessor.emailProfessor,
-      cc: dadosEscola.emailEscola || null,
-      message: {
-        subject: `${dadosEscola.nomeEscola}`,
-        text: `Olá ${
-          dadosProfessor.nomeProfessor.split(" ")[0]
-        }, você foi corretamente cadastrado(a) em nosso sistema e está pronto(a) para iniciar essa jornada conosco. Sistemas GrupoProX.`,
-        html: `<h3>Olá ${
-          dadosProfessor.nomeProfessor.split(" ")[0]
-        }!</h3><p>Você está matriculado(a) no nº de matrícula <b>${
-          dadosProfessor.matriculaProfessor
-        }</b>, e está pronto(a) para iniciar os estudos conosco. Use seu e-mail e senha cadastrados para acessar o sistema. Só lembrando, sua senha é: <b>${
-          dadosProfessor.senhaProfessor
-        }</b>. Fique atento aos e-mails, pois sua escola pode utilizar este canal para comunicação com você.</p><p>Em caso de dificuldades <b>entre em contato com a escola para maiores informações</b>.</p><p><b>Dados de contato da escola:</b><br>Telefone: ${
-          dadosEscola.telefoneEscola
-        }<br>E-mail: ${dadosEscola.emailEscola}<br>Endereço: ${
-          dadosEscola.enderecoEscola
-        }</p><p>Sistemas GrupoProX.</p>`
-      }
-    };
+      let dadosEscola = infoEscola.val();
 
-    dadosProfessor.userCreator = context.auth.uid;
-    dadosProfessor.contratos = contratos;
-    dadosProfessor.timestamp = admin.firestore.Timestamp.now();
-
-    return admin
-      .database()
-      .ref("sistemaEscolar/professores")
-      .child(dadosProfessor.matriculaProfessor)
-      .once("value")
-      .then(async (professorRecord) => {
-        if (professorRecord.exists()) {
-          throw new functions.https.HttpsError(
-            "already-exists",
-            "Este número de matrícula já consta no sistema. Por favor, clique no botão azul no início deste formulário para atualizar o número de matrícula, para gerar um novo número de matrícula."
-          );
+      let emailContent = {
+        to: dadosProfessor.emailProfessor,
+        cc: dadosEscola.emailEscola || null,
+        message: {
+          subject: `${dadosEscola.nomeEscola}`,
+          text: `Olá ${
+            dadosProfessor.nomeProfessor.split(" ")[0]
+          }, você foi corretamente cadastrado(a) em nosso sistema e está pronto(a) para iniciar essa jornada conosco. Sistemas GrupoProX.`,
+          html: `<h3>Olá ${
+            dadosProfessor.nomeProfessor.split(" ")[0]
+          }!</h3><p>Você está matriculado(a) no nº de matrícula <b>${
+            dadosProfessor.matriculaProfessor
+          }</b>, e está pronto(a) para iniciar os estudos conosco. Use seu e-mail e senha cadastrados para acessar o sistema. Só lembrando, sua senha é: <b>${
+            dadosProfessor.senhaProfessor
+          }</b>. Fique atento aos e-mails, pois sua escola pode utilizar este canal para comunicação com você.</p><p>Em caso de dificuldades <b>entre em contato com a escola para maiores informações</b>.</p><p><b>Dados de contato da escola:</b><br>Telefone: ${
+            dadosEscola.telefoneEscola
+          }<br>E-mail: ${dadosEscola.emailEscola}<br>Endereço: ${
+            dadosEscola.enderecoEscola
+          }</p><p>Sistemas GrupoProX.</p>`
         }
+      };
 
-        try {
+      dadosProfessor.userCreator = context.auth.uid;
+      dadosProfessor.contratos = contratos;
+      dadosProfessor.timestamp = admin.firestore.Timestamp.now();
+
+      return admin
+        .database()
+        .ref("sistemaEscolar/usuarios")
+        .child(user.uid)
+        .once("value")
+        .then(async (professorRecord) => {
+          if (professorRecord.exists()) {
+            throw new functions.https.HttpsError(
+              "already-exists",
+              "Este número de matrícula já consta no sistema. Por favor, clique no botão azul no início deste formulário para atualizar o número de matrícula, para gerar um novo número de matrícula."
+            );
+          }
+
           await admin
             .database()
-            .ref("sistemaEscolar/professores/" + dadosProfessor.matriculaProfessor)
+            .ref(`sistemaEscolar/usuarios/${user.uid}/professor`)
             .set(dadosProfessor);
 
           await admin
@@ -742,14 +775,10 @@ exports.cadastraProf = functions.https.onCall(async (data, context) => {
               " com sucesso! Os e-mails foram disparados.",
             codContrato: codContrato
           };
-        } catch (error) {
-          console.error(error);
-          throw new Error(error.message);
-        }
-      })
-      .catch((error) => {
-        throw new functions.https.HttpsError("unknown", error.message, error);
-      });
+        });
+    } catch (error) {
+      throw new functions.https.HttpsError("unknown", error.message, error);
+    }
   }
   throw new functions.https.HttpsError(
     "permission-denied",
