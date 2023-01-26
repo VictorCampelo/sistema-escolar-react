@@ -17,18 +17,10 @@ import {
   TextField,
   Typography
 } from "@material-ui/core";
-import {
-  Add,
-  Assistant,
-  CloudUpload,
-  EqualizerTwoTone,
-  Label,
-  LibraryBooks
-} from "@material-ui/icons";
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
+import { Add, Assistant, LibraryBooks } from "@material-ui/icons";
+import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
-import { useRef } from "react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import {
   booksRef,
   coursesRef,
@@ -156,7 +148,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
 
   const classes = useStyles();
 
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [loader, setLoader] = useState(false); // Loader state for the class submit
   const [loading, setLoading] = useState(false); // Loading state for the data grid of the books
@@ -171,12 +163,9 @@ const AddClass = ({ dataForEditing, onClose }) => {
     modalidade: "",
     professor: ""
   });
-
   const [courses, setCourses] = useState([]);
   const [teachers, setTeachers] = useState([]);
-
   const [days, setDays] = useState([]);
-
   const fabStyle = {
     margin: 0,
     top: "auto",
@@ -186,22 +175,13 @@ const AddClass = ({ dataForEditing, onClose }) => {
     position: "fixed"
   };
 
-  useEffect(() => {
-    getCourses();
-    getTeachers();
-    getDays();
-    async function getBooks() {
-      setLoading(true);
-      let snapshot = await booksRef.once("value");
-      setLoading(false);
-      let books = snapshot.exists() ? snapshot.val() : [];
-      console.log(books);
-
-      console.log(tableRef);
-      setRows(books);
-    }
-    getBooks();
-  }, []);
+  async function getBooks() {
+    setLoading(true);
+    let snapshot = await booksRef.once("value");
+    let books = snapshot.exists() ? snapshot.val() : [];
+    setRows(books);
+    setLoading(false);
+  }
 
   const getDays = async () => {
     const allDays = (await daysCodesRef.once("value")).val();
@@ -230,55 +210,70 @@ const AddClass = ({ dataForEditing, onClose }) => {
     allTeachers ? setTeachers([...teachersArray]) : setTeachers();
   };
 
+  useEffect(() => {
+    getCourses();
+    getTeachers();
+    getDays();
+    getBooks();
+  }, []);
+
   const handleFormChange = async (e) => {
-    console.log(e);
-    const value = e.target.value;
-    console.log(value);
-    const id = e.target.id;
-    let data = { ...classData };
-    data[id] = value;
+    try {
+      const value = e.target.value;
+      const id = e.target.id;
+      let data = { ...classData };
+      data[id] = value;
 
-    if (id !== "codigoSala") {
-      const classCode = await generateClassCode(data);
-      data["codigoSala"] = classCode;
+      if (id !== "codigoSala") {
+        const classCode = await generateClassCode(data);
+        data.codigoSala = classCode;
+      }
+
+      setClassData(data);
+    } catch (error) {
+      console.log(error);
     }
-
-    setClassData(data);
-    console.log(data);
   };
 
   const handleDayPicker = async (e) => {
-    console.log(e);
-    const value = e.target.value;
-    console.log(value);
-    let data = { ...classData };
-    data["diasDaSemana"] = value;
-    // const index = data['diasDaSemana'].indexOf(value)
-    // index === -1 ? data['diasDaSemana'].push(value) : data['diasDaSemana'].splice(index, 1)
-    const classCode = await generateClassCode(data);
-    data["codigoSala"] = classCode;
-    setClassData(data);
-    console.log(data);
+    try {
+      const value = e.target.value;
+
+      let data = { ...classData };
+
+      data.diasDaSemana = value;
+
+      const classCode = await generateClassCode(data);
+
+      data.codigoSala = classCode;
+
+      setClassData(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleRowSelection = async (selectedRows) => {
-    console.log(selectedRows);
-    let data = { ...classData };
-    data["livros"] = selectedRows;
-    const classCode = await generateClassCode(data);
-    data["codigoSala"] = classCode;
-    setClassData(data);
-    console.log(data);
+    try {
+      let data = { ...classData };
+      data.livros = selectedRows;
+      const classCode = await generateClassCode(data);
+      data.codigoSala = classCode;
+      setClassData(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleSubmit = async () => {
     setLoader(true);
     try {
-      console.log(classData);
       let message = await handleSendClassData(classData);
       setLoader(false);
       enqueueSnackbar(message.answer, { variant: "success" });
-      if (dataForEditing) onClose();
+      if (dataForEditing) {
+        onClose();
+      }
     } catch (error) {
       setLoader(false);
       enqueueSnackbar(error.message, { variant: "error" });
@@ -308,7 +303,9 @@ const AddClass = ({ dataForEditing, onClose }) => {
                 </Typography>
               </Grid>
             </Grid>
+
             <hr />
+
             <form id="formClassData" onChange={handleFormChange} autoComplete="off">
               <Box m={1} className={classes.fieldsContainer}>
                 <TextField
@@ -331,7 +328,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
                     shrink: true
                   }}
                   required
-                ></TextField>
+                />
                 <TextField
                   id="horarioTerminoTurma"
                   type="time"
@@ -344,11 +341,11 @@ const AddClass = ({ dataForEditing, onClose }) => {
                     shrink: true
                   }}
                   required
-                ></TextField>
+                />
               </Box>
 
               <Box m={1}>
-                {courses ? (
+                {courses ?
                   <TextField
                     id="curso"
                     select
@@ -360,24 +357,26 @@ const AddClass = ({ dataForEditing, onClose }) => {
                     SelectProps={{
                       native: true
                     }}
-                    required
-                  >
+                    required>
+
                     <option hidden selected>
                       Escolha um curso...
                     </option>
+
                     {courses.length > 0 &&
-                      courses.map((option) => (
+                      courses.map((option) =>
                         <option key={option.codSistema} value={option.codSistema}>
                           {option.codCurso + " - " + option.nomeCurso}
                         </option>
-                      ))}
+                      )}
                   </TextField>
-                ) : (
+                  :
                   <label style={{ color: "red" }}>Nenhum curso cadastrado no sistema</label>
-                )}
+                }
               </Box>
+
               <Box m={1}>
-                {teachers ? (
+                {teachers ?
                   <TextField
                     id="professor"
                     select
@@ -389,22 +388,23 @@ const AddClass = ({ dataForEditing, onClose }) => {
                     SelectProps={{
                       native: true
                     }}
-                    required
-                  >
+                    required>
                     <option hidden selected>
                       Escolha um(a) professor(a)...
                     </option>
+
                     {teachers.length > 0 &&
-                      teachers.map((teacher, i) => (
-                        <option key={i} value={teacher.email}>
-                          {`${teacher.nome} (${teacher.email})`}
+                      teachers.map((teacher, i) =>
+                        <option key={i} value={teacher.emailProfessor}>
+                          {`${teacher.nomeProfessor} (${teacher.emailProfessor})`}
                         </option>
-                      ))}
+                      )}
                   </TextField>
-                ) : (
+                  :
                   <label style={{ color: "red" }}>Nenhum professor cadastrado no sistema</label>
-                )}
+                }
               </Box>
+
               <Box m={1}>
                 <TextField
                   id="modalidade"
@@ -417,8 +417,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
                   SelectProps={{
                     native: true
                   }}
-                  required
-                >
+                  required>
                   <option hidden selected>
                     Escolha uma modalidade...
                   </option>
@@ -446,7 +445,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
             </Grid>
             <hr />
             <Box m={1}>
-              {days ? (
+              {days ?
                 <FormControl className={classes.formControl}>
                   <InputLabel id="demo-mutiple-chip-label">Dias da semana</InputLabel>
                   <Select
@@ -458,27 +457,26 @@ const AddClass = ({ dataForEditing, onClose }) => {
                     variant="filled"
                     onChange={handleDayPicker}
                     input={<Input id="diasDaSemana" />}
-                    renderValue={(selected) => (
+                    renderValue={(selected) =>
                       <div className={classes.chips}>
-                        {selected.map((value) => (
+                        {selected.map((value) =>
                           <Chip key={value} label={days[value]} className={classes.chip} />
-                        ))}
+                        )}
                       </div>
-                    )}
-                    MenuProps={MenuProps}
-                  >
-                    {days.map((name, i) => (
+                    }
+                    MenuProps={MenuProps}>
+                    {days.map((name, i) =>
                       <MenuItem key={name} name="diasDaSemana" value={i}>
                         {name}
                       </MenuItem>
-                    ))}
+                    )}
                   </Select>
                 </FormControl>
-              ) : (
+                :
                 <label style={{ color: "red" }}>
                   Códigos de dias da semana não configurados no sistema
                 </label>
-              )}
+              }
             </Box>
             <Box m={1}>
               <div style={{ height: 250, width: "100%" }}>
@@ -517,8 +515,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
           disabled={!courses || !teachers || !rows || !days}
           style={fabStyle}
           variant="extended"
-          color="primary"
-        >
+          color="primary">
           <Add className={classes.extendedIcon} />
           Cadastrar turma
         </Fab>

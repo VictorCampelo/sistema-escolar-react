@@ -1,6 +1,5 @@
-const functions = require('firebase-functions');
+const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const path = require("path");
 const { auth } = require("firebase-admin");
 const { HttpsError } = require("firebase-functions/v1/https");
 const { firebaseConfig } = require("firebase-functions");
@@ -12,8 +11,6 @@ const QRCode = require("qrcode");
 const axios = require("axios").default;
 
 admin.initializeApp();
-
-const app = admin.app();
 
 exports.verificadorDeAcesso = functions.https.onCall((data, context) => {
   try {
@@ -179,7 +176,7 @@ exports.deletaUsersAutomatico = functions.auth.user().onDelete((user) => {
 
 exports.criaContaAluno = functions.database
   .ref("sistemaEscolar/alunos/{registro}")
-  .onCreate((snapshot, context) => {
+  .onCreate((snapshot) => {
     let aluno = snapshot.after.val();
     admin
       .auth()
@@ -227,7 +224,7 @@ exports.modificaSenhaContaAluno = functions.database
       admin
         .auth()
         .updateUser(user.uid, { password: senhaAluno })
-        .then((newUser) => {
+        .then(() => {
           firestoreRef
             .add(emailContent)
             .then(() => {
@@ -253,6 +250,7 @@ exports.modificaSenhaContaAluno = functions.database
 
 exports.cadastroUser = functions.auth.user().onCreate((user) => {
   console.log(user.displayName);
+
   let dadosNoBanco = admin.database().ref(`sistemaEscolar/usuarios/${user.uid}/`);
   let listaDeUsers = admin.database().ref("sistemaEscolar/listaDeUsuarios");
   let usuariosMaster = admin.database().ref("sistemaEscolar/usuariosMaster");
@@ -330,7 +328,9 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         aluno: false
       }
     };
+
     let lista = snapshot.val();
+
     if (lista.indexOf(user.email) !== -1) {
       listaDeUsers
         .child(user.uid + "/acessos/master")
@@ -339,10 +339,11 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         .catch((error) => {
           throw new functions.https.HttpsError("unknown", error.message);
         });
+
       acessosObj = {
         master: true,
         adm: false,
-        secretria: false,
+        secretaria: false,
         professores: false,
         aluno: false
       };
@@ -354,14 +355,16 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         .catch((error) => {
           throw new functions.https.HttpsError("unknown", error.message);
         });
+
       acessosObj = {
         master: false,
         adm: false,
-        secretria: false,
+        secretaria: false,
         professores: false,
         aluno: true
       };
     }
+
     admin
       .auth()
       .setCustomUserClaims(user.uid, acessosObj)
@@ -369,7 +372,7 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
       .catch((error) => {
         throw new functions.https.HttpsError("unknown", error.message);
       });
-  });
+  };
 });
 
 exports.cadastraTurma = functions.https.onCall(async (data, context) => {
@@ -545,21 +548,17 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
           throw new functions.https.HttpsError("unknown", error.message, error);
         });
     }
+
     data.id = data.codigoSala;
-    let horario;
+
     let hora = dados.hora.indexOf("_") === -1 ? dados.hora : dados.hora.split("_")[0];
-    if (hora >= 12 && hora <= 17) {
-      horario = "Tarde";
-    } else if (hora >= 18 && hora <= 23) {
-      horario = "Noite";
-    } else if (hora >= 5 && hora <= 11) {
-      horario = "Manha";
-    } else {
+    if (!(hora >= 12 && hora <= 17) || !(hora >= 18 && hora) <= 23 || !(hora >= 5 && hora <= 11)) {
       throw new functions.https.HttpsError(
         "invalid-argument",
         "Você deve passar um horário válido"
       );
     }
+
     return admin
       .auth()
       .getUserByEmail(data.professor)
@@ -633,7 +632,7 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
 
 exports.cadastraAniversarios = functions.database
   .ref("sistemaEscolar/usuarios/{uid}/dataNascimento")
-  .onWrite((snapshot, context) => {
+  .onWrite((snapshot) => {
     let data = snapshot.after.val();
     admin
       .auth()
@@ -658,6 +657,110 @@ exports.cadastraAniversarios = functions.database
         throw new functions.https.HttpsError("unknown", error.message, error);
       });
   });
+
+exports.cadastraProf = functions.https.onCall(async (data, context) => {
+  console.log(context.auth.token);
+  if (context.auth.token.master === true || context.auth.token.secretaria === true) {
+
+    let dadosProfessor = data.dados;
+    let codContrato = Math.random().toString(36).slice(-10);
+    let contratos = [codContrato];
+    dadosProfessor.matriculaProfessor = Math.random().toString(36).slice(-10);
+    
+    const userProfessor = await admin.auth().createUserWithEmailAndPassword(dadosProfessor.emailProfessor, dadosProfessor.senhaProfessor, dadosProfessor.nomeProfessor);
+
+    let firestoreRef = admin.firestore().collection("mail");
+
+    let infoEscola = await admin
+      .database()
+      .ref("sistemaEscolar/infoEscola/dadosBasicos")
+      .once("value");
+
+    let dadosEscola = infoEscola.val();
+
+    let emailContent = {
+      to: dadosProfessor.emailProfessor,
+      cc: dadosEscola.emailEscola || null,
+      message: {
+        subject: `${dadosEscola.nomeEscola}`,
+        text: `Olá ${
+          dadosProfessor.nomeProfessor.split(" ")[0]
+        }, você foi corretamente cadastrado(a) em nosso sistema e está pronto(a) para iniciar essa jornada conosco. Sistemas GrupoProX.`,
+        html: `<h3>Olá ${
+          dadosProfessor.nomeProfessor.split(" ")[0]
+        }!</h3><p>Você está matriculado(a) no nº de matrícula <b>${
+          dadosProfessor.matriculaProfessor
+        }</b>, e está pronto(a) para iniciar os estudos conosco. Use seu e-mail e senha cadastrados para acessar o sistema. Só lembrando, sua senha é: <b>${
+          dadosProfessor.senhaProfessor
+        }</b>. Fique atento aos e-mails, pois sua escola pode utilizar este canal para comunicação com você.</p><p>Em caso de dificuldades <b>entre em contato com a escola para maiores informações</b>.</p><p><b>Dados de contato da escola:</b><br>Telefone: ${
+          dadosEscola.telefoneEscola
+        }<br>E-mail: ${dadosEscola.emailEscola}<br>Endereço: ${
+          dadosEscola.enderecoEscola
+        }</p><p>Sistemas GrupoProX.</p>`
+      }
+    };
+
+    dadosProfessor.userCreator = context.auth.uid;
+    dadosProfessor.contratos = contratos;
+    dadosProfessor.timestamp = admin.firestore.Timestamp.now();
+
+    return admin
+      .database()
+      .ref("sistemaEscolar/professores")
+      .child(dadosProfessor.matriculaProfessor)
+      .once("value")
+      .then(async (professorRecord) => {
+        if (professorRecord.exists()) {
+          throw new functions.https.HttpsError(
+            "already-exists",
+            "Este número de matrícula já consta no sistema. Por favor, clique no botão azul no início deste formulário para atualizar o número de matrícula, para gerar um novo número de matrícula."
+          );
+        }
+
+        try {
+          await admin
+            .database()
+            .ref("sistemaEscolar/professores/" + dadosProfessor.matriculaProfessor)
+            .set(dadosProfessor);
+
+          await admin
+            .database()
+            .ref("sistemaEscolar/infoEscola/contratos/" + codContrato)
+            .set({
+              // contratoConfigurado: contratoConfigurado,
+              situacao: "Vigente",
+              // planoOriginal: planoOriginal,
+              matricula: dadosProfessor.matriculaProfessor,
+              timestamp: admin.firestore.Timestamp.now(),
+              codContrato: codContrato,
+              tipo: "professor"
+            });
+
+          await firestoreRef.add(emailContent);
+
+          console.log("Queued email for delivery to " + dadosProfessor.emailProfessor);
+
+          return {
+            answer:
+              "Professor cadastrado na matrícula " +
+              dadosProfessor.matriculaProfessor +
+              " com sucesso! Os e-mails foram disparados.",
+            codContrato: codContrato
+          };
+        } catch (error) {
+          console.error(error);
+          throw new Error(error.message);
+        }
+      })
+      .catch((error) => {
+        throw new functions.https.HttpsError("unknown", error.message, error);
+      });
+  }
+  throw new functions.https.HttpsError(
+    "permission-denied",
+    "Você não possui permissão para fazer alterações nesta área."
+  );
+});
 
 exports.addNovoProfTurma = functions.https.onCall((data, context) => {
   if (context.auth.token.master === true || context.auth.token.secretaria === true) {
@@ -968,7 +1071,7 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
                               }
                               return numAtual++;
                             },
-                            function (error, comitted, snapshot) {
+                            function (error, comitted) {
                               if (error) {
                                 throw new functions.https.HttpsError(
                                   error.code,
@@ -1027,7 +1130,7 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
   );
 });
 
-exports.timestamp = functions.https.onCall((data, context) => {
+exports.timestamp = functions.https.onCall(() => {
   return { timestamp: admin.firestore.Timestamp.now() };
 });
 
@@ -1272,12 +1375,12 @@ exports.ativaDesativaAlunos = functions.https.onCall((data, context) => {
         let dadosTurma;
         for (const matriculaNum in alunos) {
           if (Object.hasOwnProperty.call(alunos, matriculaNum)) {
-            const nome = alunos[matriculaNum];
             let matricula = formataNumMatricula(matriculaNum);
             await admin
               .database()
               .ref(`sistemaEscolar/alunosDesativados/${matricula}/dadosAluno`)
               .once("value")
+              // eslint-disable-next-line no-loop-func
               .then((snapshot) => {
                 dadosAluno = snapshot.val();
                 console.log(dadosAluno);
@@ -1379,12 +1482,12 @@ exports.ativaDesativaAlunos = functions.https.onCall((data, context) => {
         let dadosTurma;
         for (const matriculaNum in alunos) {
           if (Object.hasOwnProperty.call(alunos, matriculaNum)) {
-            const nome = alunos[matriculaNum];
             let matricula = formataNumMatricula(matriculaNum);
             admin
               .database()
               .ref(`sistemaEscolar/alunos/${matricula}`)
               .once("value")
+              // eslint-disable-next-line no-loop-func
               .then((snapshot) => {
                 dadosAluno = snapshot.val();
                 console.log(dadosAluno);
@@ -1500,7 +1603,6 @@ exports.lancarNotas = functions.https.onCall((data, context) => {
     async function lancar() {
       for (const matricula in alunos) {
         if (Object.hasOwnProperty.call(alunos, matricula)) {
-          const nomeAluno = alunos[matricula];
           alunosTurmaRef
             .child(formataNumMatricula(matricula) + "/notas")
             .set(notas)
@@ -1619,7 +1721,6 @@ exports.aberturaTurma = functions.database
   .onUpdate((snapshot, context) => {
     // context.timestamp = context.timestamp
     // context.params = { turma: "cod da turma" }
-    const classId = context.params.turma;
     const classState = snapshot.after.val();
 
     // checking if the class status is "opened"
@@ -1827,7 +1928,6 @@ exports.aberturaChamados = functions.database
 exports.montaCalendarioGeral = functions.database
   .ref("sistemaEscolar/turmas/{turma}/aulaEvento/")
   .onWrite(async (snapshot, context) => {
-    let turma = context.params.turma;
     let aulaEvento = snapshot.after.val();
     let source = aulaEvento;
     let calendarioSnapshot = await admin
@@ -1846,7 +1946,6 @@ exports.removeCalendarios = functions.database
   .ref("sistemaEscolar/turmas/{turma}/aulaEvento/")
   .onDelete(async (snapshot, context) => {
     let turma = context.params.turma;
-    let aulaEvento = snapshot.val();
     let calendarioSnapshot = await admin
       .database()
       .ref("sistemaEscolar/infoEscola/calendarioGeral")
@@ -1857,7 +1956,7 @@ exports.removeCalendarios = functions.database
     await admin.database().ref("sistemaEscolar/infoEscola/calendarioGeral").set(calendario);
   });
 
-exports.geraPix = functions.https.onCall((data, context) => {
+exports.geraPix = functions.https.onCall((data) => {
   class BrCode {
     constructor(key, amount, name, reference, keyType, city) {
       this.key = key;
@@ -2132,26 +2231,6 @@ exports.newYear = functions.pubsub
 
     const now = new Date(context.timestamp);
 
-    /**
-         * Example:
-        [
-            {
-                "date": "2022-01-01",
-                "name": "Confraternização mundial",
-                "type": "national"
-            },
-            {
-                "date": "2022-03-01",
-                "name": "Carnaval",
-                "type": "national"
-            }
-            ...
-        ]
-         * @param {string} year The year to get the holidays
-         * @returns array
-         *
-         *
-         */
     const getBrazilianHolidays = async (year) => {
       const response = await axios.get(`https://brasilapi.com.br/api/feriados/v1/${year}`);
 
@@ -2170,7 +2249,7 @@ exports.newYear = functions.pubsub
 
     getBrazilianHolidays(now.getFullYear())
       .then((holidays) => {
-        holidays.map((holiday, i) => {
+        holidays.map((holiday) => {
           holidaySource.events.push({
             title: holiday.name,
             start: holiday.date
@@ -2222,7 +2301,7 @@ exports.newYear = functions.pubsub
     return null;
   });
 
-exports.geraBoletos = functions.https.onCall((data, context) => {
+exports.geraBoletos = functions.https.onCall((data) => {
   const getDaysInMonth = (month, year) => {
     // Here January is 1 based
     //Day 0 is the last day in the previous month
@@ -2248,7 +2327,6 @@ exports.geraBoletos = functions.https.onCall((data, context) => {
       : await alunosDesativadosRef.child(matricula + "/dadosAluno").once("value");
     let aluno = dadosAluno.val();
     let contratos = aluno.contratos;
-    let contrato = contratos[contratos.indexOf(codContrato)];
     let data = dadosEscola.contratos[codContrato].contratoConfigurado;
     let plano = dadosEscola.contratos[codContrato].planoOriginal;
     let mesInicio = Number(data["ano-mes"].split("-")[1]);
@@ -2278,10 +2356,6 @@ exports.geraBoletos = functions.https.onCall((data, context) => {
       let docsBoletosGerados = await contratoRef.child("docsBoletos").once("value");
       numerosDeDoc = docsBoletosGerados.val();
       let continuar = true;
-      // if (numerosDeDoc !== null) {
-      //     continuar = window.confirm('O sistema identificou débitos ativos para este contrato. Deseja gerar novos débitos/boletos? (Para gerar, clique em OK)')
-
-      // }
 
       if (continuar) {
         data.valorDesconto = (Number(data.valorCurso) * (data.descontoPlano / 100)).toFixed(2);
@@ -2309,22 +2383,13 @@ exports.geraBoletos = functions.https.onCall((data, context) => {
           descontos,
           acrescimos,
           totalCobrado,
-          dataProcessamento,
-          informacoes
+          dataProcessamento
         ) {
           bol++;
           if (bol > 3 && pag >= 1) {
             pag++;
             bol = 0;
-            // document.getElementById('livro').innerHTML += `
-            // <div class="page">
-            //     <div class="subpage">
-            //         <div id="boletos${pag}"></div>
-            //     </div>
-            // </div>
-            // `
           }
-          //let boletos = document.getElementById('boletos' + pag)
           await admin.database().ref("sistemaEscolar").child("docsBoletos").push({
             numeroDoc: numeroDoc,
             valorDoc: valorDoc,
@@ -2339,269 +2404,6 @@ exports.geraBoletos = functions.https.onCall((data, context) => {
             codContrato: codContrato,
             matricula: matricula
           });
-
-          //let gera = firebase.functions().httpsCallable('geraPix')
-          // return gera({valor: totalCobrado, descricao: `DOC${numeroDoc}`}).then(function(lineCode) {
-
-          //     //divQr.src = lineCode.data;
-          //     console.log(lineCode)
-          //     //const code = new QRCode(divQr, { text: lineCode.data, width: 100, height: 100 });
-          //     //qrCodesArray.push({qrcode: lineCode.data, numeroDoc: numeroDoc})
-          //     boletos.innerHTML += `
-          //     <table style="height: 241px; width: 100%; border-collapse: collapse; border-style: solid; margin-top: 18px;" border="1" >
-          //     <tbody>
-          //         <tr style="height: 10px; border-style: none;">
-          //             <td style="width: 4.97079%; height: 179px;" rowspan="9">&nbsp;</td>
-          //             <td style="width: 22.9045%; height: 20px; text-align: center;" rowspan="2">
-          //             <table style="height: 100%; width: 96.3454%; border-collapse: collapse; border-style: hidden;" border="1">
-          //             <tbody>
-          //             <tr style="height: 18px;">
-          //                 <td style="width: 38.8889%; height: 33px;" rowspan="2"><img src="${dadosEscola.logoEscola}" alt="Logo" width="30" height="30" /></td>
-          //                 <td style="width: 189.264%; height: 18px; border-left: hidden;">
-          //                     <section style="font-size: 8pt; text-align: center;">
-          //                         Parcela
-          //                     </section>
-
-          //                     <section style="font-size: x-small; text-align: center;">
-          //                         ${parcelaAtual}/${numDeParcelas}
-          //                     </section>
-          //                 </td>
-          //             </tr>
-          //             <tr style="height: 15px;">
-          //             <td style="width: 189.264%; height: 15px; border-left: hidden;">
-          //                     <section style="font-size: 8pt; text-align: center;">
-          //                         Vencimento
-          //                     </section>
-
-          //                     <section style="font-size: x-small; text-align: center;">
-          //                         ${vencimento}
-          //                     </section>
-          //             </td>
-          //         </tr>
-          //         </tbody>
-          //         </table>
-          //         </td>
-          //         <td style="width: 7.60226%; text-align: center; height: 20px; border-left: dotted;" rowspan="2"><img src="${dadosEscola.logoEscola}" alt="Logo" width="30" height="30" /></td>
-          //         <td style="height: 20px; width: 43.8475%;" colspan="3" rowspan="2">
-          //             <section style="font-size: 8pt;">
-          //                 &nbsp;<b>Cedente</b>
-          //             </section>
-          //             <section style="font-size: x-small;">
-          //                 &nbsp;${dadosEscola.dadosBasicos.nomeEscola}
-          //             </section>
-          //             <section style="font-size: x-small;">
-          //                 &nbsp;${dadosEscola.dadosBasicos.cnpjEscola}
-          //             </section>
-          //             <section style="font-size: x-small;">
-          //                 &nbsp;${dadosEscola.dadosBasicos.enderecoEscola}
-          //             </section>
-          //             <section style="font-size: x-small;">
-          //                 &nbsp;${dadosEscola.dadosBasicos.telefoneEscola}
-          //             </section>
-          //         </td>
-          //         <td style="width: 64.5223%; height: 10px; text-align: center;">
-          //             <section style="font-size: 8pt;">
-          //                 Parcela
-          //             </section>
-
-          //             <section style="font-size: x-small; text-align: center;">
-          //                 ${parcelaAtual}/${numDeParcelas}
-          //             </section>
-          //         </td>
-          //         </tr>
-          //         <tr style="height: 10px;">
-          //         <td style="width: 64.5223%; height: 10px;">
-          //             <section style="font-size: 8pt; text-align: center;">
-          //                 Vencimento
-          //             </section>
-
-          //             <section style="font-size: x-small; text-align: center;">
-          //                 ${vencimento}
-          //             </section>
-          //         </td>
-          //         </tr>
-          //         <tr style="height: 33px;">
-          //         <td style="width: 22.9045%; height: 33px; text-align: start;">
-          //             <section style="font-size: 8pt; text-align: center;">
-          //                 Documento
-          //             </section>
-
-          //             <section style="font-size: x-small; width: 100%; text-align: center;">
-          //                 ${numeroDoc}
-          //             </section>
-          //         </td>
-          //         <td style="width: 19.286%; height: 33px; border-left: dotted;" colspan="2">
-          //             <section style="font-size: 8pt; text-align: center;">
-          //                 Documento
-          //             </section>
-
-          //             <section style="font-size: x-small; width: 100%; text-align: center;">
-          //                 ${numeroDoc}
-          //             </section>
-          //         </td>
-          //         <td style="width: 14.2301%; height: 33px;">
-          //             <section style="font-size: 8pt; text-align: center;">
-          //                 Espécie
-          //             </section>
-
-          //             <section style="font-size: x-small; width: 100%; text-align: center;">
-          //                 R$
-          //             </section>
-          //         </td>
-          //         <td style="width: 17.9337%; height: 33px;">
-          //             <section style="font-size: 8pt; text-align: center;">
-          //                 Processamento
-          //             </section>
-
-          //             <section style="font-size: x-small; text-align: center;">
-          //                 ${dataProcessamento}
-          //             </section>
-          //         </td>
-          //         <td style="width: 64.5223%; height: 33px;">
-          //             <section style="font-size: 8pt; text-align: center;">
-          //                 (=) Valor do documento
-          //             </section>
-
-          //             <section style="font-size: x-small; width: 100%; text-align: center;">
-          //                 R$${valorDoc}
-          //             </section>
-          //         </td>
-          //         </tr>
-          //         <tr style="height: 24px;">
-          //         <td style="width: 22.9045%; height: 24px;">
-          //             <section style="font-size: 8pt; text-align: center;">
-          //                 (=) Valor do documento
-          //             </section>
-
-          //             <section style="font-size: x-small; width: 100%; text-align: center;">
-          //                 R$${valorDoc}
-          //             </section>
-          //         </td>
-          //         <td style="width: 51.4498%; height: 88px; border-left: dotted;" colspan="3" rowspan="4">
-          //             <section style="font-size: 8pt;">
-          //                 &nbsp;Informações
-          //             </section>
-
-          //             <section style="font-size: x-small;">
-          //                 &nbsp;${data.nomeCursoAdd}
-          //             </section>
-
-          //         <p style="font-size: x-small; width: 100%; text-align: start;">&nbsp;${data.descricaoPlano}</p>
-          //         </td>
-          //         <td style="width: 17.9337%; height: 88px;" rowspan="4" colspan="1">
-          //             <section style="font-size: 8pt; text-align: center;">
-          //                 Pague via PIX
-          //             </section>
-          //             <section style="font-size: 8pt; text-align: center;">
-          //                 <img id="qrcode${numeroDoc}" style="width: 80px;" src="${lineCode.data}">
-          //             </section>
-
-          //         </td>
-          //         <td style="width: 64.5223%; height: 24px;">
-          //             <section style="font-size: 8pt; text-align: center;">
-          //                 (-) Descontos
-          //             </section>
-
-          //             <section style="font-size: x-small; width: 100%; text-align: center;">
-          //                 ${descontos}
-          //             </section>
-          //         </td>
-          //         </tr>
-          //         <tr style="height: 22px;">
-          //             <td style="width: 22.9045%; height: 22px;">
-          //                 <section style="font-size: 8pt; text-align: center;">
-          //                     (-) Descontos
-          //                 </section>
-
-          //                 <section style="font-size: x-small; width: 100%; text-align: center;">
-          //                     R$${descontos}
-          //                 </section>
-          //             </td>
-          //             <td style="width: 64.5223%; height: 22px;">
-          //                 <section style="font-size: 8pt; text-align: center;">
-          //                     (+) Acréscimos
-          //                 </section>
-
-          //                 <section style="font-size: x-small; width: 100%; text-align: center;">
-          //                     R$${acrescimos}
-          //                 </section>
-          //             </td>
-          //         </tr>
-          //         <tr style="height: 21px;">
-          //             <td style="width: 22.9045%; height: 21px;">
-          //                 <section style="font-size: 8pt; text-align: center;">
-          //                     (+) Acréscimos
-          //                 </section>
-
-          //                 <section style="font-size: x-small; width: 100%; text-align: center;">
-          //                     R$${acrescimos}
-          //                 </section>
-          //             </td>
-          //             <td style="width: 64.5223%; height: 21px;">
-          //                 <section style="font-size: 8pt; text-align: center;">
-          //                     (=) Total Cobrado
-          //                 </section>
-
-          //                 <section style="font-size: x-small; width: 100%; text-align: center;">
-          //                     R$${totalCobrado}
-          //                 </section>
-          //             </td>
-          //         </tr>
-          //         <tr style="height: 21px;">
-          //             <td style="width: 22.9045%; height: 21px;">
-          //                 <section style="font-size: 8pt; text-align: center;">
-          //                     (=) Total Cobrado
-          //                 </section>
-
-          //                 <section style="font-size: x-small; width: 100%; text-align: center;">
-          //                     R$${totalCobrado}
-          //                 </section>
-          //             </td>
-          //             <td style="width: 64.5223%; height: 21px;">
-          //                 <section style="font-size: 8pt; text-align: center;">
-          //                     Data de Pagamento:
-          //                 </section>
-
-          //                 <section style="font-size: small; width: 100%; text-align: center;">
-          //                     ____/____/______
-          //                 </section>
-          //             </td>
-          //         </tr>
-          //         <tr style="height: 20px;">
-          //             <td style="width: 22.9045%; height: 20px;" rowspan="2">
-          //                 <section style="font-size: 8pt; text-align: center;">
-          //                     Data de Pagamento:
-          //                 </section>
-
-          //                 <section style="font-size: small; width: 100%; text-align: center;">
-          //                     ____/____/______
-          //                 </section>
-          //             </td>
-          //             <td style="width: 51.4498%; height: 38px; border-left: dotted;" colspan="4" rowspan="2">
-          //                 <section style="font-size: 8pt;">
-          //                     &nbsp;<b>Sacado</b>
-          //                 </section>
-
-          //                 <section style="font-size: x-small;">
-          //                     &nbsp;${aluno.nomeAluno}&nbsp;&nbsp;&nbsp; CPF Nº: ${aluno.cpfAluno}<br>
-          //                     &nbsp;${aluno.enderecoAluno}, ${aluno.numeroAluno}, ${aluno.bairroAluno}, ${aluno.cidadeAluno}-${aluno.estadoAluno}
-          //                 </section>
-          //             </td>
-          //             <td style="width: 64.5223%; height: 38px;" rowspan="2">
-          //                 <section style="font-size: 8pt; text-align: center;">
-          //                     Assinatura:
-          //                 </section>
-
-          //                 <section style="font-size: small; width: 100%; text-align: center;">
-          //                    &nbsp;
-          //                 </section>
-          //             </td>
-          //         </tr>
-          //     </tbody>
-          //     </table>
-          //     `
-          //     return ;
-          // })
         }
 
         for (let parcela = 0; parcela < data.numeroParcelas; parcela++) {
@@ -2906,7 +2708,7 @@ exports.escutaContratos = functions.database
     });
   });
 
-exports.lancaFaltas = functions.https.onCall((data, context) => {
+exports.lancaFaltas = functions.https.onCall((data) => {
   // const data = {dateStr: dateStr, classId: classId, studentsIds: studentsIds}
   const classId = data.classId;
   const studentsIds = data.studentsIds;
@@ -2953,7 +2755,7 @@ exports.lancaFaltas = functions.https.onCall((data, context) => {
     });
 });
 
-exports.removeFaltas = functions.https.onCall((data, context) => {
+exports.removeFaltas = functions.https.onCall((data) => {
   // const data = {dateStr: dateStr, classId: classId, studentId: studentId}
   const classId = data.classId;
   const studentId = data.studentId;
@@ -2981,7 +2783,6 @@ exports.escutaFollowUp = functions.database
   .onCreate((snapshot, context) => {
     const setContract = async () => {
       const key = context.params.id;
-      const studentId = snapshot.child("matricula").val();
       await admin
         .database()
         .ref("sistemaEscolar/followUp")
