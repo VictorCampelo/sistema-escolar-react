@@ -36,7 +36,7 @@ const SeeEventPopover = ({
   const openEventInfo = Boolean(anchorElEventInfo);
   const id = openEventInfo ? "simple-popover" : undefined;
   const recurrence = event && event._def.recurringDef !== null && event._def.recurringDef.typeData;
-  const sourceId = event && event.source.id;
+  const sourceId = event && event.source?.id;
   const eventId = event && event.id;
   const [faults, setFaults] = useState([]);
 

@@ -41,6 +41,7 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
+    "firebase": "firebase emulators:start --import=firebase-session --export-on-exit=firebase-session",
     "start": "react-scripts start",
     "build": "CI=false && react-scripts build",
     "test": "react-scripts test",
