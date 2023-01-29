@@ -1,12 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const { auth } = require("firebase-admin");
 const { HttpsError } = require("firebase-functions/v1/https");
-const { firebaseConfig } = require("firebase-functions");
-const { https } = require("firebase-functions");
-const { info } = require("firebase-functions/logger");
 const { Merchant } = require("steplix-emv-qrcps");
-const { Constants } = Merchant;
 const QRCode = require("qrcode");
 const axios = require("axios").default;
 
@@ -17,6 +12,7 @@ exports.verificadorDeAcesso = functions.https.onCall((data, context) => {
     let accessList = ["master", "professores", "adm", "secretaria"];
 
     let hasAccess = accessList.some((access) => {
+      console.log(context.auth.token[access]);
       if (context.auth.token[access] === true) {
         return true;
       }
@@ -38,92 +34,52 @@ exports.verificadorDeAcesso = functions.https.onCall((data, context) => {
   }
 });
 
-exports.liberaERemoveAcessos = functions.https.onCall((data, context) => {
-  if (context.auth.token.master === true) {
-    return admin
-      .database()
-      .ref(`sistemaEscolar/listaDeUsuarios/${data.uid}/acessos/${data.acesso}`)
-      .set(data.checked)
-      .then(() => {
-        return admin
-          .database()
-          .ref(`sistemaEscolar/listaDeUsuarios/${data.uid}/acessos/`)
-          .once("value")
-          .then((snapshot) => {
-            admin.auth().revokeRefreshTokens(data.uid);
-            return admin
-              .auth()
-              .setCustomUserClaims(data.uid, snapshot.val())
-
-              .then(() => {
-                return admin
-                  .database()
-                  .ref("sistemaEscolar/registroGeral")
-                  .push({
-                    operacao: "Concessão e remoção de acessos aos usuários",
-                    timestamp: admin.firestore.Timestamp.now(),
-                    userCreator: context.auth.uid,
-                    dados: data
-                  })
-                  .then(() => {
-                    if (data.checked) {
-                      console.log(admin.firestore.Timestamp.now().toDate());
-                      if (data.acesso === "professores") {
-                        return admin
-                          .auth()
-                          .getUser(data.uid)
-                          .then((user) => {
-                            return admin
-                              .database()
-                              .ref(`sistemaEscolar/listaDeProfessores/${data.uid}/`)
-                              .set({
-                                nome: user.displayName,
-                                email: user.email,
-                                timestamp: admin.firestore.Timestamp.now()
-                              })
-                              .then(() => {
-                                return { acesso: "Acesso concedido" };
-                              })
-                              .catch((error) => {
-                                throw new functions.https.HttpsError(
-                                  "unknown",
-                                  error.message,
-                                  error
-                                );
-                              });
-                          });
-                      }
-                      return { acesso: "Acesso concedido!" };
-                    }
-                    if (data.acesso === "professores") {
-                      return admin
-                        .database()
-                        .ref(`sistemaEscolar/listaDeProfessores/${data.uid}/`)
-                        .remove()
-                        .then(() => {
-                          return { acesso: "Acesso removido" };
-                        })
-                        .catch((error) => {
-                          throw new functions.https.HttpsError("unknown", error.message, error);
-                        });
-                    }
-                    return { acesso: "Acesso removido!" };
-                  })
-                  .catch((error) => {
-                    throw new functions.https.HttpsError("unknown", error.message, error);
-                  });
-              });
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-        throw new functions.https.HttpsError("unknown", error.message);
-      });
+exports.liberaERemoveAcessos = functions.https.onCall(async (data, context) => {
+  if (!context.auth.token.master) {
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "Você não têm permissão para realizar esta ação."
+    );
   }
-  throw new functions.https.HttpsError(
-    "permission-denied",
-    "Você não têm permissão para realizar esta ação."
-  );
+
+  await admin
+    .database()
+    .ref(`sistemaEscolar/listaDeUsuarios/${data.uid}/acessos/${data.acesso}`)
+    .set(data.checked);
+
+  const snapshot = await admin
+    .database()
+    .ref(`sistemaEscolar/listaDeUsuarios/${data.uid}/acessos/`)
+    .once("value");
+
+  await admin.auth().revokeRefreshTokens(data.uid);
+  await admin.auth().setCustomUserClaims(data.uid, snapshot.val());
+
+  await admin.database().ref("sistemaEscolar/registroGeral").push({
+    operacao: "Concessão e remoção de acessos aos usuários",
+    timestamp: admin.firestore.Timestamp.now(),
+    userCreator: context.auth.uid,
+    dados: data
+  });
+
+  if (!data.checked) {
+    if (data.acesso === "professores") {
+      await admin.database().ref(`sistemaEscolar/listaDeProfessores/${data.uid}/`).remove();
+      return { acesso: "Acesso removido" };
+    }
+    return { acesso: "Acesso removido!" };
+  }
+
+  if (data.acesso === "professores") {
+    const user = await admin.auth().getUser(data.uid);
+    await admin.database().ref(`sistemaEscolar/listaDeProfessores/${data.uid}/`).set({
+      nome: user.displayName,
+      email: user.email,
+      timestamp: admin.firestore.Timestamp.now()
+    });
+    return { acesso: "Acesso concedido" };
+  }
+  return { acesso: "Acesso concedido!" };
 });
 
 exports.apagaContas = functions.https.onCall((data, context) => {
@@ -256,26 +212,26 @@ exports.modificaSenhaContaAluno = functions.database
     });
   });
 
-exports.cadastroUser = functions.auth.user().onCreate((user) => {
-  console.log("USER DADOS ---->", user);
-
+exports.cadastroUser = functions.auth.user().onCreate(async (user) => {
   let dadosNoBanco = admin.database().ref(`sistemaEscolar/usuarios/${user.uid}/`);
   let listaDeUsers = admin.database().ref("sistemaEscolar/listaDeUsuarios");
   let usuariosMaster = admin.database().ref("sistemaEscolar/usuariosMaster");
   let firestoreRef = admin.firestore().collection("mail");
 
   if (!user.uid.includes("PROF-")) {
-    sendMailToNewUser();
+    await sendMailToNewUser();
   }
 
-  addInitialUserData();
+  await addInitialUserData();
 
-  addUserToListOfUsers();
+  await addUserToListOfUsers();
 
-  setAccessToNewUser();
+  await setAccessToNewUser();
 
-  function setAccessToNewUser() {
-    usuariosMaster.once("value", (snapshot) => {
+  async function setAccessToNewUser() {
+    try {
+      const snapshot = await usuariosMaster.once("value");
+      let lista = snapshot.val();
       let acessosObj = {
         acessos: {
           master: false,
@@ -286,17 +242,8 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         }
       };
 
-      let lista = snapshot.val();
-
       if (lista && lista.indexOf(user.email) !== -1) {
-        listaDeUsers
-          .child(user.uid + "/acessos/master")
-          .set(true)
-          .then(() => {})
-          .catch((error) => {
-            throw new functions.https.HttpsError("unknown", error.message);
-          });
-
+        await listaDeUsers.child(user.uid + "/acessos/master").set(true);
         acessosObj = {
           master: true,
           adm: false,
@@ -308,14 +255,7 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         let isProf = user.uid.includes("PROF-") ? true : false;
         let path = isProf ? "/acessos/professores" : "/acessos/aluno";
 
-        listaDeUsers
-          .child(user.uid + path)
-          .set(true)
-          .then(() => {})
-          .catch((error) => {
-            throw new functions.https.HttpsError("unknown", error.message);
-          });
-
+        await listaDeUsers.child(user.uid + path).set(true);
         acessosObj = {
           master: false,
           adm: false,
@@ -325,20 +265,15 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
         };
       }
 
-      admin
-        .auth()
-        .setCustomUserClaims(user.uid, acessosObj)
-        .then(() => {})
-        .catch((error) => {
-          throw new functions.https.HttpsError("unknown", error.message);
-        });
-    });
+      await admin.auth().setCustomUserClaims(user.uid, acessosObj);
+    } catch (error) {
+      throw new functions.https.HttpsError("unknown", error.message);
+    }
   }
 
-  function addUserToListOfUsers() {
-    listaDeUsers
-      .child(user.uid)
-      .set({
+  async function addUserToListOfUsers() {
+    try {
+      await listaDeUsers.child(user.uid).set({
         acessos: {
           master: false,
           adm: false,
@@ -347,60 +282,48 @@ exports.cadastroUser = functions.auth.user().onCreate((user) => {
           aluno: false
         },
         email: user.email
-      })
-      .then(() => {})
-      .catch((error) => {
-        throw new functions.https.HttpsError("unknown", error.message);
       });
+    } catch (error) {
+      throw new functions.https.HttpsError("unknown", error.message);
+    }
   }
 
-  function addInitialUserData() {
-    dadosNoBanco
-      .set({
+  async function addInitialUserData() {
+    try {
+      await dadosNoBanco.set({
         nome: user.displayName,
         email: user.email,
-
         timestamp: admin.firestore.Timestamp.now()
-      })
-      .then(() => {})
-      .catch((error) => {
-        throw new functions.https.HttpsError("unknown", error.message);
       });
+    } catch (error) {
+      throw new functions.https.HttpsError("unknown", error.message);
+    }
   }
 
-  function sendMailToNewUser() {
-    admin
-      .auth()
-      .generateEmailVerificationLink(user.email)
-      .then((value) => {
-        functions.logger.log(value);
-        let emailContent = {
-          to: user.email,
-          message: {
-            subject: "Verificação de segurança do Sistema Escolar",
-            text: "Clique no link para verificar seu e-mail no sistema escolar",
-            html: `
-                      <p>Olá, ${user.displayName || "usuário"}</p>
-                      <p>Clique neste link para verificar seu endereço de e-mail.</p>
-                      <p><a href="${value}">${value}</a></p>
-                      <p>Se você não solicitou a verificação deste endereço, ignore este e-mail.</p>
-                      <p>Obrigado,</p>
-                      <p>Equipe do GrupoProX</p>
-                  `
-          }
-        };
-        firestoreRef
-          .add(emailContent)
-          .then(() => {
-            console.log("Queued email for delivery to " + user.email);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      })
-      .catch((error) => {
-        functions.logger.log(error);
-      });
+  async function sendMailToNewUser() {
+    try {
+      const emailVerificationLink = await admin.auth().generateEmailVerificationLink(user.email);
+      const emailContent = {
+        to: user.email,
+        message: {
+          subject: "Verification of School System Security",
+          text: "Click the link to verify your email in the school system",
+          html: `
+                  <p>Hello, ${user.displayName || "user"}</p>
+                  <p>Click this link to verify your email address.</p>
+                  <p><a href="${emailVerificationLink}">${emailVerificationLink}</a></p>
+                  <p>If you did not request this email verification, please ignore this email.</p>
+                  <p>Thank you,</p>
+                  <p>ProX Group Team</p>
+                `
+        }
+      };
+
+      await firestoreRef.add(emailContent);
+      console.log("Queued email for delivery to " + user.email);
+    } catch (error) {
+      console.error(error);
+    }
   }
 });
 
@@ -2558,7 +2481,7 @@ exports.escutaBoletos = functions.database
     console.log(context.timestamp);
     const docKey = context.params.docKey;
     const doc = snapshot.val();
-    if (doc.status !== undefined) {
+    if (doc.status) {
       admin.database().ref("sistemaEscolar/docsBoletos").child(docKey).child("status").set(0);
       console.log(`Doc ${doc.numeroDoc} key ${docKey}. Status setado para 0`);
     }
@@ -2590,7 +2513,7 @@ exports.escutaHistoricoBoletos = functions.database
     console.log(hist);
 
     const start = async () => {
-      if (hist.status !== undefined) {
+      if (hist.status) {
         const user = await admin.auth().getUser(userRequester);
         const userAccess = user.customClaims;
 
