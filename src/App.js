@@ -9,7 +9,7 @@ import "./App.css";
 import Secretaria from "./screens/secretaria/Secretaria";
 import Navbar from "./navbar/Navbar";
 import { AuthContextProvider } from "./contexts/AuthContext";
-import Home from "./home/Home";
+import Home from "./screens/home/Home";
 import { Button } from "@material-ui/core";
 import { notificationsRef } from "./services/databaseRefs";
 
