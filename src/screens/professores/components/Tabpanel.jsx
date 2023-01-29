@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import "../../../App.css";
+import "../../../app/App.css";
 
 import Typography from "@material-ui/core/Typography";
 
@@ -14,7 +14,7 @@ import { AddBox, Build, Email, GroupWork, Home, PeopleAlt, PersonAdd } from "@ma
 import Students from "./students/Students";
 
 import Classes from "./classes/Classes";
-import Dashboard from "../../../muiDashboard/Dashboard";
+import Dashboard from "../../../components/muiDashboard/Dashboard";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

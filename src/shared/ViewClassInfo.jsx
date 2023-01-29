@@ -83,7 +83,7 @@ import listPlugin from "@fullcalendar/list";
 import brLocale from "@fullcalendar/core/locales/pt-br";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useRef } from "react";
-import CalendarComponent from "../muiDashboard/Calendar";
+import CalendarComponent from "../components/muiDashboard/Calendar";
 import { useConfirmation } from "../contexts/ConfirmContext";
 import AddClass from "../screens/secretaria/components/addClass/AddClass";
 import GradeDefinition from "./GradeDefinition";

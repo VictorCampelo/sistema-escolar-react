@@ -1,21 +1,21 @@
 import { createContext, Fragment, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { onMessageListener } from "./services/firebase";
-import Notifications from "./shared/Notifications";
+import { onMessageListener } from "../services/firebase";
+import Notifications from "../shared/Notifications";
 import { useSnackbar } from "notistack";
 
 import "./App.css";
-import Secretaria from "./screens/secretaria/Secretaria";
-import Navbar from "./navbar/Navbar";
-import { AuthContextProvider } from "./contexts/AuthContext";
-import Home from "./screens/home/Home";
+import Secretaria from "../screens/secretaria/Secretaria";
+import Navbar from "../navbar/Navbar";
+import { AuthContextProvider } from "../contexts/AuthContext";
+import Home from "../screens/home/Home";
 
-import { ConfirmationServiceProvider } from "./contexts/ConfirmContext";
-import Professores from "./screens/professores/Professores";
-import Administration from "./screens/adm/Administration";
-import ExternalEnroll from "./screens/estudante/matricula/ExternalEnroll";
+import { ConfirmationServiceProvider } from "../contexts/ConfirmContext";
+import Professores from "../screens/professores/Professores";
+import Administration from "../screens/adm/Administration";
+import ExternalEnroll from "../screens/estudante/matricula/ExternalEnroll";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import "./style.css";
+import "./../styles/style.css";
 
 export const AuthContext = createContext({});
 

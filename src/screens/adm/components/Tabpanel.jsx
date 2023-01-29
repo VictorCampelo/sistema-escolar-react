@@ -4,7 +4,7 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import PropTypes from "prop-types";
 import React from "react";
-import "../../../App.css";
+import "../../../app/App.css";
 
 import Typography from "@material-ui/core/Typography";
 
@@ -14,7 +14,7 @@ import { AttachFile, AttachMoney, CallToAction, Home } from "@material-ui/icons"
 import Contracts from "./contracts/Contracts";
 
 import Finances from "./finances/Finances";
-import Dashboard from "../../../muiDashboard/Dashboard";
+import Dashboard from "../../../components/muiDashboard/Dashboard";
 import WriteOffBillets from "../../../shared/WriteOffBillets";
 
 function TabPanel(props) {

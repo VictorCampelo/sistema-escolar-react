@@ -6,7 +6,7 @@ import listPlugin from "@fullcalendar/list";
 import brLocale from "@fullcalendar/core/locales/pt-br";
 import interactionPlugin from "@fullcalendar/interaction";
 import Title from "./Title";
-import useCalendar from "../hooks/useCalendar";
+import useCalendar from "../../hooks/useCalendar";
 import {
   Avatar,
   Backdrop,
@@ -57,15 +57,15 @@ import {
   Visibility
 } from "@material-ui/icons";
 import { useState } from "react";
-import { getRandomKey } from "../shared/FunctionsUse";
+import { getRandomKey } from "../../shared/FunctionsUse";
 import { endOfTomorrow } from "date-fns/esm";
-import { calendarRef } from "../services/databaseRefs";
+import { calendarRef } from "../../services/databaseRefs";
 import { useSnackbar } from "notistack";
-import SeeEventPopover from "../shared/SeeEventPopover";
-import FullScreenDialog from "../shared/FullscreenDialog";
-import CreateEventPopover from "../shared/CreateEventPopover";
-import CreateCalendar from "../shared/CreateCalendar";
-import useStyles from "../hooks/useStyles";
+import SeeEventPopover from "../../shared/SeeEventPopover";
+import FullScreenDialog from "../../shared/FullscreenDialog";
+import CreateEventPopover from "../../shared/CreateEventPopover";
+import CreateCalendar from "../../shared/CreateCalendar";
+import useStyles from "../../hooks/useStyles";
 
 const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) => {
   const classes = useStyles();

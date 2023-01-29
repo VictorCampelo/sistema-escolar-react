@@ -7,7 +7,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Title from "./Title";
-import { quickDataRef } from "../services/databaseRefs";
+import { quickDataRef } from "../../services/databaseRefs";
 import { TableFooter } from "@material-ui/core";
 
 // Generate Order Data
