@@ -2,11 +2,11 @@ import { Button, createTheme, darken, Dialog, Grid, lighten, makeStyles } from "
 import { PlusOneRounded, Refresh } from "@material-ui/icons";
 import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { Fragment, useEffect, useState } from "react";
-import { useAuth } from "../../../hooks/useAuth";
-import { classesRef, usersRef } from "../../../services/databaseRefs";
-import { LocaleText } from "../../../shared/DataGridLocaleText";
-import FullScreenDialog from "../../../shared/FullscreenDialog";
-import { capitalizeFirstLetter } from "../../../shared/FunctionsUse";
+import { useAuth } from "../../../../hooks/useAuth";
+import { classesRef, usersRef } from "../../../../services/databaseRefs";
+import { LocaleText } from "../../../../shared/DataGridLocaleText";
+import FullScreenDialog from "../../../../shared/FullscreenDialog";
+import { capitalizeFirstLetter } from "../../../../shared/FunctionsUse";
 import ClassPanelTeacher from "./ClassPanelTeacher";
 
 function getThemePaletteMode(palette) {

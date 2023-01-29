@@ -14,7 +14,7 @@ import { Button } from "@material-ui/core";
 import { notificationsRef } from "./services/databaseRefs";
 
 import { ConfirmationServiceProvider } from "./contexts/ConfirmContext";
-import Professores from "./professores/Professores";
+import Professores from "./screens/professores/Professores";
 import Administration from "./adm/Administration";
 import ExternalEnroll from "./estudante/matricula/ExternalEnroll";
 import { CSSTransition, TransitionGroup } from "react-transition-group";

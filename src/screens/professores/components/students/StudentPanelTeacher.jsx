@@ -45,17 +45,17 @@ import {
 import { useSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
 
-import { classesRef, disabledStudentsRef, studentsRef } from "../../../services/databaseRefs";
-import BaseDocument from "../../../shared/BaseDocument";
-import EditStudentData from "../../../shared/EditStudentData";
-import FollowUp from "../../../shared/FollowUp";
-import FullScreenDialog from "../../../shared/FullscreenDialog";
-import { handleEnableDisableStudents, handleTransferStudents } from "../../../shared/FunctionsUse";
-import StudentContracts from "../../../shared/StudentContracts";
-import StudentDataCard from "../../../shared/StudentDataCard";
-import StudentFiles from "../../../shared/StudentFiles";
-import ViewParentsInfo from "../../../shared/ViewParentsInfo";
-import ViewStudentHistory from "../../../shared/ViewStudentHistory";
+import { classesRef, disabledStudentsRef, studentsRef } from "../../../../services/databaseRefs";
+import BaseDocument from "../../../../shared/BaseDocument";
+import EditStudentData from "../../../../shared/EditStudentData";
+import FollowUp from "../../../../shared/FollowUp";
+import FullScreenDialog from "../../../../shared/FullscreenDialog";
+import { handleEnableDisableStudents, handleTransferStudents } from "../../../../shared/FunctionsUse";
+import StudentContracts from "../../../../shared/StudentContracts";
+import StudentDataCard from "../../../../shared/StudentDataCard";
+import StudentFiles from "../../../../shared/StudentFiles";
+import ViewParentsInfo from "../../../../shared/ViewParentsInfo";
+import ViewStudentHistory from "../../../../shared/ViewStudentHistory";
 
 const useStyles = makeStyles((theme) => ({
   root: {

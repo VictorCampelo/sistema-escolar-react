@@ -72,9 +72,9 @@ import {
   coursesRef,
   schoolInfoRef,
   teachersListRef
-} from "../../../services/databaseRefs";
-import { LocaleText } from "../../../shared/DataGridLocaleText";
-import FullScreenDialog from "../../../shared/FullscreenDialog";
+} from "../../../../services/databaseRefs";
+import { LocaleText } from "../../../../shared/DataGridLocaleText";
+import FullScreenDialog from "../../../../shared/FullscreenDialog";
 import {
   handleEnableDisableStudents,
   handleTransferStudents,
@@ -85,22 +85,22 @@ import {
   handleCloseClass,
   releaseFaults,
   removeFaults
-} from "../../../shared/FunctionsUse";
+} from "../../../../shared/FunctionsUse";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import brLocale from "@fullcalendar/core/locales/pt-br";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useRef } from "react";
-import CalendarComponent from "../../../muiDashboard/Calendar";
-import { useConfirmation } from "../../../contexts/ConfirmContext";
-import AddClass from "../../../screens/secretaria/components/addClass/AddClass";
-import ClassReportOLD from "../../../shared/ClassReportOLD";
-import StudentPanelTeacher from "../students/StudentPanelTeacher";
-import ReleaseGrades from "../../../shared/ReleaseGrades";
-import GradeDefinition from "../../../shared/GradeDefinition";
-import ReleasePerformance from "../../../shared/ReleasePerformance";
-import StudentInfo from "../../../shared/ViewStudentInfo";
+import CalendarComponent from "../../../../muiDashboard/Calendar";
+import { useConfirmation } from "../../../../contexts/ConfirmContext";
+import AddClass from "../../../secretaria/components/addClass/AddClass";
+import ClassReportOLD from "../../../../shared/ClassReportOLD";
+import StudentPanelTeacher from "../../../professores/components/students/StudentPanelTeacher";
+import ReleaseGrades from "../../../../shared/ReleaseGrades";
+import GradeDefinition from "../../../../shared/GradeDefinition";
+import ReleasePerformance from "../../../../shared/ReleasePerformance";
+import StudentInfo from "../../../../shared/ViewStudentInfo";
 
 const useStyles = makeStyles((theme) => ({
   root: {
