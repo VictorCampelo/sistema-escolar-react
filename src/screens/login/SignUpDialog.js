@@ -1,30 +1,21 @@
-import { useState, useCallback, Fragment, useRef } from "react";
+import { useState, Fragment, useRef } from "react";
 import {
   TextField,
-  Button,
-  Checkbox,
-  Typography,
-  FormControlLabel,
-  withStyles,
-  CircularProgress,
-  IconButton
+  Button, Typography, CircularProgress
 } from "@material-ui/core";
-import FormDialog from "../shared/FormDialog";
-import { isLong } from "long";
+import FormDialog from "../../shared/FormDialog";
 
-import { useAuth } from "../hooks/useAuth";
-import SimpleSnackbar from "../shared/Snackbar";
-import DateTimePicker from "../shared/DateTimePicker";
-import { Close } from "@material-ui/icons";
+import { useAuth } from "../../hooks/useAuth";
+import SimpleSnackbar from "../../shared/Snackbar";
 
 const SignUpDialog = (props) => {
-  const { history, classes, onClose, openChangePasswordDialog } = props;
+  const { onClose } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(true);
   const [status, setStatus] = useState(null);
   const [showSnack, setShowSnack] = useState(false);
 
-  const { passwordRecover, createUserWithEmailAndPassword, signOut } = useAuth();
+  const { passwordRecover, createUserWithEmailAndPassword } = useAuth();
 
   const loginName = useRef();
   const loginEmail = useRef();
@@ -80,7 +71,7 @@ const SignUpDialog = (props) => {
 
   return (
     <Fragment>
-      {showSnack ? (
+      {showSnack ?
         <SimpleSnackbar
           duration={10000}
           message={"Um e-mail foi enviado para você com um link para recuperação."}
@@ -88,9 +79,9 @@ const SignUpDialog = (props) => {
           isOpen={true}
           onClose={setShowSnack(false)}
         />
-      ) : (
+       :
         ""
-      )}
+      }
 
       <FormDialog
         open={open}
@@ -154,14 +145,14 @@ const SignUpDialog = (props) => {
                 }
               }}
               helperText={
-                status === "auth/wrong-password" ? (
+                status === "auth/wrong-password" ?
                   <span>
                     Senha incorreta. Tente novamente ou clique em{" "}
                     <b>&quot;Esqueçeu sua senha?&quot;</b> para redefini-la.
                   </span>
-                ) : (
+                 :
                   ""
-                )
+
               }
             />
 
@@ -181,13 +172,13 @@ const SignUpDialog = (props) => {
                 }
               }}
               helperText={
-                status === "passwordsDoNotMatch" ? (
+                status === "passwordsDoNotMatch" ?
                   <span>
                     <b>Senhas não conferem</b>
                   </span>
-                ) : (
+                 :
                   ""
-                )
+
               }
             />
           </Fragment>
@@ -216,7 +207,7 @@ const SignUpDialog = (props) => {
               role="button"
               onKeyDown={(event) => {
                 // For screenreaders listen to space and enter events
-                if ((!isLoading && event.keyCode === 13) || event.keyCode === 32) {
+                if (!isLoading && event.keyCode === 13 || event.keyCode === 32) {
                   handlePasswordForgot();
                 }
               }}

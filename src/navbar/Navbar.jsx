@@ -9,12 +9,11 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import ResponsiveDrawer from "./components/Drawer";
-import { Badge, Box, Dialog, Grid, ListItemIcon, MenuList } from "@material-ui/core";
+import { Box, Grid } from "@material-ui/core";
 import { useAuth } from "../hooks/useAuth";
-import LoginDialog from "../login/LoginDialog";
-import SignUpDialog from "../login/SignUpDialog";
-import { Drafts, Notifications, PriorityHigh, Send } from "@material-ui/icons";
-import AccountCenter from "../login/AccountCenter";
+import LoginDialog from "../screens/login/LoginDialog";
+import SignUpDialog from "../screens/login/SignUpDialog";
+import AccountCenter from "../screens/login/AccountCenter";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -160,7 +159,7 @@ export default function Navbar(props) {
                     <Badge badgeContent={4} color="secondary">
                       <Notifications />
                     </Badge>
-                    
+
                   </IconButton> */}
                 {/* <Menu
                     id="menu-notifications"
@@ -199,7 +198,7 @@ export default function Navbar(props) {
                     </MenuItem>
                   </Menu> */}
               </>
-              {user ? (
+              {user ?
                 <>
                   <IconButton
                     aria-label="account of current user"
@@ -210,15 +209,15 @@ export default function Navbar(props) {
                     edge="end"
                     //style={{maxWidth: '34px'}}
                   >
-                    {user.avatar ? (
+                    {user.avatar ?
                       <img
                         src={user.avatar}
                         style={{ width: "32px", borderRadius: "50%" }}
                         alt=""
                       />
-                    ) : (
+                     :
                       <AccountCircle />
-                    )}
+                    }
                   </IconButton>
                   <Menu
                     id="menu-appbar"
@@ -250,7 +249,7 @@ export default function Navbar(props) {
                     <MenuItem onClick={handleSignOut}>Sair</MenuItem>
                   </Menu>
                 </>
-              ) : (
+               :
                 <>
                   <>
                     <IconButton
@@ -283,7 +282,7 @@ export default function Navbar(props) {
                     </Menu>
                   </>
                 </>
-              )}
+              }
             </Grid>
           </Grid>
         </Toolbar>

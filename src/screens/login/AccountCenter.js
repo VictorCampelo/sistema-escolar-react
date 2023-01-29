@@ -1,41 +1,28 @@
-import { useState, Fragment, useRef, useEffect, useReducer } from "react";
+import { useState, Fragment, useEffect } from "react";
 import {
   TextField,
   Button,
   Typography,
   CircularProgress,
-  makeStyles,
-  CssBaseline,
-  Container,
-  DialogActions,
-  Grid,
-  Checkbox,
-  FormControlLabel,
-  Dialog,
+  makeStyles, Container,
+  DialogActions, Dialog,
   Avatar,
   IconButton,
   Tooltip,
   Backdrop
 } from "@material-ui/core";
-import FormDialog from "../shared/FormDialog";
-import { useFilePicker } from "use-file-picker";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 import { useSnackbar } from "notistack";
-import { Link } from "react-router-dom";
 import {
-  AccountCircle,
-  Camera,
-  CameraAlt,
-  Close,
-  Edit,
-  Save,
+  AccountCircle, CameraAlt,
+  Close, Save,
   VerifiedUser
 } from "@material-ui/icons";
-import { usersRef } from "../services/storageRefs";
-import { auth } from "../services/firebase";
+import { usersRef } from "../../services/storageRefs";
+import { auth } from "../../services/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { accessVerification } from "../shared/FunctionsUse";
-import AdminCenter from "../shared/AdminCenter";
+import { accessVerification } from "../../shared/FunctionsUse";
+import AdminCenter from "../../shared/AdminCenter";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -110,22 +97,22 @@ const AccountCenter = ({ history, onClose, openChangePasswordDialog }) => {
         title: "Sucesso",
         variant: "success",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
     } catch (error) {
       enqueueSnackbar(error.message, {
         title: "Erro",
         variant: "error",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       console.log(error);
     }
@@ -142,22 +129,22 @@ const AccountCenter = ({ history, onClose, openChangePasswordDialog }) => {
         title: "Sucesso",
         variant: "success",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
     } catch (error) {
       enqueueSnackbar(error.message, {
         title: "Erro",
         variant: "error",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       console.log(error);
     }
@@ -172,22 +159,22 @@ const AccountCenter = ({ history, onClose, openChangePasswordDialog }) => {
         title: "Info",
         variant: "info",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
     } catch (error) {
       enqueueSnackbar(error.message, {
         title: "Erro",
         variant: "error",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       console.log(error);
     }
@@ -204,11 +191,11 @@ const AccountCenter = ({ history, onClose, openChangePasswordDialog }) => {
           title: "Info",
           variant: "info",
           key: "0",
-          action: (
+          action:
             <Button onClick={() => closeSnackbar("0")} color="inherit">
               Fechar
             </Button>
-          )
+
         }
       );
     } catch (error) {
@@ -216,11 +203,11 @@ const AccountCenter = ({ history, onClose, openChangePasswordDialog }) => {
         title: "Erro",
         variant: "error",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       console.log(error);
     }
@@ -247,16 +234,16 @@ const AccountCenter = ({ history, onClose, openChangePasswordDialog }) => {
             >
               <IconButton onClick={() => document.getElementById("alteraFoto").click()}>
                 {photoBackdrop && <CameraAlt />}
-                {user && "photoURL" in user ? (
+                {user && "photoURL" in user ?
                   <img src={user.photoURL} style={{ width: "150px", borderRadius: "50%" }} alt="" />
-                ) : (
+                  :
                   <AccountCircle />
-                )}
+                }
               </IconButton>
             </Avatar>
             <Tooltip title={"Clique para editar o nome"}>
               <Typography component="h1" variant="h5" onClick={() => setShowUpdateName(true)}>
-                {showUpdateName ? (
+                {showUpdateName ?
                   <>
                     <TextField
                       type="text"
@@ -273,9 +260,9 @@ const AccountCenter = ({ history, onClose, openChangePasswordDialog }) => {
                       <Save fontSize="small" />
                     </IconButton>
                   </>
-                ) : (
+                  :
                   user && user.displayName
-                )}
+                }
                 {/* <IconButton style={{float: 'right'}} onClick={}>
                                 {showUpdateName ? <Save fontSize="small" /> : <Edit fontSize="small" />}
                               </IconButton> */}
@@ -284,17 +271,17 @@ const AccountCenter = ({ history, onClose, openChangePasswordDialog }) => {
             <Typography component="h2" variant="h6">
               {user && user.email}{" "}
               {user &&
-                (user.emailVerified ? (
+                (user.emailVerified ?
                   <Tooltip title="E-mail verificado.">
                     <VerifiedUser htmlColor="lightgreen" />
                   </Tooltip>
-                ) : (
+                  :
                   <Tooltip title="E-mail não verificado. Clique aqui para verificar e-mail.">
                     <IconButton onClick={() => handleEmailVerification()}>
                       <Close color="error" />
                     </IconButton>
                   </Tooltip>
-                ))}
+                )}
             </Typography>
 
             <input
@@ -326,9 +313,9 @@ const AccountCenter = ({ history, onClose, openChangePasswordDialog }) => {
               onClick={handleOpenAdminCenter}
             >
               Central do administrador{" "}
-              {verifyingAccess && (
+              {verifyingAccess &&
                 <CircularProgress color="secondary" style={{ float: "right" }} size={20} />
-              )}
+              }
             </Button>
           </div>
         </Container>

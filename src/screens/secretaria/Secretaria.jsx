@@ -1,7 +1,7 @@
 import SecretariaTabs from "./components/Tabpanel";
 
 import { Fragment } from "react";
-import LoginDialog from "../../login/LoginDialog";
+import LoginDialog from "../login/LoginDialog";
 import { useAuth } from "../../hooks/useAuth";
 
 const Secretaria = () => {
