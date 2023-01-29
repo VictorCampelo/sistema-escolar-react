@@ -2,16 +2,16 @@ import { Button, Grid } from "@material-ui/core";
 import { PlusOneRounded } from "@material-ui/icons";
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { Fragment, useEffect, useState } from "react";
-import { coursesRef } from "../../../../services/databaseRefs";
-import { LocaleText } from "../../../../shared/DataGridLocaleText";
+import { additionalFieldsRef } from "../../../../../services/databaseRefs";
+import { LocaleText } from "../../../../../shared/DataGridLocaleText";
 
-const SchoolCourses = () => {
+const AdditionalFieldsSetting = () => {
   const [loading, setLoading] = useState(false);
 
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
-        <GridToolbarExport csvOptions={{ fileName: "Tabela de cursos cadastrados" }} />
+        <GridToolbarExport csvOptions={{ fileName: "Tabela de campos adicionais" }} />
       </GridToolbarContainer>
     );
   }
@@ -22,7 +22,7 @@ const SchoolCourses = () => {
   useEffect(() => {
     async function getAdditionalFields() {
       setLoading(true);
-      let snapshot = await coursesRef.once("value");
+      let snapshot = await additionalFieldsRef.once("value");
       setLoading(false);
       let additionalFields = snapshot.exists() ? snapshot.val() : [];
       console.log(additionalFields);
@@ -35,9 +35,9 @@ const SchoolCourses = () => {
     let rowsArray = JSON.parse(JSON.stringify(rows));
     rowsArray.push({
       id: rowsArray.length,
-      codSistema: rowsArray.length,
-      codCurso: "Digite um código...",
-      nomeCurso: "Digite..."
+      label: "Digite um nome...",
+      placeholder: "Digite...",
+      required: false
     });
     setRows(rowsArray);
     console.log(rowsArray);
@@ -52,7 +52,7 @@ const SchoolCourses = () => {
     setRows(rowsArray);
     console.log(rowsArray);
     try {
-      await coursesRef.set(rowsArray);
+      await additionalFieldsRef.set(rowsArray);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -73,7 +73,7 @@ const SchoolCourses = () => {
     console.log(updatedRows);
 
     try {
-      await coursesRef.set(updatedRows);
+      await additionalFieldsRef.set(updatedRows);
       setRows(updatedRows);
       setLoading(false);
     } catch (error) {
@@ -87,7 +87,7 @@ const SchoolCourses = () => {
     <Fragment>
       <Grid justifyContent="flex-start" container direction="row" spacing={2}>
         <Grid item>
-          <h3>Cursos cadastrados</h3>
+          <h3>Campos adicionais</h3>
         </Grid>
 
         <Grid item xs={12}>
@@ -96,27 +96,28 @@ const SchoolCourses = () => {
               rows={rows}
               columns={[
                 {
-                  field: "codSistema",
-                  headerName: "ID",
-                  description:
-                    "Código apenas para identificação interna no sistema. Não aparecerá em outros documentos do sistema.",
-                  width: 92,
-                  editable: false
-                },
-                {
-                  field: "codCurso",
-                  headerName: "Código",
-                  description:
-                    "O código do curso será utilizado para formar o código automático da turma.",
-                  width: 130,
+                  field: "label",
+                  headerName: "Nome",
+                  description: "Nome do campo que aparecerá na matrícula ou pré-matrícula.",
+                  width: 250,
                   editable: true
                 },
                 {
-                  field: "nomeCurso",
-                  headerName: "Nome do Curso",
-                  description: "Este será o nome que aparecerá nos boletins.",
-                  width: 300,
+                  field: "placeholder",
+                  headerName: "Texto de ajuda",
+                  description:
+                    "Um texto útil para ajudar ou exemplificar o que deve ser preenchido no campo.",
+                  width: 180,
                   editable: true
+                },
+                {
+                  field: "required",
+                  headerName: "Obrigatório",
+                  type: "boolean",
+                  width: 180,
+                  editable: true,
+                  description:
+                    "Define se é obrigatório o preenchimento do campo. Caso a esteja marcada, o usuário não será capaz de continuar com a matrícula/pré-matrícula, até que preencha este campo."
                 }
               ]}
               disableSelectionOnClick
@@ -140,7 +141,7 @@ const SchoolCourses = () => {
             }}
           >
             <PlusOneRounded />
-            Novo curso
+            Novo campo
           </Button>
         </Grid>
         <Grid item>
@@ -152,7 +153,7 @@ const SchoolCourses = () => {
                 handleDeleteRows();
               }}
             >
-              Excluir cursos
+              Excluir Campos
             </Button>
           )}
         </Grid>
@@ -161,4 +162,4 @@ const SchoolCourses = () => {
   );
 };
 
-export default SchoolCourses;
+export default AdditionalFieldsSetting;

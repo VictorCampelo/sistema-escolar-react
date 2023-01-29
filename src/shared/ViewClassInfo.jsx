@@ -85,7 +85,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useRef } from "react";
 import CalendarComponent from "../muiDashboard/Calendar";
 import { useConfirmation } from "../contexts/ConfirmContext";
-import AddClass from "../secretaria/components/addClass/AddClass";
+import AddClass from "../screens/secretaria/components/addClass/AddClass";
 import GradeDefinition from "./GradeDefinition";
 import ClassReport from "./ClassReport";
 import ClassReportOLD from "./ClassReportOLD";

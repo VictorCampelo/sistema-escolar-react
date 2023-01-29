@@ -44,13 +44,13 @@ import {
 } from "@material-ui/icons";
 import { useSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
-import { preEnrollmentsRef } from "../../../services/databaseRefs";
-import BaseDocument from "../../../shared/BaseDocument";
-import EditStudentData from "../../../shared/EditStudentData";
-import StudentContracts from "../../../shared/StudentContracts";
-import StudentDataCard from "../../../shared/StudentDataCard";
-import StudentFiles from "../../../shared/StudentFiles";
-import ViewParentsInfo from "../../../shared/ViewParentsInfo";
+import { preEnrollmentsRef } from "../../../../services/databaseRefs";
+import BaseDocument from "../../../../shared/BaseDocument";
+import EditStudentData from "../../../../shared/EditStudentData";
+import StudentContracts from "../../../../shared/StudentContracts";
+import StudentDataCard from "../../../../shared/StudentDataCard";
+import StudentFiles from "../../../../shared/StudentFiles";
+import ViewParentsInfo from "../../../../shared/ViewParentsInfo";
 
 const useStyles = makeStyles((theme) => ({
   root: {

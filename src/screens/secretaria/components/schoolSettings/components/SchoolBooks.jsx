@@ -2,8 +2,8 @@ import { Button, Grid } from "@material-ui/core";
 import { PlusOneRounded } from "@material-ui/icons";
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { Fragment, useEffect, useState } from "react";
-import { booksRef } from "../../../../services/databaseRefs";
-import { LocaleText } from "../../../../shared/DataGridLocaleText";
+import { booksRef } from "../../../../../services/databaseRefs";
+import { LocaleText } from "../../../../../shared/DataGridLocaleText";
 
 const SchoolBooks = () => {
   const [loading, setLoading] = useState(false);

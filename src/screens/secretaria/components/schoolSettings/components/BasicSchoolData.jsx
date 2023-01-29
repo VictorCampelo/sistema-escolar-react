@@ -21,7 +21,7 @@ import { Fragment, useEffect, useState } from "react";
 
 import $ from "jquery";
 import "jquery-mask-plugin/dist/jquery.mask.min";
-import { basicDataRef } from "../../../../services/databaseRefs";
+import { basicDataRef } from "../../../../../services/databaseRefs";
 import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({

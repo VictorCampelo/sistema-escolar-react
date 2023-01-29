@@ -17,13 +17,13 @@ import { Assignment, CheckBox, PlusOneRounded, Refresh } from "@material-ui/icon
 import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
-import { disabledStudentsRef, studentsRef } from "../../../services/databaseRefs";
-import BaseDocument from "../../../shared/BaseDocument";
-import { LocaleText } from "../../../shared/DataGridLocaleText";
-import FollowUp from "../../../shared/FollowUp";
-import FullScreenDialog from "../../../shared/FullscreenDialog";
-import { handleEnableDisableStudents } from "../../../shared/FunctionsUse";
-import StudentInfo from "../../../shared/ViewStudentInfo";
+import { disabledStudentsRef, studentsRef } from "../../../../services/databaseRefs";
+import BaseDocument from "../../../../shared/BaseDocument";
+import { LocaleText } from "../../../../shared/DataGridLocaleText";
+import FollowUp from "../../../../shared/FollowUp";
+import FullScreenDialog from "../../../../shared/FullscreenDialog";
+import { handleEnableDisableStudents } from "../../../../shared/FunctionsUse";
+import StudentInfo from "../../../../shared/ViewStudentInfo";
 
 // TODO v5: remove
 function getThemePaletteMode(palette) {

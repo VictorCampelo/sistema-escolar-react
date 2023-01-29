@@ -6,7 +6,7 @@ import ReactNotificationComponent from "./shared/ReactNotifications";
 import { useSnackbar } from "notistack";
 
 import "./App.css";
-import Secretaria from "./secretaria/Secretaria";
+import Secretaria from "./screens/secretaria/Secretaria";
 import Navbar from "./navbar/Navbar";
 import { AuthContextProvider } from "./contexts/AuthContext";
 import Home from "./home/Home";

@@ -26,9 +26,9 @@ import {
   coursesRef,
   daysCodesRef,
   teachersListRef
-} from "../../../services/databaseRefs";
-import { LocaleText } from "../../../shared/DataGridLocaleText";
-import { generateClassCode, handleSendClassData } from "../../../shared/FunctionsUse";
+} from "../../../../services/databaseRefs";
+import { LocaleText } from "../../../../shared/DataGridLocaleText";
+import { generateClassCode, handleSendClassData } from "../../../../shared/FunctionsUse";
 
 const useStyles = makeStyles((theme) => ({
   root: {

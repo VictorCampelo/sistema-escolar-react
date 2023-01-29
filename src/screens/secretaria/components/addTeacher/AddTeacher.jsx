@@ -12,13 +12,13 @@ import {
   Paper,
   useMediaQuery
 } from "@material-ui/core";
-import { enrollTeacher } from "../../../shared/FunctionsUse";
+import { enrollTeacher } from "../../../../shared/FunctionsUse";
 import {
   AddressAndParentsFields,
   BasicDataFields
-} from "../../../shared/TeacherFields";
+} from "../../../../shared/TeacherFields";
 import $ from "jquery";
-import ErrorDialog from "../../../shared/ErrorDialog";
+import ErrorDialog from "../../../../shared/ErrorDialog";
 import { useSnackbar } from "notistack";
 import { ArrowForward } from "@material-ui/icons";
 import { DialogComponent } from "./DialogComponent";
