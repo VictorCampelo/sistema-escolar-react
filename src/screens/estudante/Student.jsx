@@ -1,9 +1,7 @@
 import StudentTabs from "./components/Tabpanel";
-import { useHistory } from "react-router-dom";
-
-import { FormEvent, Fragment, useEffect, useState } from "react";
-import LoginDialog from "../login/LoginDialog";
+import { Fragment } from "react";
 import { useAuth } from "../hooks/useAuth";
+import LoginDialog from "../login/LoginDialog";
 
 const Student = () => {
   const { user } = useAuth();

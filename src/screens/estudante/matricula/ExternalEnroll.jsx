@@ -1,33 +1,27 @@
-import { useEffect, useState } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepButton from "@material-ui/core/StepButton";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import {
   Backdrop,
-  CircularProgress,
-  Dialog,
+  CircularProgress, Container, Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
-  Paper,
-  useMediaQuery,
-  Container,
-  Fab
+  DialogTitle, Fab, Paper,
+  useMediaQuery
 } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import Step from "@material-ui/core/Step";
+import StepButton from "@material-ui/core/StepButton";
+import Stepper from "@material-ui/core/Stepper";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import { useEffect, useState } from "react";
 
 import $ from "jquery";
 
-import { useSnackbar } from "notistack";
-import { classesRef } from "../../services/databaseRefs";
-import { AddressAndParentsFields, BasicDataFields } from "../../shared/StudentFields";
-import { enrollStudent } from "../../shared/FunctionsUse";
-import ErrorDialog from "../../shared/ErrorDialog";
-import ExternalFilesUpload from "./ExternalFilesUpload";
 import { ArrowForward } from "@material-ui/icons";
+import { useSnackbar } from "notistack";
+import { enrollStudent } from "../../../shared/FunctionsUse";
+import { AddressAndParentsFields, BasicDataFields } from "../../../shared/StudentFields";
+import ExternalFilesUpload from "./ExternalFilesUpload";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -187,8 +181,8 @@ export default function ExternalEnroll() {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
         ? // It's the last step, but not all steps have been completed
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !completed.has(i))
+        // find the first step that has been completed
+        steps.findIndex((step, i) => !completed.has(i))
         : activeStep + 1;
     if (!isLastStep()) {
       setActiveStep(newActiveStep);
@@ -397,7 +391,7 @@ export default function ExternalEnroll() {
                     >
                         {completedSteps() === totalSteps() - 1 ? 'Enviar pré-matrícula' : 'Próximo'}
                     </Button> */}
-                  {isStepOptional(activeStep) && !completed.has(activeStep) && (
+                  {isStepOptional(activeStep) && !completed.has(activeStep) &&
                     <Button
                       variant="contained"
                       color="primary"
@@ -406,13 +400,13 @@ export default function ExternalEnroll() {
                     >
                       Pular
                     </Button>
-                  )}
+                  }
 
-                  {activeStep !== steps.length && completed.has(activeStep) && (
+                  {activeStep !== steps.length && completed.has(activeStep) &&
                     <Typography variant="caption" className={classes.completed}>
                       Passo {activeStep + 1} salvo
                     </Typography>
-                  )}
+                  }
                 </div>
               </div>
             </form>

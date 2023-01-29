@@ -1,8 +1,7 @@
 import { createContext, Fragment, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { auth, functions, onMessageListener } from "./services/firebase";
+import { onMessageListener } from "./services/firebase";
 import Notifications from "./shared/Notifications";
-import ReactNotificationComponent from "./shared/ReactNotifications";
 import { useSnackbar } from "notistack";
 
 import "./App.css";
@@ -10,13 +9,11 @@ import Secretaria from "./screens/secretaria/Secretaria";
 import Navbar from "./navbar/Navbar";
 import { AuthContextProvider } from "./contexts/AuthContext";
 import Home from "./screens/home/Home";
-import { Button } from "@material-ui/core";
-import { notificationsRef } from "./services/databaseRefs";
 
 import { ConfirmationServiceProvider } from "./contexts/ConfirmContext";
 import Professores from "./screens/professores/Professores";
 import Administration from "./adm/Administration";
-import ExternalEnroll from "./estudante/matricula/ExternalEnroll";
+import ExternalEnroll from "./screens/estudante/matricula/ExternalEnroll";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./style.css";
 
@@ -26,7 +23,7 @@ function App() {
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: "", body: "" });
 
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (show) {

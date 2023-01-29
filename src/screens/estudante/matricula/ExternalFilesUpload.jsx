@@ -9,12 +9,12 @@ import {
   CircularProgress
 } from "@material-ui/core";
 import { DataGrid } from "@mui/x-data-grid";
-import { LocaleText } from "../../shared/DataGridLocaleText";
-import { useConfirmation } from "../../contexts/ConfirmContext";
+import { LocaleText } from "../../../shared/DataGridLocaleText";
+import { useConfirmation } from "../../../contexts/ConfirmContext";
 import { useSnackbar } from "notistack";
 import { makeStyles } from "@material-ui/styles";
-import { studentFilesRef, studentsRef } from "../../services/storageRefs";
-import { usersRef } from "../../services/databaseRefs";
+import { studentFilesRef } from "../../../services/storageRefs";
+import { usersRef } from "../../../services/databaseRefs";
 
 function getThemePaletteMode(palette) {
   return palette.type || palette.mode;
@@ -93,27 +93,24 @@ const ExternalFilesUpload = ({ hasFile }) => {
   const handleRowEdit = async (e) => {
     console.log(e);
     setLoading(true);
-    const access = e.field;
 
-    const uid = e.id;
-    const checked = e.value;
     try {
       await confirm({
         variant: "danger",
         catchOnCancel: true,
         title: "Confirmação",
-        description: `Cuidado. Você está editando o acesso MASTER do usuário. Deseja alterar o acesso MASTER deste usuário?`
+        description: "Cuidado. Você está editando o acesso MASTER do usuário. Deseja alterar o acesso MASTER deste usuário?"
       });
 
       enqueueSnackbar("", {
         title: "Sucesso",
         variant: "success",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
     } catch (error) {
       console.log(error);
@@ -122,19 +119,16 @@ const ExternalFilesUpload = ({ hasFile }) => {
           title: "Erro",
           variant: "error",
           key: "0",
-          action: (
+          action:
             <Button onClick={() => closeSnackbar("0")} color="inherit">
               Fechar
             </Button>
-          )
+
         });
     }
     setLoading(false);
   };
 
-  const handleRowSelection = async (e) => {
-    console.log(e);
-  };
 
   const handleRowClick = async (e) => {
     console.log(e);
@@ -191,11 +185,11 @@ const ExternalFilesUpload = ({ hasFile }) => {
         title: "Sucesso",
         variant: "success",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
     } catch (error) {
       error &&
@@ -203,11 +197,11 @@ const ExternalFilesUpload = ({ hasFile }) => {
           title: "Erro",
           variant: "error",
           key: "0",
-          action: (
+          action:
             <Button onClick={() => closeSnackbar("0")} color="inherit">
               Fechar
             </Button>
-          )
+
         });
       console.log(error);
     }
