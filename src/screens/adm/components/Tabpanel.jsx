@@ -1,21 +1,21 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
+import { makeStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
-import "../../App.css";
+import Tabs from "@material-ui/core/Tabs";
+import PropTypes from "prop-types";
+import React from "react";
+import "../../../App.css";
 
 import Typography from "@material-ui/core/Typography";
 
 import Box from "@material-ui/core/Box";
-import { AttachFile, AttachMoney, CallToAction, Gavel, Home } from "@material-ui/icons";
+import { AttachFile, AttachMoney, CallToAction, Home } from "@material-ui/icons";
 
 import Contracts from "./contracts/Contracts";
 
-import Dashboard from "../../muiDashboard/Dashboard";
 import Finances from "./finances/Finances";
-import WriteOffBillets from "../../shared/WriteOffBillets";
+import Dashboard from "../../../muiDashboard/Dashboard";
+import WriteOffBillets from "../../../shared/WriteOffBillets";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -28,11 +28,11 @@ function TabPanel(props) {
       aria-labelledby={`scrollable-force-tab-${index}`}
       {...other}
     >
-      {value === index && (
+      {value === index &&
         <Box p={3}>
           <Typography>{children}</Typography>
         </Box>
-      )}
+      }
     </div>
   );
 }

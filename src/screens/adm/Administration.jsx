@@ -1,8 +1,8 @@
 import AdministrationTabs from "./components/Tabpanel";
 
 import { Fragment } from "react";
-import LoginDialog from "../screens/login/LoginDialog";
-import { useAuth } from "../hooks/useAuth";
+import LoginDialog from "../login/LoginDialog";
+import { useAuth } from "../../hooks/useAuth";
 
 const Administration = () => {
   const { user } = useAuth();

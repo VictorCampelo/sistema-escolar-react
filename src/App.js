@@ -12,7 +12,7 @@ import Home from "./screens/home/Home";
 
 import { ConfirmationServiceProvider } from "./contexts/ConfirmContext";
 import Professores from "./screens/professores/Professores";
-import Administration from "./adm/Administration";
+import Administration from "./screens/adm/Administration";
 import ExternalEnroll from "./screens/estudante/matricula/ExternalEnroll";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./style.css";

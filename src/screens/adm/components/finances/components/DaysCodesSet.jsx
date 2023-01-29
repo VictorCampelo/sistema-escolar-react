@@ -1,21 +1,15 @@
 import {
-  Button,
-  FilledInput,
-  FormControl,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  TextField
+  Button, Grid,
+  InputAdornment, TextField
 } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
-import { daysCodesRef } from "../../../../services/databaseRefs";
+import { daysCodesRef } from "../../../../../services/databaseRefs";
 
 const DaysCodeSet = () => {
   const [values, setValues] = useState(["", "", "", "", "", "", ""]);
 
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     async function getData() {
@@ -60,9 +54,9 @@ const DaysCodeSet = () => {
                     handleChange(i, e);
                   }}
                   InputProps={{
-                    startAdornment: (
+                    startAdornment:
                       <InputAdornment position="start">{daysOfTheWeek[i]}</InputAdornment>
-                    )
+
                   }}
                   variant="filled"
                 />

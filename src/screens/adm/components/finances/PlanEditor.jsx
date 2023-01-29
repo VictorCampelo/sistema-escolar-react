@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import useStyles from "../../../hooks/useStyles";
+import useStyles from "../../../../hooks/useStyles";
 import {
   FormControl,
   Select,
@@ -18,12 +18,12 @@ import {
   ListItemText,
   Input
 } from "@material-ui/core";
-import { contractRef, coursesRef } from "../../../services/databaseRefs";
+import { coursesRef } from "../../../../services/databaseRefs";
 import { useSnackbar } from "notistack";
 import $ from "jquery";
-import ErrorDialog from "../../../shared/ErrorDialog";
-import FullScreenDialog from "../../../shared/FullscreenDialog";
-import CrudTable from "../../../shared/DataGrid";
+import ErrorDialog from "../../../../shared/ErrorDialog";
+import FullScreenDialog from "../../../../shared/FullscreenDialog";
+import CrudTable from "../../../../shared/DataGrid";
 
 const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => {
   const [saveDisabled, setSaveDisabled] = useState(true);
@@ -122,21 +122,21 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
       internData = planChosen
         ? planChosen
         : {
-            acrescimoPlano: "0",
-            codigoCursoAdd: "",
-            descontoPlano: "0",
-            descricaoPlano: "",
-            distribuirAcrescimosEDescontos: "",
-            nomeCursoAdd: "",
-            nomePlano: "",
-            numeroMaximoParcelasPlano: "",
-            quandoAplicar: "",
-            valorAcrescimo: "0.00",
-            valorCurso: "0",
-            valorDesconto: "0",
-            valorFinal: "0",
-            vencimento: ""
-          };
+          acrescimoPlano: "0",
+          codigoCursoAdd: "",
+          descontoPlano: "0",
+          descricaoPlano: "",
+          distribuirAcrescimosEDescontos: "",
+          nomeCursoAdd: "",
+          nomePlano: "",
+          numeroMaximoParcelasPlano: "",
+          quandoAplicar: "",
+          valorAcrescimo: "0.00",
+          valorCurso: "0",
+          valorDesconto: "0",
+          valorFinal: "0",
+          vencimento: ""
+        };
       console.log(internData);
       setPlan(internData);
     }
@@ -158,7 +158,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
       console.log(elemId);
       if (elemId === "valorDesconto") {
         internData.descontoPlano = (
-          (internData.valorDesconto * 100) /
+          internData.valorDesconto * 100 /
           Number(internData.valorCurso)
         ).toFixed(2);
       } else {
@@ -170,7 +170,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
 
       if (elemId === "valorAcrescimo") {
         internData.acrescimoPlano = (
-          (internData.valorAcrescimo * 100) /
+          internData.valorAcrescimo * 100 /
           Number(internData.valorCurso)
         ).toFixed(2);
       } else {
@@ -183,9 +183,8 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
         document.getElementById("quandoAplicar").innerHTML = "";
         console.log(Number(internData.numeroMaximoParcelasPlano));
         for (let i = 0; i < Number(internData.numeroMaximoParcelasPlano); i++) {
-          document.getElementById("quandoAplicar").innerHTML += `<option value="${i}">Parcela ${
-            i + 1
-          }</option>`;
+          document.getElementById("quandoAplicar").innerHTML += `<option value="${i}">Parcela ${i + 1
+            }</option>`;
         }
       } catch (error) {
         console.log(error);
@@ -233,29 +232,27 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
             descontoParcela = 0;
           }
 
-          saldoAcrescimo = saldoAcrescimo - acrescimoParcela;
-          saldoDesconto = saldoDesconto - descontoParcela;
+          saldoAcrescimo -= acrescimoParcela;
+          saldoDesconto -= descontoParcela;
 
           console.log(internPlan);
           row =
             internData.quandoAplicar !== undefined
               ? {
-                  id: parcela,
-                  col1: `Parcela ${parcela + 1}`,
-                  col2: `R$${valorParcela}`,
-                  col3: ` ${
-                    acrescimoParcela !== 0 || acrescimoParcela !== ""
-                      ? "+ R$" + acrescimoParcela
-                      : ""
+                id: parcela,
+                col1: `Parcela ${parcela + 1}`,
+                col2: `R$${valorParcela}`,
+                col3: ` ${acrescimoParcela !== 0 || acrescimoParcela !== ""
+                    ? "+ R$" + acrescimoParcela
+                    : ""
                   }`,
-                  col4: ` ${
-                    descontoParcela !== 0 || descontoParcela !== "" ? "- R$" + descontoParcela : ""
+                col4: ` ${descontoParcela !== 0 || descontoParcela !== "" ? "- R$" + descontoParcela : ""
                   }`,
-                  col5: `R$${(Number(valorParcela) + (acrescimoParcela - descontoParcela)).toFixed(
-                    2
-                  )}`
-                }
-              : (row.id = { id: parcela });
+                col5: `R$${(Number(valorParcela) + (acrescimoParcela - descontoParcela)).toFixed(
+                  2
+                )}`
+              }
+              : row.id = { id: parcela };
           console.log(row);
           somaParcelas += Number(valorParcela) + (acrescimoParcela - descontoParcela);
         } else {
@@ -344,8 +341,11 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
       }
     }
     setShrink(true);
-    if (planId !== "") setSaveDisabled(false);
-    else setSaveDisabled(true);
+    if (planId !== "") {
+      setSaveDisabled(false);
+    } else {
+      setSaveDisabled(true);
+    }
   };
 
   const [day, setDay] = useState(1);
@@ -372,7 +372,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
 
   return (
     <Fragment>
-      {openDialogError && (
+      {openDialogError &&
         <ErrorDialog
           onClose={() => {
             setOpenDialogError(false);
@@ -381,7 +381,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
           title={openDialogError.title}
           message={openDialogError.message}
         />
-      )}
+      }
       <FullScreenDialog
         isOpen={isOpen}
         onClose={() => {
@@ -394,11 +394,11 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
         title={"Configurar plano"}
         saveButton={"Salvar"}
       >
-        {!calculatedData ? (
+        {!calculatedData ?
           <div style={{ width: "100%" }}>
             <LinearProgress />
           </div>
-        ) : (
+          :
           <>
             <Container>
               <form
@@ -621,7 +621,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                                             let Option = (<option hidden>Escolha a parcela...</option>)
                                             for (let i = 0; i <= calculatedData.numeroMaximoParcelasPlano; i++) {
                                                 Option += (<option hidden key={i} value={i}>Parcela {i}</option>)
-                                                
+
                                             }
                                             return Option;
                                         }} */}
@@ -659,7 +659,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                   alignItems="center"
                 >
                   <Grid item>
-                    {plan && (
+                    {plan &&
                       <FormControl component="fieldset">
                         <FormLabel component="legend">Configuração do vencimento</FormLabel>
                         <RadioGroup
@@ -680,11 +680,11 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                           />
                         </RadioGroup>
                       </FormControl>
-                    )}
+                    }
                   </Grid>
 
                   <Grid item>
-                    {calculatedData && calculatedData.vencimento === "true" && (
+                    {calculatedData && calculatedData.vencimento === "true" &&
                       <>
                         {/* <FormControl variant="filled">
                                     <InputLabel htmlFor="filled-age-native-simple">Escolha um dia</InputLabel>
@@ -693,10 +693,10 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                                         native
                                         value={state.value}
                                         onChange={handleChangeDay}
-                                        
+
                                     >
                                         {!data.diasDeVencimento && (daysOptions.map(dayOpt => <option value={dayOpt}>{dayOpt}</option>))}
-                                        
+
                                     </Select>
                                     <FormHelperText>Escolha o dia de vencimento do boleto/carnê. </FormHelperText>
                                 </FormControl> */}
@@ -724,18 +724,18 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                             variant="filled"
                             MenuProps={MenuProps}
                           >
-                            {daysOptions.map((dayOpt) => (
+                            {daysOptions.map((dayOpt) =>
                               <MenuItem key={dayOpt} value={dayOpt}>
                                 <Checkbox
                                   checked={
                                     calculatedData.hasOwnProperty("diasDeVencimento") &&
                                     calculatedData.diasDeVencimento.indexOf(dayOpt.toString()) !==
-                                      -1
+                                    -1
                                   }
                                 />
                                 <ListItemText primary={dayOpt} />
                               </MenuItem>
-                            ))}
+                            )}
                           </Select>
                           <FormHelperText>
                             {" "}
@@ -743,11 +743,11 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                           </FormHelperText>
                         </FormControl>
                       </>
-                    )}
+                    }
                   </Grid>
 
                   <Grid item>
-                    {plan && (
+                    {plan &&
                       <FormControl className={classes.fields}>
                         <TextField
                           variant="filled"
@@ -765,13 +765,13 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                           Informações e avisos para serem gerados no boleto.{" "}
                         </FormHelperText>
                       </FormControl>
-                    )}
+                    }
                   </Grid>
                 </Grid>
               </form>
             </Container>
           </>
-        )}
+        }
       </FullScreenDialog>
     </Fragment>
   );

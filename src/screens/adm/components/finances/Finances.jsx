@@ -2,16 +2,10 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  makeStyles,
-  Paper,
-  Typography
+  makeStyles, Typography
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
 import { Fragment, useState } from "react";
-import AdditionalFieldsSetting from "./components/AdditionalFieldsSettings";
-import BasicSchoolData from "./components/BasicSchoolData";
-import DaysCodeSet from "./components/DaysCodesSet";
-import SchoolBooks from "./components/SchoolBooks";
 import SchoolPlans from "./components/SchoolPlans";
 
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +32,7 @@ const Finances = () => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
 
-  const handleChange = (panel) => (event, isExpanded) => {
+  const handleChange = (panel) => (_event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 

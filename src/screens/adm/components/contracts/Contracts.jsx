@@ -1,35 +1,28 @@
 import {
-  Button,
-  Checkbox,
-  createTheme,
+  Button, createTheme,
   darken,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
-  FormControlLabel,
-  Grid,
+  DialogTitle, Grid,
   lighten,
-  makeStyles,
-  Backdrop
+  makeStyles
 } from "@material-ui/core";
-import { CheckBox, PlusOneRounded, Refresh } from "@material-ui/icons";
-import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
+import { Refresh } from "@material-ui/icons";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../../hooks/useAuth";
 import {
-  classesRef,
-  disabledStudentsRef,
-  studentsRef,
+  classesRef, studentsRef,
   usersRef
-} from "../../../services/databaseRefs";
-import { functions } from "../../../services/firebase";
-import { LocaleText } from "../../../shared/DataGridLocaleText";
-import FullScreenDialog from "../../../shared/FullscreenDialog";
-import { handleEnableDisableStudents } from "../../../shared/FunctionsUse";
-import StudentInfo from "../../../shared/ViewStudentInfo";
+} from "../../../../services/databaseRefs";
+import { functions } from "../../../../services/firebase";
+import { LocaleText } from "../../../../shared/DataGridLocaleText";
+import FullScreenDialog from "../../../../shared/FullscreenDialog";
+import { handleEnableDisableStudents } from "../../../../shared/FunctionsUse";
+import StudentInfo from "../../../../shared/ViewStudentInfo";
 
 // TODO v5: remove
 function getThemePaletteMode(palette) {
@@ -220,11 +213,11 @@ const Contracts = () => {
       enqueueSnackbar("Por favor, selecione apenas alunos ativos para realizar esta ação.", {
         variant: "warning",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
     }
   };
@@ -239,11 +232,11 @@ const Contracts = () => {
         title: "Sucesso",
         variant: "success",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       setLoading(false);
     } catch (error) {
@@ -252,11 +245,11 @@ const Contracts = () => {
         title: "Sucesso",
         variant: "error",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       setLoading(false);
     }
@@ -355,7 +348,7 @@ const Contracts = () => {
           </Button>
         </Grid>
         <Grid item>
-          {selectedRows.length > 0 && (
+          {selectedRows.length > 0 &&
             <Button
               variant="contained"
               color="secondary"
@@ -365,7 +358,7 @@ const Contracts = () => {
             >
               Desativar selecionado{selectedRows.length > 1 && "s"}
             </Button>
-          )}
+          }
         </Grid>
       </Grid>
     </Fragment>

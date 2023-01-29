@@ -1,8 +1,5 @@
 import {
-  Button,
-  Checkbox,
-  CircularProgress,
-  FormControl,
+  Button, FormControl,
   FormControlLabel,
   FormGroup,
   FormHelperText,
@@ -20,8 +17,8 @@ import {
 import { Fragment, useEffect, useState } from "react";
 
 import $ from "jquery";
-import { basicDataRef } from "../../../../services/databaseRefs";
 import { useSnackbar } from "notistack";
+import { basicDataRef } from "../../../../../services/databaseRefs";
 
 const useStyles = makeStyles((theme) => ({
   root: {

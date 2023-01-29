@@ -13,10 +13,9 @@ import {
 } from "@material-ui/core";
 import { PlusOneRounded } from "@material-ui/icons";
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
-import { set } from "date-fns/esm";
 import { Fragment, useEffect, useState } from "react";
-import { coursesRef } from "../../../../services/databaseRefs";
-import { LocaleText } from "../../../../shared/DataGridLocaleText";
+import { coursesRef } from "../../../../../services/databaseRefs";
+import { LocaleText } from "../../../../../shared/DataGridLocaleText";
 import PlanEditor from "../PlanEditor";
 
 const SchoolPlans = () => {
@@ -55,9 +54,9 @@ const SchoolPlans = () => {
     let localCourses = snapshot.exists() ? snapshot.val() : [];
     setCourses(localCourses);
 
-    localCourses.map((course, i) => {
+    localCourses.map((course) => {
       if (course.hasOwnProperty("planos")) {
-        Object.keys(course.planos).map((key, i) => {
+        Object.keys(course.planos).map((key) => {
           let plan = course.planos[key];
           plan.id = key + "," + course.codSistema;
           localPlans.push(plan);
@@ -109,7 +108,7 @@ const SchoolPlans = () => {
     setLoading(true);
 
     try {
-      selectedRows.map(async (row, i) => {
+      selectedRows.map(async (row) => {
         let planId = row.split(",")[0];
         let courseId = row.split(",")[1];
         await coursesRef.child(courseId).child("planos").child(planId).remove();
@@ -159,7 +158,7 @@ const SchoolPlans = () => {
                 onChange={(e) => setCourse(e.target.value)}
                 fullWidth
               >
-                {courses.map((localCourse, i) => (
+                {courses.map((localCourse) => (
                   <MenuItem value={localCourse.codSistema}>{localCourse.nomeCurso}</MenuItem>
                 ))}
               </Select>
