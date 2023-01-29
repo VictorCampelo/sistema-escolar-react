@@ -9,7 +9,7 @@ import {
   CircularProgress
 } from "@material-ui/core";
 import { DataGrid } from "@mui/x-data-grid";
-import { LocaleText } from "../../../shared/DataGridLocaleText";
+import { LocaleText } from "../../../components/shared/DataGridLocaleText";
 import { useConfirmation } from "../../../contexts/ConfirmContext";
 import { useSnackbar } from "notistack";
 import { makeStyles } from "@material-ui/styles";

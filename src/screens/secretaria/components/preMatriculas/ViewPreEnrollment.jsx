@@ -45,12 +45,12 @@ import {
 import { useSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
 import { preEnrollmentsRef } from "../../../../services/databaseRefs";
-import BaseDocument from "../../../../shared/BaseDocument";
-import EditStudentData from "../../../../shared/EditStudentData";
-import StudentContracts from "../../../../shared/StudentContracts";
-import StudentDataCard from "../../../../shared/StudentDataCard";
-import StudentFiles from "../../../../shared/StudentFiles";
-import ViewParentsInfo from "../../../../shared/ViewParentsInfo";
+import BaseDocument from "../../../../components/shared/BaseDocument";
+import EditStudentData from "../../../../components/shared/EditStudentData";
+import StudentContracts from "../../../../components/shared/StudentContracts";
+import StudentDataCard from "../../../../components/shared/StudentDataCard";
+import StudentFiles from "../../../../components/shared/StudentFiles";
+import ViewParentsInfo from "../../../../components/shared/ViewParentsInfo";
 
 const useStyles = makeStyles((theme) => ({
   root: {

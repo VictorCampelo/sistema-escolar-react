@@ -3,7 +3,7 @@ import { PlusOneRounded } from "@material-ui/icons";
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { Fragment, useEffect, useState } from "react";
 import { additionalFieldsRef } from "../../../../../services/databaseRefs";
-import { LocaleText } from "../../../../../shared/DataGridLocaleText";
+import { LocaleText } from "../../../../../components/shared/DataGridLocaleText";
 
 const AdditionalFieldsSetting = () => {
   const [loading, setLoading] = useState(false);

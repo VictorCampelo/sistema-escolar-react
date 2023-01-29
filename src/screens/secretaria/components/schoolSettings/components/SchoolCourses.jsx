@@ -3,7 +3,7 @@ import { PlusOneRounded } from "@material-ui/icons";
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { Fragment, useEffect, useState } from "react";
 import { coursesRef } from "../../../../../services/databaseRefs";
-import { LocaleText } from "../../../../../shared/DataGridLocaleText";
+import { LocaleText } from "../../../../../components/shared/DataGridLocaleText";
 
 const SchoolCourses = () => {
   const [loading, setLoading] = useState(false);

@@ -3,10 +3,10 @@ import {
   TextField,
   Button, Typography, CircularProgress
 } from "@material-ui/core";
-import FormDialog from "../../shared/FormDialog";
+import FormDialog from "../../components/shared/FormDialog";
 
 import { useAuth } from "../../hooks/useAuth";
-import SimpleSnackbar from "../../shared/Snackbar";
+import SimpleSnackbar from "../../components/shared/Snackbar";
 
 const SignUpDialog = (props) => {
   const { onClose } = props;

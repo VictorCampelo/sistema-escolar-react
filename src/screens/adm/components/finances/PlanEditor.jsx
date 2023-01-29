@@ -21,9 +21,9 @@ import {
 import { coursesRef } from "../../../../services/databaseRefs";
 import { useSnackbar } from "notistack";
 import $ from "jquery";
-import ErrorDialog from "../../../../shared/ErrorDialog";
-import FullScreenDialog from "../../../../shared/FullscreenDialog";
-import CrudTable from "../../../../shared/DataGrid";
+import ErrorDialog from "../../../../components/shared/ErrorDialog";
+import FullScreenDialog from "../../../../components/shared/FullscreenDialog";
+import CrudTable from "../../../../components/shared/DataGrid";
 
 const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => {
   const [saveDisabled, setSaveDisabled] = useState(true);

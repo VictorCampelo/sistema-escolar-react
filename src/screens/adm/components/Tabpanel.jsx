@@ -15,7 +15,7 @@ import Contracts from "./contracts/Contracts";
 
 import Finances from "./finances/Finances";
 import Dashboard from "../../../components/muiDashboard/Dashboard";
-import WriteOffBillets from "../../../shared/WriteOffBillets";
+import WriteOffBillets from "../../../components/shared/WriteOffBillets";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

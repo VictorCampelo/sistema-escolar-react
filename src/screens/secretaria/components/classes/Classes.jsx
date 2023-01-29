@@ -12,12 +12,12 @@ import { PlusOneRounded, Refresh } from "@material-ui/icons";
 import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { Fragment, useEffect, useState } from "react";
 import { classesRef } from "../../../../services/databaseRefs";
-import { LocaleText } from "../../../../shared/DataGridLocaleText";
-import FullScreenDialog from "../../../../shared/FullscreenDialog";
-import { capitalizeFirstLetter } from "../../../../shared/FunctionsUse";
-import PerformanceDistribuition from "../../../../shared/PerformanceDistribuition";
-import ClassInfo from "../../../../shared/ViewClassInfo";
-import StudentInfo from "../../../../shared/ViewStudentInfo";
+import { LocaleText } from "../../../../components/shared/DataGridLocaleText";
+import FullScreenDialog from "../../../../components/shared/FullscreenDialog";
+import { capitalizeFirstLetter } from "../../../../components/shared/FunctionsUse";
+import PerformanceDistribuition from "../../../../components/shared/PerformanceDistribuition";
+import ClassInfo from "../../../../components/shared/ViewClassInfo";
+import StudentInfo from "../../../../components/shared/ViewStudentInfo";
 
 function getThemePaletteMode(palette) {
   return palette.type || palette.mode;

@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, Fragment, useRef } from "react";
 import { TextField, Button, Typography, CircularProgress } from "@material-ui/core";
-import FormDialog from "../../shared/FormDialog";
+import FormDialog from "../../components/shared/FormDialog";
 
 import { useAuth } from "../../hooks/useAuth";
 import { useSnackbar } from "notistack";

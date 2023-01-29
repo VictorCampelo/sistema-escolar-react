@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ConfirmationDialog } from "../shared/ConfirmDialog";
+import { ConfirmationDialog } from "../components/shared/ConfirmDialog";
 
 const ConfirmationServiceContext = React.createContext(Promise.reject);
 

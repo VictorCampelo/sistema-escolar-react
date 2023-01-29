@@ -19,10 +19,10 @@ import {
   usersRef
 } from "../../../../services/databaseRefs";
 import { functions } from "../../../../services/firebase";
-import { LocaleText } from "../../../../shared/DataGridLocaleText";
-import FullScreenDialog from "../../../../shared/FullscreenDialog";
-import { handleEnableDisableStudents } from "../../../../shared/FunctionsUse";
-import StudentInfo from "../../../../shared/ViewStudentInfo";
+import { LocaleText } from "../../../../components/shared/DataGridLocaleText";
+import FullScreenDialog from "../../../../components/shared/FullscreenDialog";
+import { handleEnableDisableStudents } from "../../../../components/shared/FunctionsUse";
+import StudentInfo from "../../../../components/shared/ViewStudentInfo";
 
 // TODO v5: remove
 function getThemePaletteMode(palette) {

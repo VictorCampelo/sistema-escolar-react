@@ -18,12 +18,12 @@ import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarExport } from "
 import { useSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
 import { disabledStudentsRef, studentsRef } from "../../../../services/databaseRefs";
-import BaseDocument from "../../../../shared/BaseDocument";
-import { LocaleText } from "../../../../shared/DataGridLocaleText";
-import FollowUp from "../../../../shared/FollowUp";
-import FullScreenDialog from "../../../../shared/FullscreenDialog";
-import { handleEnableDisableStudents } from "../../../../shared/FunctionsUse";
-import StudentInfo from "../../../../shared/ViewStudentInfo";
+import BaseDocument from "../../../../components/shared/BaseDocument";
+import { LocaleText } from "../../../../components/shared/DataGridLocaleText";
+import FollowUp from "../../../../components/shared/FollowUp";
+import FullScreenDialog from "../../../../components/shared/FullscreenDialog";
+import { handleEnableDisableStudents } from "../../../../components/shared/FunctionsUse";
+import StudentInfo from "../../../../components/shared/ViewStudentInfo";
 
 // TODO v5: remove
 function getThemePaletteMode(palette) {

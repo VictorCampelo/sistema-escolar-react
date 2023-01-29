@@ -4,9 +4,9 @@ import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarExport } from "
 import { Fragment, useEffect, useState } from "react";
 import { useAuth } from "../../../../hooks/useAuth";
 import { classesRef, usersRef } from "../../../../services/databaseRefs";
-import { LocaleText } from "../../../../shared/DataGridLocaleText";
-import FullScreenDialog from "../../../../shared/FullscreenDialog";
-import { capitalizeFirstLetter } from "../../../../shared/FunctionsUse";
+import { LocaleText } from "../../../../components/shared/DataGridLocaleText";
+import FullScreenDialog from "../../../../components/shared/FullscreenDialog";
+import { capitalizeFirstLetter } from "../../../../components/shared/FunctionsUse";
 import ClassPanelTeacher from "./ClassPanelTeacher";
 
 function getThemePaletteMode(palette) {

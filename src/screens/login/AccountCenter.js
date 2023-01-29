@@ -21,8 +21,8 @@ import {
 import { usersRef } from "../../services/storageRefs";
 import { auth } from "../../services/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { accessVerification } from "../../shared/FunctionsUse";
-import AdminCenter from "../../shared/AdminCenter";
+import { accessVerification } from "../../components/shared/FunctionsUse";
+import AdminCenter from "../../components/shared/AdminCenter";
 
 const useStyles = makeStyles((theme) => ({
   paper: {

@@ -1,12 +1,12 @@
 import { createContext, Fragment, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { onMessageListener } from "../services/firebase";
-import Notifications from "../shared/Notifications";
+import Notifications from "../components/shared/Notifications";
 import { useSnackbar } from "notistack";
 
 import "./App.css";
 import Secretaria from "../screens/secretaria/Secretaria";
-import Navbar from "../navbar/Navbar";
+import Navbar from "../components/navbar/Navbar";
 import { AuthContextProvider } from "../contexts/AuthContext";
 import Home from "../screens/home/Home";
 

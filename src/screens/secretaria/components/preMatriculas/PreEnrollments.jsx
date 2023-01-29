@@ -19,10 +19,10 @@ import { useSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
 import { useConfirmation } from "../../../../contexts/ConfirmContext";
 import { preEnrollmentsRef } from "../../../../services/databaseRefs";
-import { LocaleText } from "../../../../shared/DataGridLocaleText";
-import FullScreenDialog from "../../../../shared/FullscreenDialog";
-import { handleEnableDisableStudents } from "../../../../shared/FunctionsUse";
-import StudentInfo from "../../../../shared/ViewStudentInfo";
+import { LocaleText } from "../../../../components/shared/DataGridLocaleText";
+import FullScreenDialog from "../../../../components/shared/FullscreenDialog";
+import { handleEnableDisableStudents } from "../../../../components/shared/FunctionsUse";
+import StudentInfo from "../../../../components/shared/ViewStudentInfo";
 import ViewPreEnrollment from "./ViewPreEnrollment";
 
 // TODO v5: remove

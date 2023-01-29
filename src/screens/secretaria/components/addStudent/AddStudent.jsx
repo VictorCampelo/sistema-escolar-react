@@ -17,15 +17,15 @@ import {
   Paper,
   useMediaQuery
 } from "@material-ui/core";
-import { enrollStudent } from "../../../../shared/FunctionsUse";
+import { enrollStudent } from "../../../../components/shared/FunctionsUse";
 import {
   AddressAndParentsFields,
   BasicDataFields,
   CourseDataFields
-} from "../../../../shared/StudentFields";
+} from "../../../../components/shared/StudentFields";
 import $ from "jquery";
 import { classesRef } from "../../../../services/databaseRefs";
-import ErrorDialog from "../../../../shared/ErrorDialog";
+import ErrorDialog from "../../../../components/shared/ErrorDialog";
 import { useSnackbar } from "notistack";
 import { ArrowForward, Save } from "@material-ui/icons";
 

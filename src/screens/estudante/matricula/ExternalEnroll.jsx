@@ -19,8 +19,8 @@ import $ from "jquery";
 
 import { ArrowForward } from "@material-ui/icons";
 import { useSnackbar } from "notistack";
-import { enrollStudent } from "../../../shared/FunctionsUse";
-import { AddressAndParentsFields, BasicDataFields } from "../../../shared/StudentFields";
+import { enrollStudent } from "../../../components/shared/FunctionsUse";
+import { AddressAndParentsFields, BasicDataFields } from "../../../components/shared/StudentFields";
 import ExternalFilesUpload from "./ExternalFilesUpload";
 
 const useStyles = makeStyles((theme) => ({

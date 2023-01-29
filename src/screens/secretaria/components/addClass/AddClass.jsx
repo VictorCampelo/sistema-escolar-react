@@ -27,8 +27,8 @@ import {
   daysCodesRef,
   teachersListRef
 } from "../../../../services/databaseRefs";
-import { LocaleText } from "../../../../shared/DataGridLocaleText";
-import { generateClassCode, handleSendClassData } from "../../../../shared/FunctionsUse";
+import { LocaleText } from "../../../../components/shared/DataGridLocaleText";
+import { generateClassCode, handleSendClassData } from "../../../../components/shared/FunctionsUse";
 
 const useStyles = makeStyles((theme) => ({
   root: {
