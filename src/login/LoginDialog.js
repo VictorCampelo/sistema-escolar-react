@@ -27,11 +27,11 @@ const LoginDialog = (props) => {
           title: "Info",
           variant: "info",
           key: "0",
-          action: (
+          action:
             <Button onClick={() => closeSnackbar("0")} color="inherit">
               Fechar
             </Button>
-          )
+
         });
       } catch (error) {
         console.log(error);
@@ -40,11 +40,11 @@ const LoginDialog = (props) => {
           title: "Erro",
           variant: "error",
           key: "0",
-          action: (
+          action:
             <Button onClick={() => closeSnackbar("0")} color="inherit">
               Fechar
             </Button>
-          )
+
         });
       }
     } else {
@@ -122,14 +122,14 @@ const LoginDialog = (props) => {
                 }
               }}
               helperText={
-                status === "auth/wrong-password" ? (
+                status === "auth/wrong-password" ?
                   <span>
                     Senha incorreta. Tente novamente ou clique em{" "}
                     <b>&quot;Esqueceu sua senha?&quot;</b> para redefini-la.
                   </span>
-                ) : (
+                  :
                   ""
-                )
+
               }
             />
           </Fragment>
@@ -143,8 +143,7 @@ const LoginDialog = (props) => {
               color="secondary"
               disabled={isLoading}
               size="large"
-              endIcon={isLoading && <CircularProgress />}
-            >
+              endIcon={isLoading && <CircularProgress />}>
               Login
             </Button>
             <Typography
@@ -158,11 +157,10 @@ const LoginDialog = (props) => {
               role="button"
               onKeyDown={(event) => {
                 // For screenreaders listen to space and enter events
-                if ((!isLoading && event.keyCode === 13) || event.keyCode === 32) {
+                if (!isLoading && event.keyCode === 13 || event.keyCode === 32) {
                   handlePasswordForgot();
                 }
-              }}
-            >
+              }}>
               Esqueceu sua senha?
             </Typography>
           </Fragment>
