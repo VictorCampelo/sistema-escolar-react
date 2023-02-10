@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 
@@ -12,27 +10,24 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
-import MenuIcon from "@material-ui/icons/Menu";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import {
-  AccountCircle,
   Home,
   ImportContacts,
   AllInbox,
   Apartment,
   School
 } from "@material-ui/icons";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
-import { Box, SwipeableDrawer } from "@material-ui/core";
-import SimpleContainer from "../../Container";
+import { SwipeableDrawer } from "@material-ui/core";
 import { useAuth } from "../../hooks/useAuth";
 import { usersListRef } from "../../services/databaseRefs";
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,6 +63,14 @@ const useStyles = makeStyles((theme) => ({
   },
   fullList: {
     width: "auto"
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+    width: "95%"
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2)
   }
 }));
 
@@ -76,8 +79,7 @@ function ResponsiveDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [auth, setAuth] = useState(true);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [isStudent, setIsStudent] = useState(false);
   const { user } = useAuth();
   const [areas, setAreas] = useState([]);
 
@@ -86,40 +88,64 @@ function ResponsiveDrawer(props) {
   };
 
   useEffect(() => {
-    console.log(user);
-    if (user && user !== "Searching user...") {
-      usersListRef
-        .child(user.id)
-        .once("value")
-        .then((snapshot) => {
-          try {
-            console.log(snapshot.val());
-            let userAccess = snapshot.val().acessos;
-            let localAreas = [];
+    const fetchData = async () => {
+      if (user && user !== "Searching user...") {
+        const snapshot = await usersListRef.child(user.id).once("value");
+        try {
+          const userAccess = snapshot.val().acessos;
+          const localAreas = [];
 
-            userAccess.professores === true &&
-              localAreas.push({ text: "Professores", to: "professores", icon: 1 });
-
-            if (userAccess.master === true) {
-              localAreas.push({ text: "Administração", to: "adm", icon: 2 });
-              localAreas.push({ text: "Secretaria", to: "secretaria", icon: 0 });
-            } else {
-              userAccess.adm === true &&
-                localAreas.push({ text: "Administração", to: "adm", icon: 2 });
-              userAccess.secretaria === true &&
-                localAreas.push({ text: "Secretaria", to: "secretaria", icon: 0 });
-              userAccess.aluno === true &&
-                localAreas.push({ text: "Estudante", to: "estudante", icon: 3 });
-            }
-            setAreas([...localAreas]);
-          } catch (error) {
-            console.log(error);
+          if (userAccess.professores) {
+            localAreas.push({ text: "Professores", to: "professores", icon: 1 });
           }
-        });
-    }
+          if (userAccess.master) {
+            localAreas.push({ text: "Administração", to: "adm", icon: 2 });
+            localAreas.push({ text: "Secretaria", to: "secretaria", icon: 0 });
+          } else {
+            if (userAccess.adm) {
+              localAreas.push({ text: "Administração", to: "adm", icon: 2 });
+            }
+            if (userAccess.secretaria) {
+              localAreas.push({ text: "Secretaria", to: "secretaria", icon: 0 });
+            }
+            if (userAccess.aluno) {
+              localAreas.push({ text: "Estudante", to: "estudante", icon: 3 });
+              setIsStudent(true);
+            }
+          }
+          setAreas([...localAreas]);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    fetchData();
   }, [user]);
 
+  const [age, setAge] = useState("");
+
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
+
   const firstIcons = [<AllInbox />, <ImportContacts />, <Apartment />, <School />];
+
+  const SelectSchool = () => (<List>
+    <FormControl className={classes.formControl}>
+      <InputLabel id="demo-simple-select-label">Escola</InputLabel>
+      <Select
+        labelId="simple-select-label"
+        id="simple-select"
+        value={age}
+        onChange={handleChange}
+      >
+        <MenuItem value={10}>Ten</MenuItem>
+        <MenuItem value={20}>Twenty</MenuItem>
+        <MenuItem value={30}>Thirty</MenuItem>
+      </Select>
+    </FormControl>
+  </List>);
+
   const drawer = (
     <div>
       <div className={classes.toolbar}>
@@ -128,7 +154,11 @@ function ResponsiveDrawer(props) {
         </IconButton>
       </div>
       <Divider />
-      <List>
+
+      {!isStudent && <SelectSchool />}
+
+      <Divider />
+      <List>,
         <Link to="/" style={{ textDecoration: "none", color: "black" }} onClick={onClose}>
           <ListItem button key={"Home"}>
             <ListItemIcon>
@@ -145,8 +175,7 @@ function ResponsiveDrawer(props) {
             key={index}
             to={"/" + elem.to}
             style={{ textDecoration: "none", color: "black" }}
-            onClick={onClose}
-          >
+            onClick={onClose}>
             <ListItem button key={elem.text}>
               <ListItemIcon>{firstIcons[elem.icon]}</ListItemIcon>
               <ListItemText primary={elem.text} />
@@ -171,53 +200,6 @@ function ResponsiveDrawer(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      {/* <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            className={classes.menuButton}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Responsive drawer
-          </Typography>
-          {auth && (
-            <div>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-              </Menu>
-            </div>
-          )}
-        </Toolbar>
-      </AppBar> */}
       <nav className={classes.drawer} aria-label="menu">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden smUp implementation="css">
@@ -232,8 +214,7 @@ function ResponsiveDrawer(props) {
             }}
             ModalProps={{
               keepMounted: true // Better open performance on mobile.
-            }}
-          >
+            }}>
             {drawer}
           </SwipeableDrawer>
         </Hidden>
@@ -245,8 +226,7 @@ function ResponsiveDrawer(props) {
             variant="temporary"
             open={open}
             onClose={onClose}
-            disableSwipeToOpen={false}
-          >
+            disableSwipeToOpen={false}>
             {drawer}
           </SwipeableDrawer>
         </Hidden>
