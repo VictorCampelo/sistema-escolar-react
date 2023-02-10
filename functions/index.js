@@ -94,13 +94,14 @@ exports.liberaERemoveAcessos = functions.https.onCall(async (data, context) => {
   };
 });
 
-exports.apagaContas = functions.https.onCall((data, context) => {
+exports.apagaContas = functions.https.onCall(async (data, context) => {
   if (context.auth.token.master === true) {
-    return admin
-      .auth()
-      .deleteUser(data.uid)
-      .then(() => {
-        return admin
+    try {
+      await admin
+        .auth()
+        .deleteUser(data.uid);
+      try {
+        await admin
           .database()
           .ref("sistemaEscolar/registroGeral")
           .push({
@@ -108,19 +109,16 @@ exports.apagaContas = functions.https.onCall((data, context) => {
             timestamp: admin.firestore.Timestamp.now(),
             userCreator: context.auth.uid,
             dados: data
-          })
-          .then(() => {
-            return {
-              answer: "Usuário deletado com sucesso."
-            };
-          })
-          .catch((error) => {
-            throw new functions.https.HttpsError("unknown", error.message, error);
           });
-      })
-      .catch((error) => {
-        throw new functions.https.HttpsError("unknown", error.message);
-      });
+        return {
+          answer: "Usuário deletado com sucesso."
+        };
+      } catch (error) {
+        throw new functions.https.HttpsError("unknown", error.message, error);
+      }
+    } catch (error_1) {
+      throw new functions.https.HttpsError("unknown", error_1.message);
+    }
   }
   throw new functions.https.HttpsError(
     "permission-denied",
@@ -181,15 +179,19 @@ exports.modificaSenhaContaAluno = functions.database
       let senhaAluno = snapshot.after.val();
       let matricula = context.params.matricula;
       let firestoreRef = admin.firestore().collection("mail");
+      
       let dadosAluno = await admin
         .database()
         .ref("sistemaEscolar/alunos/" + matricula)
         .once("value");
+
       let nomeEscola = await admin
         .database()
         .ref("sistemaEscolar/infoEscola/dadosBasicos/nomeEscola")
         .once("value");
+      
       let user = await admin.auth().getUserByEmail(dadosAluno.val().emailAluno);
+      
       let emailContent = {
         to: dadosAluno.val().emailAluno,
         message: {
@@ -345,8 +347,6 @@ exports.cadastroUser = functions.auth.user().onCreate(async (user) => {
 });
 
 exports.cadastraTurma = functions.https.onCall(async (data, context) => {
-  /**{codigoSala: codPadrao, professor: professor, diasDaSemana: diasDaSemana, livros: books, hora: horarioCurso} */
-  console.log(data);
   if (context.auth.token.master === true || context.auth.token.secretaria === true) {
     let dados = data;
     if (dados.hasOwnProperty("codTurmaAtual")) {
@@ -355,7 +355,7 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
         .database()
         .ref(`sistemaEscolar/turmas/${turma}/professor/0`)
         .once("value")
-        .then((snapshot) => {
+        .then(async (snapshot) => {
           if (snapshot.val()) {
             throw new HttpsError(
               "cancelled",
@@ -388,7 +388,7 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
                 .database()
                 .ref(`sistemaEscolar/turmas/${turma}`)
                 .remove()
-                .then(() => {
+                .then(async () => {
                   return admin
                     .database()
                     .ref("sistemaEscolar/registroGeral")
@@ -535,7 +535,7 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
     return admin
       .auth()
       .getUserByEmail(data.professor)
-      .then((user) => {
+      .then(async (user) => {
         dados.professor = [{
           nome: user.displayName,
           email: user.email
@@ -739,7 +739,7 @@ exports.cadastraProf = functions.https.onCall(async (data, context) => {
   );
 });
 
-exports.addNovoProfTurma = functions.https.onCall((data, context) => {
+exports.addNovoProfTurma = functions.https.onCall(async (data, context) => {
   if (context.auth.token.master === true || context.auth.token.secretaria === true) {
     return admin
       .auth()
@@ -814,7 +814,7 @@ exports.addNovoProfTurma = functions.https.onCall((data, context) => {
 
 exports.desconectaProf = functions.database
   .ref("sistemaEscolar/turmas/{codTurma}/professor/{iProf}")
-  .onDelete((snapshot, context) => {
+  .onDelete(async (snapshot, context) => {
     // context.params = { codTurma: 'KIDS-SAT08', iProf: '1' }
     // context.timestamp = context.timestamp
 
@@ -922,7 +922,7 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
         .database()
         .ref("/sistemaEscolar/preMatriculas")
         .push(dadosAluno)
-        .then(() => {
+        .then(async () => {
           return firestoreRef
             .add(emailContent)
             .then(() => {
@@ -981,7 +981,7 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
       .ref("sistemaEscolar/alunos")
       .child(dadosAluno.matriculaAluno)
       .once("value")
-      .then((alunoRecord) => {
+      .then(async (alunoRecord) => {
         if (alunoRecord.exists()) {
           throw new functions.https.HttpsError(
             "already-exists",
@@ -1107,7 +1107,7 @@ exports.timestamp = functions.https.onCall(() => {
   };
 });
 
-exports.transfereAlunos = functions.https.onCall((data, context) => {
+exports.transfereAlunos = functions.https.onCall(async (data, context) => {
   function formataNumMatricula(num) {
     let numero = num;
     numero = "00000" + numero.replace(/\D/g, "");
@@ -1268,7 +1268,7 @@ exports.transfereAlunos = functions.https.onCall((data, context) => {
   throw new functions.https.HttpsError("permission-denied", "Você não tem permissão.");
 });
 
-exports.excluiTurma = functions.https.onCall((data, context) => {
+exports.excluiTurma = functions.https.onCall(async (data, context) => {
   if (context.auth.token.master === true || context.auth.token.secretaria === true) {
     let turma = data.codTurma;
     return admin
@@ -1333,7 +1333,7 @@ exports.excluiTurma = functions.https.onCall((data, context) => {
   );
 });
 
-exports.ativaDesativaAlunos = functions.https.onCall((data, context) => {
+exports.ativaDesativaAlunos = functions.https.onCall(async (data, context) => {
   function formataNumMatricula(num) {
     let numero = num;
     numero = "00000" + numero.replace(/\D/g, "");
@@ -1563,7 +1563,7 @@ exports.ativaDesativaAlunos = functions.https.onCall((data, context) => {
   }
 });
 
-exports.lancarNotas = functions.https.onCall((data, context) => {
+exports.lancarNotas = functions.https.onCall(async (data, context) => {
   // data: {alunos: {matricula: nomeAluno}, turma: codTurma, notas: {ativ1: 50, ativ2: 50}}
   if (context.auth.token.master === true || context.auth.token.professores === true) {
     function formataNumMatricula(num) {
@@ -1584,7 +1584,7 @@ exports.lancarNotas = functions.https.onCall((data, context) => {
           alunosTurmaRef
             .child(formataNumMatricula(matricula) + "/notas")
             .set(notas)
-            .then(() => {
+            .then(async () => {
               return admin
                 .database()
                 .ref("sistemaEscolar/registroGeral")
@@ -1623,7 +1623,7 @@ exports.lancarNotas = functions.https.onCall((data, context) => {
 
 exports.lancaDesempenhos = functions.database
   .ref("sistemaEscolar/turmas/{codTurma}/alunos/{matricula}/desempenho")
-  .onWrite((snapshot, context) => {
+  .onWrite(async (snapshot, context) => {
     // context.timestamp = context.timestamp
     // context.params = { codTurma: 'KIDS-SAT08', matricula: '00001' }
 
@@ -2271,7 +2271,7 @@ exports.newYear = functions.pubsub
     return null;
   });
 
-exports.geraBoletos = functions.https.onCall((data) => {
+exports.geraBoletos = functions.https.onCall(async (data) => {
   const getDaysInMonth = (month, year) => {
     // Here January is 1 based
     //Day 0 is the last day in the previous month
@@ -2619,7 +2619,7 @@ exports.escutaHistoricoBoletos = functions.database
 
 exports.escutaContratos = functions.database
   .ref("sistemaEscolar/infoEscola/contratos/{key}")
-  .onCreate((snapshot, context) => {
+  .onCreate(async (snapshot, context) => {
     const setContract = async () => {
       const key = context.params.key;
       const studentId = snapshot.child("matricula").val();
@@ -2673,7 +2673,7 @@ exports.escutaContratos = functions.database
     });
   });
 
-exports.lancaFaltas = functions.https.onCall((data) => {
+exports.lancaFaltas = functions.https.onCall(async (data) => {
   // const data = {dateStr: dateStr, classId: classId, studentsIds: studentsIds}
   const classId = data.classId;
   const studentsIds = data.studentsIds;
@@ -2725,7 +2725,7 @@ exports.lancaFaltas = functions.https.onCall((data) => {
     });
 });
 
-exports.removeFaltas = functions.https.onCall((data) => {
+exports.removeFaltas = functions.https.onCall(async (data) => {
   // const data = {dateStr: dateStr, classId: classId, studentId: studentId}
   const classId = data.classId;
   const studentId = data.studentId;
@@ -2753,7 +2753,7 @@ exports.removeFaltas = functions.https.onCall((data) => {
 
 exports.escutaFollowUp = functions.database
   .ref("sistemaEscolar/followUp/{id}")
-  .onCreate((snapshot, context) => {
+  .onCreate(async (snapshot, context) => {
     const setContract = async () => {
       const key = context.params.id;
       await admin
