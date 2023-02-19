@@ -7,6 +7,7 @@ const rootPath = "sistemaEscolar/";
 const schoolInfoPath = "infoEscola/";
 const booksPath = schoolInfoPath + "livros/";
 const coursesPath = schoolInfoPath + "cursos/";
+const headquartersPath = schoolInfoPath + "sedes/";
 const contractsPath = schoolInfoPath + "contratos/";
 const additionalFieldsPath = schoolInfoPath + "camposAdicionais/";
 const basicDataPath = schoolInfoPath + "dadosBasicos/";
@@ -36,6 +37,7 @@ const schoolInfoRef = rootRef.child(schoolInfoPath);
 const classesRef = rootRef.child(classesPath);
 const booksRef = rootRef.child(booksPath);
 const coursesRef = rootRef.child(coursesPath);
+const headquartersRef = rootRef.child(headquartersPath);
 const contractRef = rootRef.child(contractsPath);
 const daysCodesRef = rootRef.child(daysCodesPath);
 const additionalFieldsRef = rootRef.child(additionalFieldsPath);
@@ -59,6 +61,7 @@ export {
   classesRef,
   booksRef,
   coursesRef,
+  headquartersRef,
   contractRef,
   daysCodesRef,
   additionalFieldsRef,
