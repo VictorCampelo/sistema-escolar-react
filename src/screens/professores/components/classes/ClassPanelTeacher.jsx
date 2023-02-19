@@ -1,13 +1,15 @@
+import brLocale from "@fullcalendar/core/locales/pt-br";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
-import { Calendar } from "@fullcalendar/core";
-import { render } from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import {
   Avatar,
   Backdrop,
   Box,
   Button,
   Card,
-  CardActions,
   CardContent,
   CircularProgress,
   Container,
@@ -16,91 +18,51 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider,
-  Grid,
-  IconButton,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-  makeStyles,
-  MenuItem,
-  Select,
-  Tooltip,
-  Typography,
-  TextField,
   FormControl,
   FormHelperText,
-  Paper,
-  Fab
+  Grid,
+  IconButton,
+  makeStyles,
+  TextField,
+  Tooltip,
+  Typography
 } from "@material-ui/core";
-import { green } from "@material-ui/core/colors";
 import {
-  AccountBox,
-  Add,
-  Assignment,
-  Assistant,
-  AttachFile,
-  ChromeReaderMode,
-  Clear,
-  DeleteForever,
-  Description,
-  DoneAll,
-  Edit,
+  CalendarToday,
   Grade,
-  Lock,
-  LockOpen,
-  Person,
-  Print,
-  School,
-  SupervisedUserCircle,
-  TransferWithinAStation,
-  Refresh,
-  Event,
   MeetingRoom,
   NoMeetingRoom,
-  Speed,
-  CalendarToday
+  Person,
+  Print,
+  Refresh,
+  School,
+  Speed
 } from "@material-ui/icons";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
-import { Fragment, useEffect, useState } from "react";
-
-import {
-  basicDataRef,
-  classesRef,
-  coursesRef,
-  schoolInfoRef,
-  teachersListRef
-} from "../../../../services/databaseRefs";
+import { Fragment, useEffect, useRef, useState } from "react";
+import CalendarComponent from "../../../../components/muiDashboard/Calendar";
+import ClassReportOLD from "../../../../components/shared/ClassReportOLD";
 import { LocaleText } from "../../../../components/shared/DataGridLocaleText";
 import FullScreenDialog from "../../../../components/shared/FullscreenDialog";
 import {
-  handleEnableDisableStudents,
-  handleTransferStudents,
-  handleAddTeacher,
-  handleDeleteClass,
-  handleRemoveTeacher,
   handleClassOpen,
   handleCloseClass,
   releaseFaults,
   removeFaults
 } from "../../../../components/shared/FunctionsUse";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import listPlugin from "@fullcalendar/list";
-import brLocale from "@fullcalendar/core/locales/pt-br";
-import interactionPlugin from "@fullcalendar/interaction";
-import { useRef } from "react";
-import CalendarComponent from "../../../../components/muiDashboard/Calendar";
-import { useConfirmation } from "../../../../contexts/ConfirmContext";
-import AddClass from "../../../secretaria/components/addClass/AddClass";
-import ClassReportOLD from "../../../../components/shared/ClassReportOLD";
-import StudentPanelTeacher from "../../../professores/components/students/StudentPanelTeacher";
-import ReleaseGrades from "../../../../components/shared/ReleaseGrades";
 import GradeDefinition from "../../../../components/shared/GradeDefinition";
+import ReleaseGrades from "../../../../components/shared/ReleaseGrades";
 import ReleasePerformance from "../../../../components/shared/ReleasePerformance";
 import StudentInfo from "../../../../components/shared/ViewStudentInfo";
+import { useConfirmation } from "../../../../contexts/ConfirmContext";
+import {
+  basicDataRef,
+  classesRef,
+  coursesRef,
+  teachersListRef
+} from "../../../../services/databaseRefs";
+import AddClass from "../../../secretaria/components/addClass/AddClass";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -260,11 +222,11 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
           title: "Error",
           variant: "error",
           key: "0",
-          action: (
+          action:
             <Button onClick={() => closeSnackbar("0")} color="inherit">
               Fechar
             </Button>
-          )
+
         });
       }
     );
@@ -342,14 +304,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
     }
   };
 
-  const handleAddRow = () => {
-    // let rowsArray = JSON.parse(JSON.stringify(rows))
-    // rowsArray.push({id: rowsArray.length, label: 'Digite um nome...', placeholder: 'Digite...', required: false})
-    // setRows(rowsArray)
-    // console.log(rowsArray)
-  };
-
-  const handleRowEdit = async (editedRow) => {
+  const handleRowEdit = async () => {
     // setLoading(true);
     // console.log(editedRow);
     // let rowsArray = JSON.parse(JSON.stringify(rows))
@@ -372,22 +327,6 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
     setSelectedRows(selectedRows);
   };
 
-  const handleDeleteRows = async () => {
-    // setLoading(true)
-    // let rowsArray = JSON.parse(JSON.stringify(rows));
-    // let updatedRows = rowsArray.filter(row => selectedRows.indexOf(row.id) === -1);
-    // console.log(updatedRows);
-    // // try {
-    // //     await additionalFieldsRef.set(updatedRows);
-    // //     setRows(updatedRows);
-    // //     setLoading(false);
-    // // } catch (error) {
-    // //     console.log(error);
-    // //     setLoading(false);
-    // //     throw new Error(error.message);
-    // // }
-  };
-
   const handleRowClick = (e) => {
     console.log(e);
     //setStudentInfo({id: e.id, classCode: classCode})
@@ -397,10 +336,6 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
   const handleOpenStudent = (id) => {
     setStudentInfo({ id: id, classCode: classCode });
     setOpen(true);
-  };
-
-  const handleTeacherClick = (e) => {
-    console.log(e);
   };
 
   // Functions for the calendar
@@ -511,7 +446,6 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
     };
     try {
       setLoader(true);
-      const message = await handleClassOpen(classCode, source, info);
       getData();
 
       setLoader(false);
@@ -522,58 +456,13 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
         title: "Sucesso",
         variant: "error",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       setLoader(false);
-    }
-  };
-
-  const handleConfirmOpenClass = () => {
-    setOpenDialog2(true);
-  };
-
-  const handleConfirmCloseClass = async () => {
-    try {
-      await confirm({
-        variant: "danger",
-        catchOnCancel: true,
-        title: "Confirmação",
-        description:
-          "Você deseja fechar esta turma? Ao fechar, os processos para geração de boletins serão iniciados."
-      });
-      setLoader(true);
-      const message = await handleCloseClass(classCode);
-
-      getData();
-      enqueueSnackbar(message, {
-        title: "Sucesso",
-        variant: "success",
-        key: "0",
-        action: (
-          <Button onClick={() => closeSnackbar("0")} color="inherit">
-            Fechar
-          </Button>
-        )
-      });
-      setLoader(false);
-    } catch (error) {
-      getData();
-      setLoader(false);
-      if (error)
-        enqueueSnackbar(error.message, {
-          title: "Erro",
-          variant: "error",
-          key: "0",
-          action: (
-            <Button onClick={() => closeSnackbar("0")} color="inherit">
-              Fechar
-            </Button>
-          )
-        });
     }
   };
 
@@ -583,11 +472,6 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
 
   const handleClassReport = () => {
     setClassReport(true);
-  };
-
-  const handleOpenCalendar = () => {
-    setOpenCalendar(true);
-    //enqueueSnackbar('O Calendário da Turma ainda está em desenvolvimento 😊', {title: 'Info', variant: 'info', key:"0", action: <Button onClick={() => closeSnackbar('0')} color="inherit">Fechar</Button> })
   };
 
   const handleReleaseGrades = (single) => {
@@ -623,24 +507,25 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
           title: "Sucesso",
           variant: "success",
           key: "0",
-          action: (
+          action:
             <Button onClick={() => closeSnackbar("0")} color="inherit">
               Fechar
             </Button>
-          )
+
         });
       } catch (error) {
-        if (error)
+        if (error) {
           enqueueSnackbar(error.message, {
             title: "Erro",
             variant: "error",
             key: "0",
-            action: (
+            action:
               <Button onClick={() => closeSnackbar("0")} color="inherit">
                 Fechar
               </Button>
-            )
+
           });
+        }
       }
       setLoader(false);
     } else {
@@ -673,35 +558,36 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
             title: "Sucesso",
             variant: "success",
             key: "0",
-            action: (
+            action:
               <Button onClick={() => closeSnackbar("0")} color="inherit">
                 Fechar
               </Button>
-            )
+
           });
         } catch (error) {
-          if (error)
+          if (error) {
             enqueueSnackbar(error.message, {
               title: "Erro",
               variant: "error",
               key: "0",
-              action: (
+              action:
                 <Button onClick={() => closeSnackbar("0")} color="inherit">
                   Fechar
                 </Button>
-              )
+
             });
+          }
         }
       } else {
         enqueueSnackbar("Para lançar faltas, selecione os alunos na tabela acima.", {
           title: "Info",
           variant: "info",
           key: "0",
-          action: (
+          action:
             <Button onClick={() => closeSnackbar("0")} color="inherit">
               Fechar
             </Button>
-          )
+
         });
       }
       setLoader(false);
@@ -710,9 +596,9 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
 
   return (
     <Fragment>
-      {classReport && (
+      {classReport &&
         <ClassReportOLD open={classReport} onClose={setClassReport} classCode={classCode} />
-      )}
+      }
       <ReleaseGrades
         open={gradeRelease}
         onClose={setGradeRelease}
@@ -731,8 +617,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
       <Dialog
         aria-labelledby="confirmation-dialog-title"
         open={openDialog}
-        onClose={() => setOpenDialog(false)}
-      >
+        onClose={() => setOpenDialog(false)}>
         <DialogTitle id="confirmation-dialog-title">Você confirma esta ação?</DialogTitle>
         {dialogContent}
       </Dialog>
@@ -748,8 +633,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
         }}
         title={"Editar as informações da turma"}
         saveButton={"Salvar"}
-        saveButtonDisabled={true}
-      >
+        saveButtonDisabled={true}>
         <AddClass
           dataForEditing={dataForEditing}
           onClose={() => {
@@ -770,8 +654,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
         }}
         title={"Calendário da turma"}
         saveButton={"Salvar"}
-        saveButtonDisabled={true}
-      >
+        saveButtonDisabled={true}>
         <Container>
           <CalendarComponent sourceId={classCode} isFromClassCode />
         </Container>
@@ -780,8 +663,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
       <Dialog
         aria-labelledby="confirmation-dialog-title"
         open={openDialog2}
-        onClose={() => setOpenDialog2(false)}
-      >
+        onClose={() => setOpenDialog2(false)}>
         <DialogTitle id="confirmation-dialog-title">Você confirma esta ação?</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -795,7 +677,6 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
             </Typography>
             <div className={classes.fieldsContainer}>
               <TextField
-                autoFocus
                 margin="dense"
                 id="name"
                 label="Nome do período"
@@ -807,7 +688,6 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                 required
               />
               <TextField
-                autoFocus
                 margin="dense"
                 id="name"
                 label="Aulas"
@@ -932,7 +812,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
           <Button onClick={() => setOpenDialog2(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={handleCallClassOpen} variant="contained" color="primary" autoFocus>
+          <Button onClick={handleCallClassOpen} variant="contained" color="primary">
             Sim, continuar
           </Button>
         </DialogActions>
@@ -952,8 +832,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
         }}
         title={"Informações do aluno"}
         saveButton={"Salvar"}
-        saveButtonDisabled={true}
-      >
+        saveButtonDisabled={true}>
         <StudentInfo studentInfo={studentInfo} teacherView />
       </FullScreenDialog>
       <div style={{ position: "absolute" }}>
@@ -971,23 +850,20 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                     classData.hasOwnProperty("status") && classData.status.turma === "aberta"
                       ? "Turma aberta"
                       : "Turma Fechada"
-                  }
-                >
+                  }>
                   <Avatar
                     className={classes.avatar}
                     style={{
-                      backgroundColor: `${
-                        classData.hasOwnProperty("status") && classData.status.turma === "aberta"
+                      backgroundColor: `${classData.hasOwnProperty("status") && classData.status.turma === "aberta"
                           ? "#38a800"
                           : "red"
-                      }`
-                    }}
-                  >
-                    {classData.hasOwnProperty("status") && classData.status.turma === "aberta" ? (
+                        }`
+                    }}>
+                    {classData.hasOwnProperty("status") && classData.status.turma === "aberta" ?
                       <MeetingRoom />
-                    ) : (
+                     :
                       <NoMeetingRoom />
-                    )}
+                    }
                   </Avatar>
                 </Tooltip>
               </Grid>
@@ -1021,7 +897,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                 <Typography className={classes.pos} color="textSecondary"></Typography>
               </Grid>
             </Grid>
-            {canDefineGrades && (
+            {canDefineGrades &&
               <Box m={1}>
                 <Button
                   fullWidth
@@ -1029,12 +905,11 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                   variant="contained"
                   color="primary"
                   startIcon={<Grade />}
-                  onClick={handleGradeDefinition}
-                >
+                  onClick={handleGradeDefinition}>
                   Distribuir notas
                 </Button>
               </Box>
-            )}
+            }
 
             <Box m={1}>
               <Button
@@ -1046,15 +921,14 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                 }
                 color="primary"
                 startIcon={<Print />}
-                onClick={handleClassReport}
-              >
+                onClick={handleClassReport}>
                 Diário de classe
               </Button>
             </Box>
             {/* <Box m={1}>
                         <Button fullWidth size="large" variant="contained" color="primary" onClick={(classData.hasOwnProperty('status') && classData.status.turma === 'aberta') ? handleConfirmCloseClass : handleConfirmOpenClass} startIcon={(classData.hasOwnProperty('status') && classData.status.turma === 'aberta') ? <NoMeetingRoom /> : <MeetingRoom />}>{(classData.hasOwnProperty('status') && classData.status.turma === 'aberta') ? 'Fechar ' : 'Abrir '}turma</Button>
                       </Box> */}
-            {/* {(classData.hasOwnProperty('status') && classData.status.turma === 'aberta') && 
+            {/* {(classData.hasOwnProperty('status') && classData.status.turma === 'aberta') &&
                       <Box m={1}>
                         <Button fullWidth size="large" variant="contained" color="primary" onClick={handleOpenCalendar} startIcon={<Event />}>Calendário da turma</Button>
                       </Box>} */}
@@ -1068,8 +942,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                 variant="outlined"
                 color="primary"
                 onClick={getData}
-                startIcon={<Refresh />}
-              >
+                startIcon={<Refresh />}>
                 Atualizar dados
               </Button>
             </Box>
@@ -1080,10 +953,10 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                       {teachers.map((teacher, i) => (
                         <ListItem divider button onClick={handleTeacherClick}>
                           <ListItemText className={classes.list}>{teacher.nome} ({teacher.email}) </ListItemText>
-                          
+
                         </ListItem>
                       ))}
-                      
+
                     </List> */}
           </CardContent>
         </Card>
@@ -1118,7 +991,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                     headerName: "Ações",
                     minWidth: 150,
                     flex: 1,
-                    renderCell: (params) => (
+                    renderCell: (params) =>
                       <strong>
                         <Tooltip title="Notas">
                           <IconButton
@@ -1128,8 +1001,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                                 classData.hasOwnProperty("status") &&
                                 classData.status.turma === "aberta"
                               )
-                            }
-                          >
+                            }>
                             <Grade />
                           </IconButton>
                         </Tooltip>
@@ -1142,8 +1014,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                                 classData.hasOwnProperty("status") &&
                                 classData.status.turma === "aberta"
                               )
-                            }
-                          >
+                            }>
                             <Speed />
                           </IconButton>
                         </Tooltip>
@@ -1154,7 +1025,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                           </IconButton>
                         </Tooltip>
                       </strong>
-                    )
+
                   }
                 ]}
                 disableSelectionOnClick
@@ -1179,8 +1050,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                     selectedRows.length === 0
                   }
                   startIcon={<Grade />}
-                  onClick={() => handleReleaseGrades()}
-                >
+                  onClick={() => handleReleaseGrades()}>
                   Lançar notas
                 </Button>
                 <Button
@@ -1192,8 +1062,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                     !(classData.hasOwnProperty("status") && classData.status.turma === "aberta") ||
                     selectedRows.length === 0
                   }
-                  onClick={() => handleReleasePerformance()}
-                >
+                  onClick={() => handleReleasePerformance()}>
                   Lançar desempenho
                 </Button>
               </div>
