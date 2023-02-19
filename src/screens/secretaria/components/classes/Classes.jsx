@@ -1,23 +1,19 @@
 import {
   Button,
   createTheme,
-  darken,
-  Dialog,
-  Fab,
-  Grid,
+  darken, Grid,
   lighten,
   makeStyles
 } from "@material-ui/core";
-import { PlusOneRounded, Refresh } from "@material-ui/icons";
-import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
+import { Refresh } from "@material-ui/icons";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Fragment, useEffect, useState } from "react";
 import { classesRef } from "../../../../services/databaseRefs";
-import { LocaleText } from "../../../../components/shared/DataGridLocaleText";
-import FullScreenDialog from "../../../../components/shared/FullscreenDialog";
-import { capitalizeFirstLetter } from "../../../../components/shared/FunctionsUse";
-import PerformanceDistribuition from "../../../../components/shared/PerformanceDistribuition";
-import ClassInfo from "../../../../components/shared/ViewClassInfo";
-import StudentInfo from "../../../../components/shared/ViewStudentInfo";
+import { LocaleText } from "../../../../shared/DataGridLocaleText";
+import FullScreenDialog from "../../../../shared/FullscreenDialog";
+import { capitalizeFirstLetter } from "../../../../shared/FunctionsUse";
+import PerformanceDistribuition from "../../../../shared/PerformanceDistribuition";
+import ClassInfo from "../../../../shared/ViewClassInfo";
 
 function getThemePaletteMode(palette) {
   return palette.type || palette.mode;
@@ -90,6 +86,7 @@ const Classes = () => {
 
     let classes = snapshot.exists() ? snapshot.val() : [];
     let classesArray = [];
+
     for (const id in classes) {
       if (Object.hasOwnProperty.call(classes, id)) {
         let theClass = classes[id];
@@ -110,6 +107,7 @@ const Classes = () => {
           timestamp.toLocaleDateString() + " ás " + timestamp.toLocaleTimeString();
 
         theClass.modalidade = theClass.modalidade === "ead" ? "Ensino a Distância" : "Presencial";
+        theClass.escola = theClass.escola === "abc" ? "abc" : "Presencial";
 
         theClass.currentPeriod = theClass.hasOwnProperty("status")
           ? theClass.status.nomePeriodo
@@ -121,7 +119,6 @@ const Classes = () => {
         classesArray.push(theClass);
       }
     }
-    // setStudents(students);
     setRows(classesArray);
     setLoading(false);
   }
@@ -145,15 +142,6 @@ const Classes = () => {
     let rowIndex = rowsArray.findIndex((row) => row.id === editedRow.id);
     rowsArray[rowIndex][editedRow.field] = editedRow.value;
     setRows(rowsArray);
-    console.log(rowsArray);
-    // try {
-    //     await additionalFieldsRef.set(rowsArray)
-    //     setLoading(false)
-    // } catch (error) {
-    //     console.log(error)
-    //     setLoading(false);
-    //     throw new Error(error.message)
-    // }
   };
 
   const handleRowSelection = (selectedRows) => {
@@ -165,17 +153,6 @@ const Classes = () => {
     setLoading(true);
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let updatedRows = rowsArray.filter((row) => selectedRows.indexOf(row.id) === -1);
-    console.log(updatedRows);
-
-    // try {
-    //     await additionalFieldsRef.set(updatedRows);
-    //     setRows(updatedRows);
-    //     setLoading(false);
-    // } catch (error) {
-    //     console.log(error);
-    //     setLoading(false);
-    //     throw new Error(error.message);
-    // }
   };
 
   const handleRowClick = (e) => {
@@ -206,7 +183,9 @@ const Classes = () => {
       >
         <ClassInfo classDataRows={classData} onClose={() => setOpen(false)} />
       </FullScreenDialog>
+
       <PerformanceDistribuition open={openPerfDist} onClose={setOpenPerfDist} />
+
       <Grid justifyContent="flex-start" container direction="row" spacing={2}>
         <Grid item xs={12}>
           <div style={{ height: "59vh", width: "100%" }} className={classes.root}>
@@ -220,6 +199,7 @@ const Classes = () => {
                 { field: "horarioTerminoTurma", headerName: "Hr. Fim", width: 140 },
                 { field: "professor", headerName: "Prof. Referência", width: 220 },
                 { field: "modalidade", headerName: "Modalidade", width: 180 },
+                { field: "Escola", headerName: "Escola", width: 180 },
                 { field: "status", headerName: "Status", width: 180 },
                 { field: "currentPeriod", headerName: "Período", width: 180 },
                 { field: "timestamp", headerName: "Data/Hora Criação", width: 200 }
@@ -235,7 +215,6 @@ const Classes = () => {
               onSelectionModelChange={handleRowSelection}
               onRowClick={handleRowClick}
               getRowClassName={(params) => {
-                console.log(`super-app-theme--${params.getValue(params.id, "status")}`);
                 return `super-app-theme--${params.getValue(params.id, "status")}`;
               }}
             />

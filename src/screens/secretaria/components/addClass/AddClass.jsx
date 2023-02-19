@@ -134,7 +134,6 @@ const MenuProps = {
 };
 
 const AddClass = ({ dataForEditing, onClose }) => {
-  console.log(dataForEditing);
   const tableRef = useRef();
 
   function CustomToolbar() {
@@ -161,6 +160,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
     horarioTerminoTurma: "",
     livros: [],
     modalidade: "",
+    escola: "",
     professor: ""
   });
   const [courses, setCourses] = useState([]);
@@ -194,7 +194,6 @@ const AddClass = ({ dataForEditing, onClose }) => {
 
   const getCourses = async () => {
     const allCourses = (await coursesRef.once("value")).val();
-    console.log(allCourses);
     setCourses(allCourses);
   };
 
@@ -231,7 +230,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
 
       setClassData(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -423,6 +422,27 @@ const AddClass = ({ dataForEditing, onClose }) => {
                   </option>
                   <option value="presencial">Presencial</option>
                   <option value="ead">Ensino à Distância (EaD)</option>
+                </TextField>
+              </Box>
+
+              <Box m={1}>
+                <TextField
+                  id="escola"
+                  select
+                  label="escola"
+                  value={classData.escola}
+                  fullWidth
+                  helperText="Escolha a escola dessa turma"
+                  variant="filled"
+                  SelectProps={{
+                    native: true
+                  }}
+                  required>
+                  <option hidden selected>
+                    Selecione uma escola...
+                  </option>
+                  <option value="presencial">UE Antonio</option>
+                  <option value="ead">UE PIO XII</option>
                 </TextField>
               </Box>
             </form>

@@ -143,7 +143,7 @@ const handleSendClassData = async (data) => {
     const message = await cadastraTurma(classData);
     return message.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };
