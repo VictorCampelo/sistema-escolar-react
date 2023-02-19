@@ -1,32 +1,29 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import "../../../app/App.css";
-
-import Typography from "@material-ui/core/Typography";
-
 import Box from "@material-ui/core/Box";
+import { makeStyles } from "@material-ui/core/styles";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import Typography from "@material-ui/core/Typography";
 import {
   AddBox,
   AssignmentInd,
   Build,
-  Email,
   GroupWork,
   Home,
   PeopleAlt,
   PersonAdd
 } from "@material-ui/icons";
+import PropTypes from "prop-types";
+import React from "react";
+import "../../../app/App.css";
+import Dashboard from "../../../components/muiDashboard/Dashboard";
+import AddClass from "./addClass/AddClass";
 import AddStudent from "./addStudent/AddStudent";
 import AddTeacher from "./addTeacher/AddTeacher";
+import Classes from "./classes/Classes";
+import PreEnrollments from "./preMatriculas/PreEnrollments";
 import SchoolSettings from "./schoolSettings/SchoolSettings";
 import Students from "./students/Students";
-import AddClass from "./addClass/AddClass";
-import Classes from "./classes/Classes";
-import Dashboard from "../../../components/muiDashboard/Dashboard";
-import PreEnrollments from "./preMatriculas/PreEnrollments";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

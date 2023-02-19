@@ -1,29 +1,25 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { SwipeableDrawer } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
+import FormControl from "@material-ui/core/FormControl";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
-
+import InputLabel from "@material-ui/core/InputLabel";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import CloseIcon from "@material-ui/icons/Close";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-
 import {
-  Home,
-  ImportContacts,
   AllInbox,
-  Apartment,
-  School
+  Apartment, Home,
+  ImportContacts, School
 } from "@material-ui/icons";
-import { SwipeableDrawer } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { usersListRef } from "../../services/databaseRefs";
 
@@ -79,7 +75,6 @@ function ResponsiveDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isStudent, setIsStudent] = useState(false);
   const { user } = useAuth();
   const [areas, setAreas] = useState([]);
 
@@ -110,7 +105,6 @@ function ResponsiveDrawer(props) {
             }
             if (userAccess.aluno) {
               localAreas.push({ text: "Estudante", to: "estudante", icon: 3 });
-              setIsStudent(true);
             }
           }
           setAreas([...localAreas]);
@@ -130,22 +124,6 @@ function ResponsiveDrawer(props) {
 
   const firstIcons = [<AllInbox />, <ImportContacts />, <Apartment />, <School />];
 
-  const SelectSchool = () => (<List>
-    <FormControl className={classes.formControl}>
-      <InputLabel id="demo-simple-select-label">Escola</InputLabel>
-      <Select
-        labelId="simple-select-label"
-        id="simple-select"
-        value={age}
-        onChange={handleChange}
-      >
-        <MenuItem value={10}>Ten</MenuItem>
-        <MenuItem value={20}>Twenty</MenuItem>
-        <MenuItem value={30}>Thirty</MenuItem>
-      </Select>
-    </FormControl>
-  </List>);
-
   const drawer = (
     <div>
       <div className={classes.toolbar}>
@@ -153,10 +131,6 @@ function ResponsiveDrawer(props) {
           <CloseIcon />
         </IconButton>
       </div>
-      <Divider />
-
-      {!isStudent && <SelectSchool />}
-
       <Divider />
       <List>,
         <Link to="/" style={{ textDecoration: "none", color: "black" }} onClick={onClose}>
