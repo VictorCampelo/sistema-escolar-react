@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ReleaseGrades = ({ open, onClose, classCode, studentsIds, refresh }) => {
-  const classes = useStyles();
+  const S = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -225,7 +225,7 @@ try {
         refresh();
         onClose(false);
       } catch (error) {
-        console.log(error);
+        console.error(error);
         refresh();
         enqueueSnackbar(error.message, {
           title: "Erro",
@@ -282,7 +282,7 @@ enqueueSnackbar("O somatório das notas não pode ser maior que 100.", {
     const BuiltFields = localGrades.map((grade, i) => {
       return (
         <Fragment>
-          <div className={classes.flex}>
+          <div className={S.flex}>
             <TextField
               variant="outlined"
               placeholder={"EX."}
@@ -341,7 +341,7 @@ enqueueSnackbar("O somatório das notas não pode ser maior que 100.", {
         <DialogTitle>
           {" "}
           Lançamento de notas
-          <div className={classes.root}>
+          <div className={S.root}>
             {studentsAvatars &&
               studentsAvatars.map((student, i) =>
                 <Tooltip title={`${student.id}: ${student.studentName}`}>
@@ -408,7 +408,7 @@ enqueueSnackbar("O somatório das notas não pode ser maior que 100.", {
               <Fields localGrades={grades} localStudentGrades={studentGrades} />
             </form>
           </div>
-          <div className={classes.flex}>
+          <div className={S.flex}>
             {/* <div>
                             <IconButton aria-label="delete" onClick={() => handleAddGrade()}>
                                 <Add />

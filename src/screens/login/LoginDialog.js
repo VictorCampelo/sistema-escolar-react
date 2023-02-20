@@ -34,7 +34,7 @@ const LoginDialog = (props) => {
 
         });
       } catch (error) {
-        console.log(error);
+        console.error(error);
         setStatus(error.code);
         enqueueSnackbar(error.message, {
           title: "Erro",
@@ -68,7 +68,7 @@ const LoginDialog = (props) => {
         setIsLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setStatus(error.code);
       setIsLoading(false);
     }

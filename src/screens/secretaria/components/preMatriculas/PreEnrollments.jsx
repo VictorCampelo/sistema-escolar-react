@@ -72,7 +72,7 @@ const useStyles = makeStyles(
 );
 
 const PreEnrollments = ({ changeTab }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const confirm = useConfirmation();
 
@@ -178,7 +178,7 @@ const PreEnrollments = ({ changeTab }) => {
       });
       getData();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       error &&
         enqueueSnackbar(error.message, {
           title: "Erro",
@@ -223,7 +223,7 @@ const PreEnrollments = ({ changeTab }) => {
       </FullScreenDialog>
       <Grid justifyContent="flex-start" container direction="row" spacing={2}>
         <Grid item xs={12}>
-          <div style={{ height: "59vh", width: "100%" }} className={classes.root}>
+          <div style={{ height: "59vh", width: "100%" }} className={S.root}>
             <DataGrid
               filterModel={filterModel}
               onFilterModelChange={(model) => setFilterModel(model)}

@@ -106,7 +106,7 @@ const SeeEventPopover = ({
       console.log(rawSources);
       await calendarRef.set(rawSources);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

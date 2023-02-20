@@ -11,7 +11,6 @@ import {
   Grid,
   Input,
   InputLabel,
-  makeStyles,
   MenuItem,
   Select,
   TextField,
@@ -30,98 +29,7 @@ import {
 } from "../../../../services/databaseRefs";
 import { LocaleText } from "../../../../components/shared/DataGridLocaleText";
 import { generateClassCode, handleSendClassData } from "../../../../components/shared/FunctionsUse";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    maxWidth: "70vw",
-    minWidth: 350,
-
-    height: "85vh"
-  },
-  container: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    marginTop: "8px",
-    flexWrap: "wrap"
-  },
-  fieldsContainer: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingRight: "16px",
-    flexWrap: "wrap"
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)"
-  },
-  smallCards: {
-    minWidth: 350,
-    maxWidth: "100vw",
-    height: "65vh",
-    marginLeft: "10px",
-    width: "fit-content",
-    marginBottom: "10px"
-  },
-  bigCards: {
-    minWidth: 350,
-    maxWidth: "100vw",
-    height: "65vh",
-    marginLeft: "10px",
-    width: "55vw",
-    marginBottom: "10px"
-  },
-  title: {
-    fontSize: 14
-  },
-  pos: {
-    marginBottom: 12
-  },
-  grades: {
-    marginBottom: 3
-  },
-  grid: {
-    marginTop: 10,
-    width: "100%"
-  },
-  list: {
-    fontSize: 10
-  },
-  avatar: {
-    backgroundColor: "#3f51b5"
-  },
-  textField: {
-    minWidth: "99.8px"
-  },
-  formControl: {
-    margin: 1,
-    minWidth: 120,
-    width: "100%",
-    maxWidth: "100%"
-  },
-  chips: {
-    display: "flex",
-    flexWrap: "wrap"
-  },
-  chip: {
-    margin: 2
-  },
-  noLabel: {
-    marginTop: 3
-  },
-  extendedIcon: {
-    marginRight: 5
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff"
-  }
-}));
+import { useStyles } from "./styles";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -140,13 +48,13 @@ const AddClass = ({ dataForEditing, onClose }) => {
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
-        <label>Escolha os livros *</label>
+        <label htmlFor={"selectBook"}>Escolha os livros *</label>
         {/* <GridToolbarExport csvOptions={{fileName: 'Tabela de livros cadastrados'}} /> */}
       </GridToolbarContainer>
     );
   }
 
-  const classes = useStyles();
+  const S = useStyles();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -156,13 +64,16 @@ const AddClass = ({ dataForEditing, onClose }) => {
   const [classData, setClassData] = useState({
     codigoSala: "",
     curso: "",
+    cursoName: "",
+    escola: "",
+    escolaName: "",
     diasDaSemana: [],
     hora: "",
     horarioTerminoTurma: "",
     livros: [],
     modalidade: "",
-    escola: "",
-    professor: ""
+    professor: "",
+    professorName: ""
   });
   const [courses, setCourses] = useState([]);
   const [headquarters, setHeadquarters] = useState([]);
@@ -188,9 +99,10 @@ const AddClass = ({ dataForEditing, onClose }) => {
   const getDays = async () => {
     const allDays = (await daysCodesRef.once("value")).val();
 
-    setDays(allDays);
-    if (dataForEditing) {
-      setClassData(dataForEditing);
+    console.log(allDays);
+
+    if (allDays) {
+      setDays(allDays);
     }
   };
 
@@ -216,12 +128,19 @@ const AddClass = ({ dataForEditing, onClose }) => {
     allTeachers ? setTeachers([...teachersArray]) : setTeachers();
   };
 
+  const setInitalDataForEditing = () => {
+    if (dataForEditing) {
+      setClassData(dataForEditing);
+    }
+  };
+
   useEffect(() => {
     getCourses();
     getHeadquarters();
     getTeachers();
     getDays();
     getBooks();
+    setInitalDataForEditing();
   }, []);
 
   const handleFormChange = async (e) => {
@@ -282,6 +201,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
         onClose();
       }
     } catch (error) {
+      console.error(error);
       setLoader(false);
       enqueueSnackbar(error.message, { variant: "error" });
     }
@@ -290,16 +210,16 @@ const AddClass = ({ dataForEditing, onClose }) => {
   return (
     <Fragment>
       <div style={{ position: "absolute" }}>
-        <Backdrop className={classes.backdrop} open={loader}>
+        <Backdrop className={S.backdrop} open={loader}>
           <CircularProgress color="inherit" />
         </Backdrop>
       </div>
-      <div className={classes.container}>
-        <Card className={classes.smallCards} variant="outlined">
+      <div className={S.container}>
+        <Card className={S.smallCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
-                <Avatar className={classes.avatar}>
+                <Avatar className={S.avatar}>
                   <Assistant />
                 </Avatar>
               </Grid>
@@ -314,13 +234,13 @@ const AddClass = ({ dataForEditing, onClose }) => {
             <hr />
 
             <form id="formClassData" onChange={handleFormChange} autoComplete="off">
-              <Box m={1} className={classes.fieldsContainer}>
+              <Box m={1} className={S.fieldsContainer}>
                 <TextField
                   id="codigoSala"
                   label="Código da turma"
                   variant="filled"
                   value={classData.codigoSala}
-                  className={classes.textField}
+                  className={S.textField}
                   required
                 />
                 <TextField
@@ -328,7 +248,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
                   type="time"
                   label="Hr. Início"
                   value={classData.hora}
-                  className={classes.textField}
+                  className={S.textField}
                   helperText=""
                   variant="filled"
                   InputLabelProps={{
@@ -341,7 +261,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
                   type="time"
                   label="Hr. Término"
                   value={classData.horarioTerminoTurma}
-                  className={classes.textField}
+                  className={S.textField}
                   helperText=""
                   variant="filled"
                   InputLabelProps={{
@@ -352,7 +272,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
               </Box>
 
               <Box m={1}>
-                {courses ?
+                {courses ? (
                   <TextField
                     id="curso"
                     select
@@ -365,25 +285,26 @@ const AddClass = ({ dataForEditing, onClose }) => {
                       native: true
                     }}
                     required>
-
                     <option hidden selected>
                       Escolha um curso...
                     </option>
 
                     {courses.length > 0 &&
-                      courses.map((option) =>
+                      courses.map((option) => (
                         <option key={option.codSistema} value={option.codSistema}>
                           {option.codCurso + " - " + option.nomeCurso}
                         </option>
-                      )}
+                      ))}
                   </TextField>
-                  :
-                  <label style={{ color: "red" }}>Nenhum curso cadastrado no sistema</label>
-                }
+                ) : (
+                  <label htmlFor={courses.length} style={{ color: "red" }}>
+                    Nenhum curso cadastrado no sistema
+                  </label>
+                )}
               </Box>
 
               <Box m={1}>
-                {teachers ?
+                {teachers ? (
                   <TextField
                     id="professor"
                     select
@@ -401,15 +322,17 @@ const AddClass = ({ dataForEditing, onClose }) => {
                     </option>
 
                     {teachers.length > 0 &&
-                      teachers.map((teacher, i) =>
+                      teachers.map((teacher, i) => (
                         <option key={i} value={teacher.emailProfessor}>
                           {`${teacher.nomeProfessor} (${teacher.emailProfessor})`}
                         </option>
-                      )}
+                      ))}
                   </TextField>
-                  :
-                  <label style={{ color: "red" }}>Nenhum professor cadastrado no sistema</label>
-                }
+                ) : (
+                  <label htmlFor={teachers.length} style={{ color: "red" }}>
+                    Nenhum professor cadastrado no sistema
+                  </label>
+                )}
               </Box>
 
               <Box m={1}>
@@ -437,7 +360,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
                 <TextField
                   id="escola"
                   select
-                  label="escola"
+                  label="Escola"
                   value={classData.escola}
                   fullWidth
                   helperText="Escolha a sede dessa turma"
@@ -450,21 +373,21 @@ const AddClass = ({ dataForEditing, onClose }) => {
                     Selecione uma escola...
                   </option>
                   {headquarters.length > 0 &&
-                      headquarters.map((option) =>
-                        <option key={option.internalCod} value={option.internalCod}>
-                          {option.cod + " - " + option.name}
-                        </option>
-                      )}
+                    headquarters.map((option) => (
+                      <option key={option.internalCod} value={option.internalCod}>
+                        {option.cod + " - " + option.name}
+                      </option>
+                    ))}
                 </TextField>
               </Box>
             </form>
           </CardContent>
         </Card>
-        <Card className={classes.bigCards} variant="outlined">
+        <Card className={S.bigCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
-                <Avatar className={classes.avatar}>
+                <Avatar className={S.avatar}>
                   <LibraryBooks />
                 </Avatar>
               </Grid>
@@ -477,8 +400,8 @@ const AddClass = ({ dataForEditing, onClose }) => {
             </Grid>
             <hr />
             <Box m={1}>
-              {days ?
-                <FormControl className={classes.formControl}>
+              {days ? (
+                <FormControl className={S.formControl}>
                   <InputLabel id="demo-mutiple-chip-label">Dias da semana</InputLabel>
                   <Select
                     labelId="demo-mutiple-chip-label"
@@ -489,26 +412,26 @@ const AddClass = ({ dataForEditing, onClose }) => {
                     variant="filled"
                     onChange={handleDayPicker}
                     input={<Input id="diasDaSemana" />}
-                    renderValue={(selected) =>
-                      <div className={classes.chips}>
-                        {selected.map((value) =>
-                          <Chip key={value} label={days[value]} className={classes.chip} />
-                        )}
+                    renderValue={(selected) => (
+                      <div className={S.chips}>
+                        {selected.map((value) => (
+                          <Chip key={value} label={days[value]} className={S.chip} />
+                        ))}
                       </div>
-                    }
+                    )}
                     MenuProps={MenuProps}>
-                    {days.map((name, i) =>
+                    {days.map((name, i) => (
                       <MenuItem key={name} name="diasDaSemana" value={i}>
                         {name}
                       </MenuItem>
-                    )}
+                    ))}
                   </Select>
                 </FormControl>
-                :
-                <label style={{ color: "red" }}>
+              ) : (
+                <label htmlFor={days.length} style={{ color: "red" }}>
                   Códigos de dias da semana não configurados no sistema
                 </label>
-              }
+              )}
             </Box>
             <Box m={1}>
               <div style={{ height: 250, width: "100%" }}>
@@ -548,7 +471,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
           style={fabStyle}
           variant="extended"
           color="primary">
-          <Add className={classes.extendedIcon} />
+          <Add className={S.extendedIcon} />
           Cadastrar turma
         </Fab>
       </div>

@@ -45,7 +45,7 @@ const CreateEventPopover = ({
 }) => {
   console.log(eventsSources);
 
-  const classes = useStyles();
+  const S = useStyles();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -129,7 +129,7 @@ const CreateEventPopover = ({
       console.log(event);
       event.remove();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     let start = allDay ? startDate : startDate + "T" + startTime;
@@ -198,7 +198,7 @@ const CreateEventPopover = ({
       console.log(event);
       event.remove();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     let start = allDay ? startDate : startDate + "T" + startTime;
@@ -285,14 +285,14 @@ const CreateEventPopover = ({
           horizontal: "right"
         }}
       >
-        <Backdrop className={classes.backdrop} open={loaderPop}>
+        <Backdrop className={S.backdrop} open={loaderPop}>
           <CircularProgress color="inherit" />
         </Backdrop>
 
         <DialogTitle>
           <Grid justifyContent="flex-start" direction="row" container spacing={1}>
             <Grid item>
-              <Avatar className={classes.avatar}>
+              <Avatar className={S.avatar}>
                 <Event />
               </Avatar>
             </Grid>
@@ -367,7 +367,7 @@ const CreateEventPopover = ({
                 />
               </Box>
 
-              <Box m={1} className={classes.fieldsContainer}>
+              <Box m={1} className={S.fieldsContainer}>
                 <TextField
                   name="time"
                   style={{ minWidth: "100px" }}
@@ -398,7 +398,7 @@ const CreateEventPopover = ({
                 />
               </Box>
 
-              <Box m={1} className={classes.fieldsContainer}>
+              <Box m={1} className={S.fieldsContainer}>
                 <TextField
                   name="time"
                   style={{ minWidth: "100px" }}
@@ -427,8 +427,8 @@ const CreateEventPopover = ({
                   required
                 />
               </Box>
-              <Box m={1} className={classes.fieldsContainer}>
-                <FormControl className={classes.fields}>
+              <Box m={1} className={S.fieldsContainer}>
+                <FormControl className={S.fields}>
                   <TextField
                     name="corDoEvento"
                     style={{ width: "219px" }}
@@ -443,7 +443,7 @@ const CreateEventPopover = ({
                     value={color}
                   />
                 </FormControl>
-                <FormControl className={classes.fields}>
+                <FormControl className={S.fields}>
                   <TextField
                     name="corDoEvento"
                     style={{ width: "219px" }}
@@ -460,7 +460,7 @@ const CreateEventPopover = ({
                   />
                 </FormControl>
               </Box>
-              <Box m={1} className={classes.fieldsContainer}>
+              <Box m={1} className={S.fieldsContainer}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -489,12 +489,12 @@ const CreateEventPopover = ({
               </Box>
               {repeat && (
                 <>
-                  <FormControl component="fieldset" className={classes.formControl}>
+                  <FormControl component="fieldset" className={S.formControl}>
                     <FormLabel component="legend">Dias da semena</FormLabel>
 
                     <FormHelperText>Escolha os dias da semana para a repetição</FormHelperText>
                   </FormControl>
-                  <Box m={1} className={classes.fieldsContainer}>
+                  <Box m={1} className={S.fieldsContainer}>
                     <FormControlLabel
                       control={<Checkbox onChange={handleDays} value={0} name="gilad" />}
                       label="D"
@@ -502,7 +502,7 @@ const CreateEventPopover = ({
                     />
                     <FormControlLabel
                       control={<Checkbox onChange={handleDays} value={1} name="jason" />}
-                      label="S"
+                      label="classes"
                       labelPlacement="bottom"
                     />
                     <FormControlLabel
@@ -522,12 +522,12 @@ const CreateEventPopover = ({
                     />
                     <FormControlLabel
                       control={<Checkbox onChange={handleDays} value={5} name="antoine" />}
-                      label="S"
+                      label="classes"
                       labelPlacement="bottom"
                     />
                     <FormControlLabel
                       control={<Checkbox onChange={handleDays} value={6} name="antoine" />}
-                      label="S"
+                      label="classes"
                       labelPlacement="bottom"
                     />
                   </Box>

@@ -15,7 +15,7 @@ const useStyles = makeStyles({
 });
 
 export default function ClassReport({ classCode, open, onClose }) {
-  const classes = useStyles();
+  const S = useStyles();
 
   const [timeString, setTimeString] = useState("");
   const [performanceTotalSum, setPerformanceTotalSum] = useState(0);
@@ -57,7 +57,7 @@ export default function ClassReport({ classCode, open, onClose }) {
       </DialogTitle>
       <DialogContent>
         <TableContainer>
-          <Table className={classes.table} size="small" aria-label="a dense table">
+          <Table className={S.table} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 <TableCell>Nº</TableCell>

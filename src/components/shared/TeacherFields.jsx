@@ -56,7 +56,7 @@ function BasicDataFields({
   setLoader,
   editMode = false
 }) {
-  const classes = useStyles();
+  const S = useStyles();
 
   const [age, setAge] = useState(null);
 
@@ -71,7 +71,7 @@ function BasicDataFields({
         handleCalculateAge(basicData.dataNascimentoProfessor);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, []);
 
@@ -109,10 +109,10 @@ function BasicDataFields({
 
   return (
     <>
-      <div className={classes.root}>
+      <div className={S.root}>
         <Grid justifyContent="center" container direction="row" spacing={0}>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 required
                 autoComplete="off"
@@ -127,7 +127,7 @@ function BasicDataFields({
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 name="dataNascimentoProfessor"
                 style={{ width: "219px" }}
@@ -145,7 +145,7 @@ function BasicDataFields({
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 variant="filled"
                 autoComplete="off"
@@ -160,7 +160,7 @@ function BasicDataFields({
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 variant="filled"
                 autoComplete="off"
@@ -177,7 +177,7 @@ function BasicDataFields({
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 required
                 autoComplete="no"
@@ -192,7 +192,7 @@ function BasicDataFields({
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 required
                 autoComplete="off"
@@ -208,7 +208,7 @@ function BasicDataFields({
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 required
                 autoComplete="off"
@@ -230,7 +230,7 @@ function BasicDataFields({
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 required
                 autoComplete="off"
@@ -272,10 +272,10 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
           handleMountContractScreen(courseInfo.val());
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -304,7 +304,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const classes = useStyles();
+  const S = useStyles();
   const [data, setData] = useState(null);
 
   const [state, setState] = useState({
@@ -446,7 +446,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
         setRows(internRows);
         // addParcela(`Total: R$${somaParcelas.toFixed(2)}`)
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
 
@@ -493,7 +493,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
           try {
             document.getElementById(name).value = value;
           } catch (error) {
-            console.log(error);
+            console.error(error);
           }
         }
       }
@@ -588,7 +588,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                 <h1>Dados do Curso:</h1>
                 <Grid justifyContent="flex-start" container direction="row" spacing={2}>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         InputLabelProps={{ shrink: shrink }}
@@ -609,7 +609,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -634,7 +634,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                 </h6>
                 <Grid justifyContent="flex-start" container direction="row" spacing={2}>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -653,7 +653,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -669,7 +669,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -685,7 +685,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -700,7 +700,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -716,7 +716,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -731,7 +731,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -750,7 +750,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                 <h2>Parcelas</h2>
                 <Grid justifyContent="flex-start" container direction="row" spacing={2}>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -769,7 +769,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <CrudTable
                         rows={rows}
                         columns={columns}
@@ -815,7 +815,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -833,7 +833,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         name="ano-mes"
                         variant="filled"
@@ -852,7 +852,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                   </Grid>
 
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -884,7 +884,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
 function CourseDataFields(props) {
   const { shrink, rows, columns, rowHeight, activeStep, setLoader } = props;
 
-  const classes = useStyles();
+  const S = useStyles();
 
   const [loading, setLoading] = useState(false);
   const [contractState, setContractState] = useState(false);
@@ -954,7 +954,7 @@ function CourseDataFields(props) {
             <h4>{contractState ? "Contrato configurado" : "Contrato não configurado"}</h4>
             {contractState &&
               <Box>
-                <FormControl className={classes.fields}>
+                <FormControl className={S.fields}>
                   <TextField
                     variant="filled"
                     autoComplete="off"
@@ -990,7 +990,7 @@ function CourseDataFields(props) {
 }
 
 const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const [cep, setCep] = useState({ message: "Digite o CEP para buscar" });
   const [validCpf, setValidCpf] = useState(false);
@@ -1016,7 +1016,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
         setAdditionalFields(fieldsData);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         throw new Error(error.message);
       });
   }, []);
@@ -1035,7 +1035,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
         console.log(cepObj);
         setCep(cepObj);
       } catch (error) {
-        console.log(error);
+        console.error(error);
         error.message === "permission-denied"
           ? setCep("Você não possui permissão.")
           : setCep(error.message);
@@ -1125,7 +1125,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
             <form id="formParentData">
               <Grid justifyContent="flex-start" container direction="row" spacing={1}>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <TextField
                       autoComplete="off"
                       required
@@ -1179,7 +1179,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                 </Grid>
 
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <TextField
                       autoComplete="off"
                       required
@@ -1199,7 +1199,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <TextField
                       autoComplete="off"
                       required
@@ -1219,7 +1219,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <TextField
                       autoComplete="off"
                       required
@@ -1245,7 +1245,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <TextField
                       autoComplete="off"
                       required
@@ -1265,7 +1265,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <FormControlLabel
                       value={dialogOpen.pedagogico}
                       control={
@@ -1288,7 +1288,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <FormControlLabel
                       value={dialogOpen.financeiro}
                       control={
@@ -1315,11 +1315,11 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
           </Paper>
         </Typography>
       </FullScreenDialog>
-      <div className={classes.root}>
+      <div className={S.root}>
         <h4>Endereço</h4>
         <Grid justifyContent="flex-start" container direction="row" spacing={2}>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 required
                 autoComplete="off"
@@ -1336,7 +1336,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 name="enderecoProfessor"
                 style={{ width: "219px" }}
@@ -1352,7 +1352,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 variant="filled"
                 autoComplete="off"
@@ -1367,7 +1367,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 variant="filled"
                 autoComplete="off"
@@ -1383,7 +1383,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 required
                 autoComplete="off"
@@ -1399,7 +1399,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields}>
+            <FormControl className={S.fields}>
               <TextField
                 required
                 autoComplete="off"
@@ -1435,7 +1435,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
               <hr />
               <Grid justifyContent="flex-start" container direction="row" spacing={2}>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <TextField
                       autoComplete="off"
                       required
@@ -1482,7 +1482,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                 </Grid>
 
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <TextField
                       autoComplete="off"
                       required
@@ -1498,7 +1498,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <TextField
                       autoComplete="off"
                       required
@@ -1514,7 +1514,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <TextField
                       autoComplete="off"
                       required
@@ -1536,7 +1536,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <TextField
                       autoComplete="off"
                       required
@@ -1552,7 +1552,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <FormControlLabel
                       value="pedagogico"
                       control={
@@ -1570,7 +1570,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <FormControlLabel
                       value="financeiro"
                       control={
@@ -1588,7 +1588,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl className={classes.fields}>
+                  <FormControl className={S.fields}>
                     <Button
                       variant="contained"
                       onClick={() => {
@@ -1606,7 +1606,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
         <h4>Dados adicionais</h4>
         {additionalFields &&
           additionalFields.map((field) =>
-            <FormControl key={field.id} className={classes.fields} style={{ width: "100%" }}>
+            <FormControl key={field.id} className={S.fields} style={{ width: "100%" }}>
               <TextField
                 required={field.required}
                 placeholder={field.placeholder}

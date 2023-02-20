@@ -37,7 +37,7 @@ export const ConfirmationDialog = ({
   promptLabel = "",
   promptStudent = false
 }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const [text, setText] = useState("");
   const [studentSelected, setStudentSelected] = useState();
@@ -83,7 +83,7 @@ export const ConfirmationDialog = ({
         )}
         {promptStudent && (
           <div>
-            <FormControl className={classes.formControl}>
+            <FormControl className={S.formControl}>
               <InputLabel id="demo-simple-select-label">Alunos</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -103,7 +103,7 @@ export const ConfirmationDialog = ({
         <Button color="primary" onClick={() => onSubmit(submit)}>
           Sim
         </Button>
-        <Button color="primary" onClick={onClose} autoFocus>
+        <Button color="primary" onClick={onClose} >
           Cancelar
         </Button>
       </DialogActions>

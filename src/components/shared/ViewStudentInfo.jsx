@@ -134,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StudentInfo = ({ studentInfo, teacherView = false }) => {
-  const classes = useStyles();
+  const S = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -243,8 +243,8 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
     setLoading(true);
     try {
       if (disabledStudent || !desablingStudent) {
-        let classes = (await classesRef.once("value")).val();
-        let classesArray = Object.keys(classes);
+        let S = (await classesRef.once("value")).val();
+        let classesArray = Object.keys(S);
         setClassesCodes(classesArray);
         setClassCodeEnable(classesArray[0]);
       }
@@ -325,7 +325,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
       //   { icon: <Refresh />, name: 'Atualizar dados', onClick: getData, },
       // ])
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setLoading(false);
   };
@@ -517,8 +517,8 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
           variant="extended"
           color="primary"
           onClick={handleOpenFilesDialog}
-          className={classes.fab}>
-          <AttachFile className={classes.extendedIcon} />
+          className={S.fab}>
+          <AttachFile className={S.extendedIcon} />
           Arquivos
         </Fab>
       }
@@ -538,7 +538,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
           <StudentFiles studentId={studentId} disabledStudent={disabledStudent} />
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleCloseFilesDialog} color="primary">
+          <Button onClick={handleCloseFilesDialog} color="primary">
             Fechar
           </Button>
         </DialogActions>
@@ -557,7 +557,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
           </DialogContentText>
           {(disabledStudent || !desablingStudent) &&
             <Select
-              autoFocus
+
               fullWidth
               required
               onChange={
@@ -587,21 +587,21 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
             }
             variant="contained"
             color="primary"
-            autoFocus>
+          >
             Sim, continuar
           </Button>
         </DialogActions>
       </Dialog>
-      <Backdrop open={loading} className={classes.backdrop}>
+      <Backdrop open={loading} className={S.backdrop}>
         <CircularProgress color="inherit" />
       </Backdrop>
 
-      <div className={classes.rootSpeedDial}>
+      <div className={S.rootSpeedDial}>
         {/* <Button onClick={handleVisibilitySpeedDial}>Toggle Speed Dial</Button> */}
-        {/* <Backdrop open={openSpeedDial} className={classes.backdrop} />
+        {/* <Backdrop open={openSpeedDial} className={S.backdrop} />
                 <SpeedDial
                   ariaLabel="Ações"
-                  className={classes.speedDial}
+                  className={S.speedDial}
                   hidden={hiddenSpeedDial}
                   icon={<Assistant />}
                   onClose={handleCloseSpeedDial}
@@ -617,20 +617,20 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                       tooltipTitle={action.name}
                       tooltipPlacement="top"
 
-                      className={classes.actionButtons}
+                      className={S.actionButtons}
                       onClick={() => {handleCloseSpeedDial(); action.onClick()}}
                     />
                   ))}
                 </SpeedDial> */}
 
-        <div className={classes.container} id="noprint">
+        <div className={S.container} id="noprint">
           <StudentDataCard studentData={studentData} />
 
-          <Card className={classes.smallCards} variant="outlined">
+          <Card className={S.smallCards} variant="outlined">
             <CardContent>
               <Grid justifyContent="flex-start" direction="row" container spacing={1}>
                 <Grid item>
-                  <Avatar className={classes.orange}>
+                  <Avatar className={S.orange}>
                     <Assistant />
                   </Avatar>
                 </Grid>
@@ -784,11 +784,11 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
             </CardContent>
           </Card>
 
-          <Card className={classes.smallCards} variant="outlined">
+          <Card className={S.smallCards} variant="outlined">
             <CardContent>
               <Grid justifyContent="flex-start" direction="row" container spacing={1}>
                 <Grid item>
-                  <Avatar className={classes.orange}>
+                  <Avatar className={S.orange}>
                     <School />
                   </Avatar>
                 </Grid>
@@ -801,7 +801,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
               </Grid>
               <hr />
 
-              <Typography className={classes.pos} color="textSecondary">
+              <Typography className={S.pos} color="textSecondary">
                 Turma atual: {classCode}
               </Typography>
 
@@ -810,7 +810,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
               </Typography>
               {academicData.hasOwnProperty("desempenho")
                 ? Object.keys(academicData.desempenho).map((name, i) =>
-                  <Typography className={classes.grades} color="textSecondary">
+                  <Typography className={S.grades} color="textSecondary">
                     {name}: {academicData.desempenho[name]}
                   </Typography>
                 )
@@ -818,7 +818,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
               <Typography variant="h6" component="h6">
                 Somatório Geral
               </Typography>
-              <Typography className={classes.grades} color="textSecondary">
+              <Typography className={S.grades} color="textSecondary">
                 Nota final: {currentGrade}
               </Typography>
               <Typography variant="h6" component="h6">
@@ -834,7 +834,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                     .reverse()
                     .join("/");
                   return (
-                    <Typography className={classes.grades} color="textSecondary">
+                    <Typography className={S.grades} color="textSecondary">
                       {i + 1}: {dateConverted}
                     </Typography>
                   );
@@ -854,7 +854,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
             </CardActions>
           </Card>
 
-          {/* {!teacherView && <Card className={classes.smallCards} variant="outlined">
+          {/* {!teacherView && <Card className={S.smallCards} variant="outlined">
                         <CardContent>
                         <Grid
                           justifyContent="flex-start"
@@ -863,7 +863,7 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
                           spacing={1}
                         >
                           <Grid item>
-                            <Avatar className={classes.avatar}>
+                            <Avatar className={S.avatar}>
                               <AttachFile />
                             </Avatar>
                           </Grid>

@@ -88,7 +88,7 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
 
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     function limpa() {

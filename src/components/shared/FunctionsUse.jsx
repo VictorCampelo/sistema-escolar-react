@@ -52,36 +52,64 @@ async function calculateAge(birthdate) {
   }
 }
 
+// Refactored code:
 function checkCpf(cpf) {
   cpf = cpf.replace(/[^\d]+/g, "");
-  if (cpf === "") return false;
-  // Elimina CPFs invalidos conhecidos
-  if (
-    cpf.length !== 11 ||
-    cpf === "00000000000" ||
-    cpf === "11111111111" ||
-    cpf === "22222222222" ||
-    cpf === "33333333333" ||
-    cpf === "44444444444" ||
-    cpf === "55555555555" ||
-    cpf === "66666666666" ||
-    cpf === "77777777777" ||
-    cpf === "88888888888" ||
-    cpf === "99999999999"
-  )
+  if (cpf === "") {
     return false;
-  // Valida 1o digito
+  }
+
+  const invalidCpfs = [
+    "00000000000",
+    "11111111111",
+    "22222222222",
+    "33333333333",
+    "44444444444",
+    "55555555555",
+    "66666666666",
+    "77777777777",
+    "88888888888",
+    "99999999999"
+  ];
+
+  if (cpf.length !== 11 || invalidCpfs.includes(cpf)) {
+    return false;
+  }
+
   let add = 0;
-  for (let i = 0; i < 9; i++) add += parseInt(cpf.charAt(i)) * (10 - i);
+
+  // Valida 1o digito
+  for (let i = 0; i < 9; i++) {
+    add += parseInt(cpf.charAt(i)) * (10 - i);
+  }
+
   let rev = 11 - (add % 11);
-  if (rev === 10 || rev === 11) rev = 0;
-  if (rev !== parseInt(cpf.charAt(9))) return false;
+
+  if (rev === 10 || rev === 11) {
+    rev = 0;
+  }
+
+  if (rev !== parseInt(cpf.charAt(9))) {
+    return false;
+  }
+
   // Valida 2o digito
   add = 0;
-  for (let i = 0; i < 10; i++) add += parseInt(cpf.charAt(i)) * (11 - i);
+
+  for (let i = 0; i < 10; i++) {
+    add += parseInt(cpf.charAt(i)) * (11 - i);
+  }
+
   rev = 11 - (add % 11);
-  if (rev === 10 || rev === 11) rev = 0;
-  if (rev !== parseInt(cpf.charAt(10))) return false;
+
+  if (rev === 10 || rev === 11) {
+    rev = 0;
+  }
+
+  if (rev !== parseInt(cpf.charAt(10))) {
+    return false;
+  }
+
   return true;
 }
 
@@ -91,7 +119,7 @@ async function getAddress(cep) {
     const address = await resp.json();
     return address;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error);
   }
 }
@@ -114,7 +142,7 @@ const enrollStudent = async (studentData, classData, contractData, otherData) =>
     const message = await cadastraAluno(data);
     return message.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -130,7 +158,7 @@ const enrollTeacher = async (teacherData) => {
     const message = await registerTeacher(data);
     return message.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -149,7 +177,9 @@ const handleSendClassData = async (data) => {
 };
 
 function formatBytes(bytes, decimals = 2) {
-  if (bytes === 0) return "0 Bytes";
+  if (bytes === 0) {
+    return "0 Bytes";
+  }
 
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
@@ -165,17 +195,31 @@ const generateClassCode = async (classData) => {
   let books;
   let days;
 
+  console.log(classData);
+
   try {
-    course = await (await coursesRef.child(classData.curso).child("codCurso").once("value")).val();
-    books = await (await booksRef.once("value")).val();
-    days = await (await daysCodesRef.once("value")).val();
+    course = (await coursesRef.child(classData.curso).child("codCurso").once("value")).val();
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
+
+  try {
+    books = (await booksRef.once("value")).val();
+  } catch (error) {
+    console.error(error);
+  }
+
+  try {
+    days = (await daysCodesRef.once("value")).val();
+  } catch (error) {
+    console.error(error);
+  }
+
   let classCode = "";
-  if (course !== undefined) {
+  if (course) {
     classCode += course;
   }
+
   try {
     for (const i in classData.livros) {
       if (Object.hasOwnProperty.call(classData.livros, i)) {
@@ -185,10 +229,11 @@ const generateClassCode = async (classData) => {
       }
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 
   classCode += "-";
+
   for (const i in classData.diasDaSemana) {
     if (Object.hasOwnProperty.call(classData.diasDaSemana, i)) {
       const day = classData.diasDaSemana[i];
@@ -203,7 +248,7 @@ const generateClassCode = async (classData) => {
     time = classData.hora.split(":").join("_");
   }
 
-  if (time !== undefined) {
+  if (time) {
     classCode += time;
   }
 
@@ -264,7 +309,7 @@ const handleAddTeacher = async (teacherEmail, classCode) => {
     let result = await addTeacherFunction(data);
     return result.data.answer;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -274,7 +319,7 @@ const handleRemoveTeacher = async (classCode, index) => {
     await classesRef.child(classCode).child("professor").child(index).remove();
     return "Professor(a) desconectado(a) com sucesso.";
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error);
   }
 };
@@ -286,7 +331,7 @@ const handleDeleteClass = async (classCode) => {
     let result = await deleteClassFunction(data);
     return result.data.answer;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -304,7 +349,7 @@ const handleClassOpen = async (classCode, eventSource, info) => {
     await classRef.child("status").set({ ...info, turma: "aberta" });
     return "Turma aberta com sucesso!";
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -316,7 +361,7 @@ const handleCloseClass = async (classCode) => {
     let result = await closeClassFunction(data);
     return result.data.answer;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -336,7 +381,7 @@ const accessVerification = async (accessType) => {
     let result = await accessVerificationFunction({ acesso: accessType });
     return result.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -348,7 +393,7 @@ const generateBillets = async (studentId, contractId) => {
     console.log(result.data);
     return result.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -386,7 +431,7 @@ async function createBilletView(
   //let boletos = document.getElementById('boletos')
   billetElem.innerHTML = "";
   let gera = functions.httpsCallable("geraPix");
-  await gera({ valor: totalCobrado, descricao: `DOC${numeroDoc}` }).then(function (lineCode) {
+  await gera({ valor: totalCobrado, descricao: `DOC${numeroDoc}` }).then((lineCode) => {
     //divQr.src = lineCode.data;
     console.log(lineCode);
     //const code = new QRCode(divQr, { text: lineCode.data, width: 100, height: 100 });
@@ -657,7 +702,7 @@ const grantAndRevokeAccess = async (access, uid, checked) => {
     console.log(result.data);
     return result.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -671,7 +716,7 @@ const releaseFaults = async (dateStr, classId, studentsIds) => {
     console.log(result.data);
     return result.data.answer;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -685,7 +730,7 @@ const removeFaults = async (dateStr, classId, studentId) => {
     console.log(result.data);
     return result.data.answer;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(error.message);
   }
 };

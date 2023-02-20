@@ -80,7 +80,7 @@ const useStyles = makeStyles(
 const Students = () => {
   const { user } = useAuth();
 
-  const classes = useStyles();
+  const S = useStyles();
 
   const defaultShowDisabledStudents = localStorage.getItem("showDisabledStudents") ? true : false;
   const [loading, setLoading] = useState(false);
@@ -191,7 +191,7 @@ const Students = () => {
     //     setRows(updatedRows);
     //     setLoading(false);
     // } catch (error) {
-    //     console.log(error);
+    //     console.error(error);
     //     setLoading(false);
     //     throw new Error(error.message);
     // }
@@ -291,7 +291,7 @@ const Students = () => {
           <Button onClick={() => setOpenDialog(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={handleDisableStudents} color="primary" autoFocus>
+          <Button onClick={handleDisableStudents} color="primary" >
             Sim
           </Button>
         </DialogActions>
@@ -313,7 +313,7 @@ const Students = () => {
       </FullScreenDialog>
       <Grid justifyContent="flex-start" container direction="row" spacing={2}>
         <Grid item xs={12}>
-          <div style={{ height: "59vh", width: "100%" }} className={classes.root}>
+          <div style={{ height: "59vh", width: "100%" }} className={S.root}>
             <DataGrid
               key={"15"}
               filterModel={filterModel}

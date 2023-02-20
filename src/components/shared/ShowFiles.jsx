@@ -62,7 +62,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 const ShowFiles = (props) => {
-  const classes = useStyles();
+  const S = useStyles();
   const { open, onClose, hideButton, onSave, url } = props;
 
   console.log(url);
@@ -95,22 +95,22 @@ const ShowFiles = (props) => {
   return (
     <Fragment>
       <Dialog fullScreen open={open} onClose={onClose} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
+        <AppBar className={S.appBar}>
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={onClose} aria-label="close">
               <Close />
             </IconButton>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" className={S.title}>
               Visualizando arquivo
             </Typography>
           </Toolbar>
         </AppBar>
         <Fragment>
-          <Container className={classes.container}>
+          <Container className={S.container}>
             <iframe
               src={url}
               frameBorder="0"
-              className={classes.iframe}
+              className={S.iframe}
               title="Arquivo"
               name="fileIframe"
               id="fileIframe"
@@ -122,7 +122,7 @@ const ShowFiles = (props) => {
             <Backdrop open={openDial} />
             <SpeedDial
               ariaLabel="Ações"
-              className={classes.speedDial}
+              className={S.speedDial}
               hidden={hidden}
               icon={<SpeedDialIcon />}
               onClose={handleClose}

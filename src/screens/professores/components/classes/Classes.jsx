@@ -55,7 +55,7 @@ const useStyles = makeStyles(
 );
 
 const Classes = () => {
-  const classes = useStyles();
+  const S = useStyles();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -82,11 +82,11 @@ const Classes = () => {
 
     let snapshot = await classesRef.once("value");
 
-    let classes = snapshot.exists() ? snapshot.val() : [];
+    let S = snapshot.exists() ? snapshot.val() : [];
     let classesArray = [];
     for (const id in localTeacherClasses) {
       if (Object.hasOwnProperty.call(localTeacherClasses, id)) {
-        let theClass = classes[id];
+        let theClass = S[id];
 
         theClass.id = id;
 
@@ -166,7 +166,7 @@ const Classes = () => {
     //     setRows(updatedRows);
     //     setLoading(false);
     // } catch (error) {
-    //     console.log(error);
+    //     console.error(error);
     //     setLoading(false);
     //     throw new Error(error.message);
     // }
@@ -198,7 +198,7 @@ const Classes = () => {
       </FullScreenDialog>
       <Grid justifyContent="flex-start" container direction="row" spacing={2}>
         <Grid item xs={12}>
-          <div style={{ height: "59vh", width: "100%" }} className={classes.root}>
+          <div style={{ height: "59vh", width: "100%" }} className={S.root}>
             <DataGrid
               filterModel={filterModel}
               onFilterModelChange={(model) => setFilterModel(model)}

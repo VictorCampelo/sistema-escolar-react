@@ -9,7 +9,7 @@ import "../../../app/App.css";
 import Typography from "@material-ui/core/Typography";
 
 import Box from "@material-ui/core/Box";
-import { AddBox, Build, Email, GroupWork, Home, PeopleAlt, PersonAdd } from "@material-ui/icons";
+import { GroupWork, Home, PeopleAlt } from "@material-ui/icons";
 
 import Students from "./students/Students";
 
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ProfessoresTabs() {
-  const classes = useStyles();
+  const S = useStyles();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -66,7 +66,7 @@ export default function ProfessoresTabs() {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={S.root}>
       <AppBar position="sticky" color="default">
         <Tabs
           value={value}

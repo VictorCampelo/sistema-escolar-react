@@ -25,7 +25,7 @@ const styles = (theme) => ({
 
 function FormDialog(props) {
   const {
-    classes,
+    S,
     open,
     onClose,
     loading,
@@ -43,9 +43,9 @@ function FormDialog(props) {
       onClose={onClose}
       disableBackdropClick={loading}
       disableEscapeKeyDown={loading}
-      classes={{
-        paper: classes.dialogPaper,
-        paperScrollPaper: classes.dialogPaperScrollPaper
+      S={{
+        paper: S.dialogPaper,
+        paperScrollPaper: S.dialogPaperScrollPaper
       }}
       hideBackdrop={hideBackdrop ? hideBackdrop : false}
     >
@@ -66,10 +66,10 @@ function FormDialog(props) {
         </DialogTitle>
       </div>
 
-      <DialogContent className={classes.dialogContent}>
+      <DialogContent className={S.dialogContent}>
         <form onSubmit={onFormSubmit}>
           <div>{content}</div>
-          <Box width="100%" className={classes.actions}>
+          <Box width="100%" className={S.actions}>
             {actions}
           </Box>
         </form>
@@ -79,7 +79,7 @@ function FormDialog(props) {
 }
 
 FormDialog.propTypes = {
-  classes: PropTypes.object.isRequired,
+  S: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   headline: PropTypes.string.isRequired,

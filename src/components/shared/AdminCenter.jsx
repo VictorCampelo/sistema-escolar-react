@@ -62,7 +62,7 @@ const useStyles = makeStyles(
 );
 
 const AdminCenter = ({ isOpen, onClose }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const confirm = useConfirmation();
 
@@ -102,7 +102,7 @@ const AdminCenter = ({ isOpen, onClose }) => {
           setLoading(false);
         },
         (error) => {
-          console.log(error);
+          console.error(error);
         }
       );
 
@@ -140,7 +140,7 @@ const AdminCenter = ({ isOpen, onClose }) => {
 
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       error &&
         enqueueSnackbar(error.message, {
           title: "Erro",
@@ -169,7 +169,7 @@ const AdminCenter = ({ isOpen, onClose }) => {
       <Dialog fullScreen open={isOpen} onClose={onClose}>
         <DialogTitle>Controle de acessos e privilégios</DialogTitle>
         <DialogContent>
-          <div style={{ height: "75vh", width: "100%" }} className={classes.root}>
+          <div style={{ height: "75vh", width: "100%" }} className={S.root}>
             {users &&
               <DataGrid
                 filterModel={filterModel}

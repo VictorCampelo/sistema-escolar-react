@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ViewParentsInfo = ({ studentId, isOpen, onClose, isDisabled, preEnrollment }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const confirm = useConfirmation();
 
@@ -146,7 +146,7 @@ const ViewParentsInfo = ({ studentId, isOpen, onClose, isDisabled, preEnrollment
         setEdit(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       enqueueSnackbar(error.message, {
         title: "Erro",
         variant: "error",
@@ -204,7 +204,7 @@ try {
         });
         getData();
       } catch (error) {
-        console.log(error);
+        console.error(error);
         error &&
           enqueueSnackbar(error.message, {
             title: "Erro",
@@ -238,7 +238,7 @@ enqueueSnackbar("Não é possível apagar enquanto o aluno está desativado", {
       let par = parentsCopy[key];
 
       return (
-        <Card className={classes.smallCards} variant="outlined">
+        <Card className={S.smallCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
@@ -253,7 +253,7 @@ enqueueSnackbar("Não é possível apagar enquanto o aluno está desativado", {
                       <Delete />
                     </IconButton>
                    :
-                    <Avatar className={classes.avatar}>
+                    <Avatar className={S.avatar}>
                       <SupervisedUserCircle />
                     </Avatar>
                   }
@@ -374,7 +374,7 @@ enqueueSnackbar("Não é possível apagar enquanto o aluno está desativado", {
             </Box>
 
             <Box m={1}>
-              <FormControl className={classes.fields} size="small">
+              <FormControl className={S.fields} size="small">
                 <FormControlLabel
                   defaultValue={par.pedagogico}
                   control={
@@ -398,7 +398,7 @@ enqueueSnackbar("Não é possível apagar enquanto o aluno está desativado", {
             </Box>
 
             <Box m={1}>
-              <FormControl className={classes.fields} size="small">
+              <FormControl className={S.fields} size="small">
                 <FormControlLabel
                   defaultValue={par.financeiro}
                   control={
@@ -451,14 +451,14 @@ enqueueSnackbar("Não é possível editar enquanto o aluno está desativado", {
         }}
         title={"Ver/Editar responsáveis"}
         saveButton={edit ? "Salvar" : "Editar"}>
-        <form ref={form} onSubmit={handleSaveData} className={classes.container}>
+        <form ref={form} onSubmit={handleSaveData} className={S.container}>
           <ParentsCards parentsCopy={parents} />
 
-          <Card className={classes.smallCards} variant="outlined">
+          <Card className={S.smallCards} variant="outlined">
             <CardContent>
               <Grid justifyContent="flex-start" direction="row" container spacing={1}>
                 <Grid item>
-                  <Avatar className={classes.avatar}>
+                  <Avatar className={S.avatar}>
                     <Add />
                   </Avatar>
                 </Grid>
@@ -470,7 +470,7 @@ enqueueSnackbar("Não é possível editar enquanto o aluno está desativado", {
                 </Grid>
               </Grid>
               <hr />
-              <div className={classes.center}>
+              <div className={S.center}>
                 <Tooltip title="Adicionar responsável">
                   {isDisabled ?
                     <p>Reative o estudante para adicionar responsáveis</p>

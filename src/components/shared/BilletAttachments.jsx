@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BilletAttachments = ({ docKeyPath, open, setOpen }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const theme = useTheme();
@@ -80,7 +80,7 @@ const BilletAttachments = ({ docKeyPath, open, setOpen }) => {
               </Button>
 
           });
-          console.log(error);
+          console.error(error);
         }
       );
 
@@ -125,7 +125,7 @@ const BilletAttachments = ({ docKeyPath, open, setOpen }) => {
       (error) => {
         // A full list of error codes is available at
         // https://firebase.google.com/docs/storage/web/handle-errors
-        console.log(error);
+        console.error(error);
         switch (error.code) {
           case "storage/unauthorized":
             // User doesn't have permission to access the object
@@ -242,8 +242,8 @@ const BilletAttachments = ({ docKeyPath, open, setOpen }) => {
         <DialogContent>
           <Grid container spacing={3}>
             <Grid item xs={6}>
-              <Paper className={classes.paper}>
-                <div className={classes.demo}>
+              <Paper className={S.paper}>
+                <div className={S.demo}>
                   <List>
                     {attachments ?
                       attachments.map((attachment, i) =>
@@ -289,7 +289,7 @@ const BilletAttachments = ({ docKeyPath, open, setOpen }) => {
               </Paper>
             </Grid>
             <Grid item xs={6}>
-              <Paper className={classes.paper}>xs=6</Paper>
+              <Paper className={S.paper}>xs=6</Paper>
             </Grid>
           </Grid>
         </DialogContent>

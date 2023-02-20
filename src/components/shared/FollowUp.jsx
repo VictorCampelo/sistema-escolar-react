@@ -118,7 +118,7 @@ const useStyles = makeStyles((theme) => ({
 const FollowUp = ({ isOpen, onClose, studentId }) => {
   const { user } = useAuth();
   const confirm = useConfirmation();
-  const classes = useStyles();
+  const S = useStyles();
   const [expanded, setExpanded] = useState(false);
   const handleExpandClick = (open = false) => {
     if (open === true) {
@@ -213,7 +213,7 @@ const FollowUp = ({ isOpen, onClose, studentId }) => {
         document.getElementById("title").value = "";
         document.getElementById("description").value = "";
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   };
@@ -229,7 +229,7 @@ const FollowUp = ({ isOpen, onClose, studentId }) => {
         title={"FollowUp"}
         saveButton={editing ? "Salvar" : "Novo FollowUp"}
       >
-        <div className={classes.container}>
+        <div className={S.container}>
           <div style={{ height: "80vh", width: "70vw" }}>
             <DataGrid
               key={"354"}
@@ -261,11 +261,11 @@ const FollowUp = ({ isOpen, onClose, studentId }) => {
             />
           </div>
 
-          <Card className={classes.paper}>
+          <Card className={S.paper}>
             <CardHeader
               avatar={
                 <Tooltip title={selection && selection.matricula}>
-                  <Avatar aria-label="recipe" className={classes.avatar} src={avatarSrc}>
+                  <Avatar aria-label="recipe" className={S.avatar} src={avatarSrc}>
                     <Person />
                   </Avatar>
                 </Tooltip>
@@ -291,8 +291,8 @@ const FollowUp = ({ isOpen, onClose, studentId }) => {
                                   </Tooltip> */}
 
               <IconButton
-                className={clsx(classes.expand, {
-                  [classes.expandOpen]: expanded
+                className={clsx(S.expand, {
+                  [S.expandOpen]: expanded
                 })}
                 onClick={handleExpandClick}
                 aria-expanded={expanded}

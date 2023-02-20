@@ -54,7 +54,7 @@ const SchoolHeadquarters = () => {
       await headquartersRef.set(rowsArray);
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setLoading(false);
       throw new Error(error.message);
     }
@@ -75,7 +75,7 @@ const SchoolHeadquarters = () => {
       setRows(updatedRows);
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setLoading(false);
       throw new Error(error.message);
     }

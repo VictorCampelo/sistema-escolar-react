@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SecretariaTabs() {
-  const classes = useStyles();
+  const S = useStyles();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -75,7 +75,7 @@ export default function SecretariaTabs() {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={S.root}>
       <AppBar position="sticky" color="default">
         <Tabs
           value={value}

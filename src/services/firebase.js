@@ -34,9 +34,9 @@ let messaging;
 try {
   messaging = firebase.messaging();
 } catch (error) {
-  console.log(error);
+  console.error(error);
 }
-const firestore = firebase.firestore();
+// const firestore = firebase.firestore();
 
 const { REACT_APP_VAPID_KEY } = process.env;
 const publicKey = REACT_APP_VAPID_KEY;

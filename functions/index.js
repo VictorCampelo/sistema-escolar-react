@@ -25,7 +25,7 @@ exports.verificadorDeAcesso = functions.https.onCall((data, context) => {
 
     throw new functions.https.HttpsError("permission-denied", "Acesso não liberado.");
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new functions.https.HttpsError(
       "permission-denied",
       "Você não tem permissão para acesso. Você deve contatar um Administrador Master do sistema para liberação de acessos.",
@@ -341,9 +341,9 @@ exports.cadastroUser = functions.auth.user().onCreate(async (user) => {
 async function createClassroom(data, context) {
   try {
     const user = await admin.auth().getUserByEmail(data.professor);
+
     const dados = {
-      codigoSala: data.codigoSala,
-      nome: data.nome,
+      ...data,
       professor: [
         {
           nome: user.displayName,
@@ -395,128 +395,53 @@ async function createClassroom(data, context) {
 
 exports.cadastraTurma = functions.https.onCall(async (data, context) => {
   if (context.auth.token.master === true || context.auth.token.secretaria === true) {
-    let dados = data;
-    if (dados.hasOwnProperty("codTurmaAtual")) {
-      const turma = dados.codTurmaAtual;
-      const professorRef = admin.database().ref(`sistemaEscolar/turmas/${turma}/professor/0`);
+    if (data.hasOwnProperty("codTurmaAtual")) {
+      const turma = data.codTurmaAtual;
       const turmaRef = admin.database().ref(`sistemaEscolar/turmas/${turma}`);
+      const turmaFire = await turmaRef.once("value");
+      const dadosTurmaAtual = turmaFire.val();
 
-      return professorRef
-        .once("value")
-        .then(async (snapshot) => {
-          if (snapshot.val()) {
-            throw new HttpsError(
-              "cancelled",
-              "Operação cancelada! Desconecte todos os professores desta turma antes de editar a turma"
-            );
-          }
-
-          const turmaFire = await turmaRef.once("value");
-          const dadosTurmaAtual = turmaFire.val();
-
-          async function atualizaAlunos() {
-            for (const matricula of Object.keys(dadosTurmaAtual.alunos)) {
-              await admin
-                .database()
-                .ref(`sistemaEscolar/alunos/${matricula}/turmaAluno`)
-                .set(dados.codigoSala);
-            }
-          }
-
-          if (
-            dadosTurmaAtual.hasOwnProperty("alunos") &&
-            Object.keys(dadosTurmaAtual.alunos).length > 0
-          ) {
-            await atualizaAlunos();
-          }
-
-          try {
-            await turmaRef.remove();
-            await admin
-              .database()
-              .ref("sistemaEscolar/registroGeral")
-              .push({
-                operacao: "Edição das informações de turma do sistema",
-                timestamp: admin.firestore.Timestamp.now(),
-                userCreator: context.auth.uid,
-                dados: {
-                  codTurma: turma
-                }
-              });
-            getFormatedTime(dados);
-            
-            await createClassroom(data, context);
-            return {
-              answer: "A turma e todos os seus registros foram alterados com sucesso."
-            };
-          } catch (error) {
-            throw new functions.https.HttpsError("unknown", error.message, error);
-          }
-        })
-        .catch((error) => {
-          throw new functions.https.HttpsError("unknown", error.message, error);
-        });
-    }
-
-    data.id = data.codigoSala;
-    getFormatedTime(dados);
-
-    try {
-      // Get the user by email
-      const user = await admin.auth().getUserByEmail(data.professor);
-
-      // Set the professor's name and email in the data object
-      dados.professor = [
-        {
-          nome: user.displayName,
-          email: user.email
+      async function atualizaAlunos() {
+        for (const matricula of Object.keys(dadosTurmaAtual.alunos)) {
+          await admin
+            .database()
+            .ref(`sistemaEscolar/alunos/${matricula}/turmaAluno`)
+            .set(data.codigoSala);
         }
-      ];
-
-      // Set a flag to indicate that the professor is associated with this classroom
-      await admin
-        .database()
-        .ref(`sistemaEscolar/usuarios/${user.uid}/professor/turmas/${data.codigoSala}`)
-        .set(true);
-
-      // Check if the classroom already exists
-      const snapshot = await admin
-        .database()
-        .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
-        .once("value");
-      if (snapshot.exists()) {
-        throw new functions.https.HttpsError(
-          "already-exists",
-          "Uma turma com o mesmo código já foi criada."
-        );
       }
 
-      // Create the classroom
-      await admin.database().ref(`sistemaEscolar/turmas/${data.codigoSala}/`).set(dados);
+      if (
+        dadosTurmaAtual?.hasOwnProperty("alunos") &&
+        Object.keys(dadosTurmaAtual.alunos).length > 0
+      ) {
+        await atualizaAlunos();
+      }
 
-      // Increment the number of registered classrooms
-      await admin
-        .database()
-        .ref("sistemaEscolar/numeros/turmasCadastradas")
-        .transaction((currentValue) => {
-          return (currentValue || 0) + 1;
-        });
-
-      // Add a record of the classroom creation to the log
-      await admin.database().ref("sistemaEscolar/registroGeral").push({
-        operacao: "Cadastro de Turma",
-        timestamp: admin.firestore.Timestamp.now(),
-        userCreator: context.auth.uid,
-        dados: dados
-      });
-
-      // Return a success message
-      return {
-        answer: "Turma cadastrada com sucesso."
-      };
-    } catch (error) {
-      throw new functions.https.HttpsError(error.code, error.message, error);
+      try {
+        await turmaRef.remove();
+        await admin
+          .database()
+          .ref("sistemaEscolar/registroGeral")
+          .push({
+            operacao: "Edição das informações de turma do sistema",
+            timestamp: admin.firestore.Timestamp.now(),
+            userCreator: context.auth.uid,
+            dados: {
+              codTurma: turma
+            }
+          });
+      } catch (error) {
+        throw new functions.https.HttpsError("unknown", error.message, error);
+      }
     }
+
+    data.period = getFormatedTime(data);
+
+    await createClassroom(data, context);
+
+    return {
+      answer: "Turma cadastrada com sucesso!"
+    };
   }
   throw new functions.https.HttpsError(
     "permission-denied",
@@ -821,7 +746,7 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
           dadosAluno.responsaveis.find((responsavel) => responsavel.pedagogico === true) ||
           dadosAluno.responsaveis[0];
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
 
       dadosAluno.timestamp = admin.firestore.Timestamp.now();
@@ -1791,7 +1716,7 @@ exports.aberturaChamados = functions.database
         }
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     let firestoreRef = admin.firestore().collection("mail");
@@ -2184,7 +2109,7 @@ exports.newYear = functions.pubsub
           },
           (error) => {
             if (error) {
-              console.log(error);
+              console.error(error);
             }
           }
         );
@@ -2419,7 +2344,7 @@ exports.geraBoletos = functions.https.onCall(async (data) => {
           });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     return numerosDeDoc;
@@ -2716,19 +2641,19 @@ exports.escutaFollowUp = functions.database
     });
   });
 
-function getFormatedTime(dados) {
+function getFormatedTime(data) {
   let horario;
-  let hora = dados.hora.indexOf("_") === -1 ? dados.hora : dados.hora.split("_")[0];
+  let hora = data.hora.indexOf("_") === -1 ? data.hora : data.hora.split("_")[0];
   if (hora >= 12 && hora <= 17) {
     horario = "Tarde";
   } else if (hora >= 18 && hora <= 23) {
     horario = "Noite";
   } else if (hora >= 5 && hora <= 11) {
     horario = "Manha";
-  } else {
-    throw new functions.https.HttpsError("invalid-argument", "Você deve passar um horário válido");
   }
+  return horario;
 }
+
 // exports.adicionaFotoAluno = functions.storage.object().onFinalize(async (object) => {
 //     const fileBucket = object.bucket; // The Storage bucket that contains the file.
 //     const filePath = object.name; // File path in the bucket.

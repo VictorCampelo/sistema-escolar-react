@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const WriteOffBillets = ({ docId }) => {
-  const classes = useStyles();
+  const S = useStyles();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [doc, setDoc] = useState();
   const [docKeyPath, setDocKeyPath] = useState();
@@ -180,7 +180,7 @@ const WriteOffBillets = ({ docId }) => {
               </Button>
 
           });
-          console.log(error);
+          console.error(error);
         }
       );
 
@@ -222,7 +222,7 @@ const WriteOffBillets = ({ docId }) => {
             </Button>
 
         });
-        console.log(error);
+        console.error(error);
       }
       setLoading(false);
     }, 800);
@@ -401,7 +401,7 @@ const WriteOffBillets = ({ docId }) => {
         open={openAttachments}
         setOpen={setOpenAttachments}
       />
-      <Backdrop className={classes.backdrop} open={loading}>
+      <Backdrop className={S.backdrop} open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <Dialog open={dialog} onClose={() => setDialog(false)} aria-labelledby="form-dialog-title">
@@ -413,7 +413,7 @@ const WriteOffBillets = ({ docId }) => {
               encontre o débito no banco de dados
             </DialogContentText>
             <TextField
-              autoFocus
+              
               margin="dense"
               id="name"
               label="Número do Documento"
@@ -448,22 +448,22 @@ const WriteOffBillets = ({ docId }) => {
 
         <Dialog open={billetView} maxWidth="md" onClose={() => setBilletView(false)}>
           <DialogContent>
-            <div id="boletos" className={classes.billet}></div>
+            <div id="boletos" className={S.billet}></div>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setBilletView(false)}>Fechar</Button>
           </DialogActions>
         </Dialog>
 
-        <div className={classes.container}>
+        <div className={S.container}>
           <StudentDataCard studentData={studentData} />
           {doc &&
-            <Card className={classes.smallCards} variant="outlined">
+            <Card className={S.smallCards} variant="outlined">
               <CardContent>
                 <Grid justifyContent="flex-start" direction="row" container spacing={1}>
                   <Grid item>
                     <Avatar
-                      className={classes.orange}
+                      className={S.orange}
                       style={{ backgroundColor: billetColors[doc.status] }}>
                       <ConfirmationNumber />
                     </Avatar>
@@ -521,7 +521,7 @@ const WriteOffBillets = ({ docId }) => {
                   <TextField
                     size="small"
                     variant="outlined"
-                    className={classes.margin}
+                    className={S.margin}
                     label="Sacado"
                     fullWidth
                     value={studentData && studentData.nomeAluno}
@@ -540,7 +540,7 @@ const WriteOffBillets = ({ docId }) => {
                   <TextField
                     size="small"
                     variant="outlined"
-                    className={classes.margin}
+                    className={S.margin}
                     label="Vencimento"
                     fullWidth
                     value={doc.vencimento}
@@ -572,11 +572,11 @@ const WriteOffBillets = ({ docId }) => {
           }
 
           {doc &&
-            <Card className={classes.smallCards} variant="outlined">
+            <Card className={S.smallCards} variant="outlined">
               <CardContent>
                 <Grid justifyContent="flex-start" direction="row" container spacing={1}>
                   <Grid item>
-                    <Avatar className={classes.orange}>
+                    <Avatar className={S.orange}>
                       <Assistant />
                     </Avatar>
                   </Grid>
@@ -592,7 +592,7 @@ const WriteOffBillets = ({ docId }) => {
                 <Box m={1}>
                   <InputLabel>Data de pagamento</InputLabel>
                   <Input
-                    className={classes.margin}
+                    className={S.margin}
                     label="Data de pagamento"
                     fullWidth
                     value={paymentDay}
@@ -603,7 +603,7 @@ const WriteOffBillets = ({ docId }) => {
                 </Box>
                 <Box m={1}>
                   <TextField
-                    className={classes.margin}
+                    className={S.margin}
                     label="Valor Pago"
                     fullWidth
                     value={paidValue}

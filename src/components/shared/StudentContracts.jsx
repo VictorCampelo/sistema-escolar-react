@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const confirm = useConfirmation();
 
@@ -212,7 +212,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
               </Button>
 
           });
-          console.log(error);
+          console.error(error);
           setLoading(false);
         });
     } else {
@@ -232,7 +232,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
     //     }
 
     // } catch (error) {
-    //     console.log(error);
+    //     console.error(error);
     //     enqueueSnackbar(error.message, {title: 'Erro', variant: 'error', key:"0", action: <Button onClick={() => closeSnackbar('0')} color="inherit">Fechar</Button> })
     // }
     getData();
@@ -274,7 +274,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
         );
         getData();
       } catch (error) {
-        console.log(error);
+        console.error(error);
         error &&
           enqueueSnackbar(error.message, {
             title: "Erro",
@@ -337,7 +337,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
 
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       error &&
         enqueueSnackbar(error.message, {
           title: "Erro",
@@ -379,12 +379,12 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
 
     const BuiltCards = contractsCopy.map((contract, i) => {
       return (
-        <Card className={classes.smallCards} variant="outlined">
+        <Card className={S.smallCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="space-between" direction="row" container spacing={1}>
               <Grid item>
                 <div>
-                  <Avatar className={classes.avatar}>
+                  <Avatar className={S.avatar}>
                     <Receipt />
                   </Avatar>
                 </div>
@@ -478,7 +478,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
             <Button
               fullWidth
               variant="contained"
-              className={classes.button}
+              className={S.button}
               color="primary"
               onClick={() => handleGenerateBillets(contract.codContrato)}>
               Gerar Boletos
@@ -555,17 +555,17 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
         />
       }
       <FullScreenDialog isOpen={isOpen} onClose={onClose} title={"Contratos"} hideSaveButton>
-        <Backdrop className={classes.backdrop} open={loading}>
+        <Backdrop className={S.backdrop} open={loading}>
           <CircularProgress color="inherit" />
         </Backdrop>
-        <form ref={form} onSubmit={handleSaveData} className={classes.container}>
+        <form ref={form} onSubmit={handleSaveData} className={S.container}>
           <ContractsCards contractsCopy={systemContracts} />
 
-          <Card className={classes.smallCards} variant="outlined">
+          <Card className={S.smallCards} variant="outlined">
             <CardContent>
               <Grid justifyContent="flex-start" direction="row" container spacing={1}>
                 <Grid item>
-                  <Avatar className={classes.avatar}>
+                  <Avatar className={S.avatar}>
                     <Add />
                   </Avatar>
                 </Grid>
@@ -577,7 +577,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
                 </Grid>
               </Grid>
               <hr />
-              <div className={classes.center}>
+              <div className={S.center}>
                 <Tooltip title="Novo contrato">
                   {isDisabled ?
                     <p>Reative o estudante para criar contratos</p>
@@ -598,7 +598,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
         </form>
         <div>
           <Fab onClick={() => getData()} style={fabStyle} variant="extended" color="primary">
-            <Refresh className={classes.extendedIcon} />
+            <Refresh className={S.extendedIcon} />
             Atualizar
           </Fab>
         </div>

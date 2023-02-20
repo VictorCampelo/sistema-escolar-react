@@ -38,7 +38,7 @@ export default function FullScreenDialog({
   hideSaveButton,
   children
 }) {
-  const classes = useStyles();
+  const S = useStyles();
 
   const handleClose = () => {
     onClose();
@@ -60,12 +60,12 @@ export default function FullScreenDialog({
   return (
     <div>
       <Dialog fullScreen open={isOpen} onClose={handleClose} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
+        <AppBar className={S.appBar}>
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
               <CloseIcon />
             </IconButton>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" className={S.title}>
               {title}
             </Typography>
             {!hideSaveButton &&
@@ -85,7 +85,7 @@ export default function FullScreenDialog({
               variant="extended"
               color="primary"
             >
-              <Save className={classes.extendedIcon} />
+              <Save className={S.extendedIcon} />
               {saveButton}
             </Fab>
           </div>

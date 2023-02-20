@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ExternalEnroll() {
-  const classes = useStyles();
+  const S = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState(new Set());
   const [skipped, setSkipped] = useState(new Set());
@@ -270,7 +270,7 @@ export default function ExternalEnroll() {
 
       handleNext();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       enqueueSnackbar(error.message, { variant: "error" });
     }
   };
@@ -327,10 +327,10 @@ export default function ExternalEnroll() {
           <DialogContentText>Você deseja enviar sua pré-matricula?</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={() => setOpenFinalDialog(false)} color="primary">
+          <Button onClick={() => setOpenFinalDialog(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={handleSendData} color="primary" autoFocus>
+          <Button onClick={handleSendData} color="primary" >
             Enviar
           </Button>
         </DialogActions>
@@ -338,12 +338,12 @@ export default function ExternalEnroll() {
 
       {/* {errorMessage && <ErrorDialog title="Erro" message={errorMessage} isOpen={true} onClose={handleOnCloseErrorDialog}/>} */}
       <div style={{ position: "absolute" }}>
-        <Backdrop className={classes.backdrop} open={loader}>
+        <Backdrop className={S.backdrop} open={loader}>
           <CircularProgress color="inherit" />
         </Backdrop>
       </div>
       <Container>
-        <div className={classes.root}>
+        <div className={S.root}>
           <Stepper alternativeLabel activeStep={activeStep}>
             {steps.map((label, index) => {
               const stepProps = {};
@@ -370,7 +370,7 @@ export default function ExternalEnroll() {
           <div>
             <form onSubmit={handleSubmit} id="formAddStudent" autoComplete="off">
               <div>
-                <Typography className={classes.instructions}>
+                <Typography className={S.instructions}>
                   <Paper style={{ padding: "10px", minWidth: "250px" }} elevation={2}>
                     {getStepContent(activeStep)}
                   </Paper>
@@ -381,13 +381,13 @@ export default function ExternalEnroll() {
 
                   <Fab type="submit" style={fabStyle} variant="extended" color="primary">
                     {completedSteps() === totalSteps() - 1 ? "Enviar pré-matrícula" : "Próximo"}
-                    <ArrowForward className={classes.extendedIcon} />
+                    <ArrowForward className={S.extendedIcon} />
                   </Fab>
                   {/* <Button
                         variant="contained"
                         color="primary"
                         type="submit"
-                        className={classes.button}
+                        className={S.button}
                     >
                         {completedSteps() === totalSteps() - 1 ? 'Enviar pré-matrícula' : 'Próximo'}
                     </Button> */}
@@ -396,14 +396,14 @@ export default function ExternalEnroll() {
                       variant="contained"
                       color="primary"
                       onClick={handleSkip}
-                      className={classes.button}
+                      className={S.button}
                     >
                       Pular
                     </Button>
                   }
 
                   {activeStep !== steps.length && completed.has(activeStep) &&
-                    <Typography variant="caption" className={classes.completed}>
+                    <Typography variant="caption" className={S.completed}>
                       Passo {activeStep + 1} salvo
                     </Typography>
                   }

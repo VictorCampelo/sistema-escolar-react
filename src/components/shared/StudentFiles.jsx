@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function StudentFiles({ studentId, disabledStudent, preEnrollment }) {
-  const classes = useStyles();
+  const S = useStyles();
 
   const confirm = useConfirmation();
 
@@ -206,7 +206,7 @@ export default function StudentFiles({ studentId, disabledStudent, preEnrollment
       console.log(metadata);
       enqueueSnackbar("Foto do aluno definida", { variant: "success" });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       enqueueSnackbar(error.message, { variant: "error" });
     }
     setLoading(false);
@@ -274,7 +274,7 @@ export default function StudentFiles({ studentId, disabledStudent, preEnrollment
   };
 
   return (
-    <div className={classes.root}>
+    <div className={S.root}>
       <ShowFiles open={openFile} url={url} onClose={handleCloseFile} />
       <Box m={1}>
         <Button
@@ -324,8 +324,8 @@ export default function StudentFiles({ studentId, disabledStudent, preEnrollment
       </FormGroup> */}
       <Grid container spacing={1}>
         <Grid item xs={12} md={12}>
-          <div className={classes.demo}>
-            <List dense={dense} className={classes.list}>
+          <div className={S.demo}>
+            <List dense={dense} className={S.list}>
               {loading && <LinearProgress />}
               {generate(<ListItemElem />)}
             </List>

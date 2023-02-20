@@ -13,8 +13,8 @@ import {
   lighten,
   makeStyles
 } from "@material-ui/core";
-import { Assignment, CheckBox, PlusOneRounded, Refresh } from "@material-ui/icons";
-import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
+import { Assignment, Refresh } from "@material-ui/icons";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
 import { disabledStudentsRef, studentsRef } from "../../../../services/databaseRefs";
@@ -72,7 +72,7 @@ const useStyles = makeStyles(
 );
 
 const Students = () => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const defaultShowDisabledStudents = localStorage.getItem("showDisabledStudents") ? true : false;
   const [loading, setLoading] = useState(false);
@@ -100,7 +100,7 @@ const Students = () => {
   async function getData() {
     setLoading(true);
     let snapshot = await studentsRef.once("value");
-    let snapshot2 = showDisabledStudents && (await disabledStudentsRef.once("value"));
+    let snapshot2 = showDisabledStudents && await disabledStudentsRef.once("value");
 
     let students = snapshot.exists() ? snapshot.val() : [];
     let disabledStudents = showDisabledStudents && snapshot2.exists() ? snapshot2.val() : [];
@@ -174,7 +174,7 @@ const Students = () => {
     //     setRows(updatedRows);
     //     setLoading(false);
     // } catch (error) {
-    //     console.log(error);
+    //     console.error(error);
     //     setLoading(false);
     //     throw new Error(error.message);
     // }
@@ -204,11 +204,11 @@ const Students = () => {
       enqueueSnackbar("Por favor, selecione apenas alunos ativos para realizar esta ação.", {
         variant: "warning",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
     }
   };
@@ -223,11 +223,11 @@ const Students = () => {
         title: "Sucesso",
         variant: "success",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       setLoading(false);
     } catch (error) {
@@ -236,11 +236,11 @@ const Students = () => {
         title: "Sucesso",
         variant: "error",
         key: "0",
-        action: (
+        action:
           <Button onClick={() => closeSnackbar("0")} color="inherit">
             Fechar
           </Button>
-        )
+
       });
       setLoading(false);
     }
@@ -283,7 +283,7 @@ const Students = () => {
           <Button onClick={() => setOpenDialog(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={handleDisableStudents} color="primary" autoFocus>
+          <Button onClick={handleDisableStudents} color="primary" >
             Sim
           </Button>
         </DialogActions>
@@ -305,7 +305,7 @@ const Students = () => {
       </FullScreenDialog>
       <Grid justifyContent="flex-start" container direction="row" spacing={2}>
         <Grid item xs={12}>
-          <div style={{ height: "59vh", width: "100%" }} className={classes.root}>
+          <div style={{ height: "59vh", width: "100%" }} className={S.root}>
             <DataGrid
               filterModel={filterModel}
               onFilterModelChange={(model) => setFilterModel(model)}

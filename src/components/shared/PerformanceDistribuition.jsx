@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PerformanceDistribuition = ({ open, onClose }) => {
-  const classes = useStyles();
+  const S = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -124,7 +124,7 @@ try {
         });
         onClose(false);
       } catch (error) {
-        console.log(error);
+        console.error(error);
         enqueueSnackbar(error.message, {
           title: "Erro",
           variant: "error",
@@ -180,7 +180,7 @@ enqueueSnackbar("O somatório das notas não pode ser maior que 100.", {
     const BuiltFields = localGrades.map((grade, i) => {
       return (
         <Fragment>
-          <div className={classes.flex}>
+          <div className={S.flex}>
             <TextField
               variant="outlined"
               onChange={(e) => {
@@ -249,7 +249,7 @@ enqueueSnackbar("O somatório das notas não pode ser maior que 100.", {
               <Fields localGrades={grades} />
             </form>
           </div>
-          <div className={classes.flex}>
+          <div className={S.flex}>
             <div>
               <IconButton aria-label="delete" onClick={() => handleAddGrade()}>
                 <Add />

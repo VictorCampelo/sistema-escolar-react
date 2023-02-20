@@ -28,7 +28,7 @@ const SignUpDialog = (props) => {
         await passwordRecover(loginEmail.current.value);
         setShowSnack(true);
       } catch (error) {
-        console.log(error);
+        console.error(error);
         setStatus(error.code);
       }
     } else {
@@ -59,7 +59,7 @@ const SignUpDialog = (props) => {
           setIsLoading(false);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         setStatus(error.code);
         setIsLoading(false);
       }
@@ -104,7 +104,7 @@ const SignUpDialog = (props) => {
               fullWidth
               label="Nome e Sobrenome"
               inputRef={loginName}
-              autoFocus
+              
               autoComplete="off"
               type="text"
             />
@@ -117,7 +117,7 @@ const SignUpDialog = (props) => {
               fullWidth
               label="E-mail"
               inputRef={loginEmail}
-              autoFocus
+              
               autoComplete="off"
               type="email"
               onChange={() => {

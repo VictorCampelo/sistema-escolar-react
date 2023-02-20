@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddTeacher() {
-  const classes = useStyles();
+  const S = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState(new Set());
   const [skipped, setSkipped] = useState(new Set());
@@ -248,7 +248,7 @@ export default function AddTeacher() {
 
       handleNext();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       enqueueSnackbar(error.message, { variant: "error" });
     }
   };
@@ -305,12 +305,12 @@ export default function AddTeacher() {
       }
 
       <div style={{ position: "absolute" }}>
-        <Backdrop className={classes.backdrop} open={loader}>
+        <Backdrop className={S.backdrop} open={loader}>
           <CircularProgress color="inherit" />
         </Backdrop>
       </div>
 
-      <div className={classes.root}>
+      <div className={S.root}>
         <Stepper alternativeLabel activeStep={activeStep}>
           {steps.map((label, index) => {
             const stepProps = {};
@@ -337,7 +337,7 @@ export default function AddTeacher() {
         <div>
           <form onSubmit={handleSubmit} id="formAddTeacher" autoComplete="off">
             <div>
-              <Typography className={classes.instructions}>
+              <Typography className={S.instructions}>
                 <Paper style={{ padding: "10px", minWidth: "250px" }} elevation={2}>
                   {getStepContent(activeStep)}
                 </Paper>
@@ -348,7 +348,7 @@ export default function AddTeacher() {
 
                 <Fab type="submit" style={fabStyle} variant="extended" color="primary">
                   {completedSteps() === totalSteps() - 1 ? "Cadastrar Professor" : "Próximo"}
-                  <ArrowForward className={classes.extendedIcon} />
+                  <ArrowForward className={S.extendedIcon} />
                 </Fab>
 
                 {isStepOptional(activeStep) && !completed.has(activeStep) &&
@@ -356,13 +356,13 @@ export default function AddTeacher() {
                     variant="contained"
                     color="primary"
                     onClick={handleSkip}
-                    className={classes.button}>
+                    className={S.button}>
                     Pular
                   </Button>
                 }
 
                 {activeStep !== steps.length && completed.has(activeStep) &&
-                  <Typography variant="caption" className={classes.completed}>
+                  <Typography variant="caption" className={S.completed}>
                     Passo {activeStep + 1} salvo
                   </Typography>
                 }

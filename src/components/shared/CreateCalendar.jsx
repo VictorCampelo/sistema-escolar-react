@@ -12,7 +12,7 @@ const CreateCalendar = (props) => {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const classes = useStyles();
+  const S = useStyles();
 
   const form = useRef();
 
@@ -88,7 +88,7 @@ const CreateCalendar = (props) => {
             >
               <Grid item>
                 <TextField
-                  className={classes.fieldsSize}
+                  className={S.fieldsSize}
                   label={"Identificação do calendário (ID)"}
                   helperText={"Dê um nome único ao calendário."}
                   required
@@ -98,7 +98,7 @@ const CreateCalendar = (props) => {
               </Grid>
               <Grid item>
                 <TextField
-                  className={classes.fieldsSize}
+                  className={S.fieldsSize}
                   label={"Cor padrão dos eventos"}
                   helperText={"Defina a cor padrão dos eventos."}
                   defaultValue={"#3F51B5"}
@@ -110,7 +110,7 @@ const CreateCalendar = (props) => {
               </Grid>
               <Grid item>
                 <TextField
-                  className={classes.fieldsSize}
+                  className={S.fieldsSize}
                   label={"Cor de texto padrão dos eventos"}
                   helperText={"Defina a cor de texto padrão dos eventos."}
                   defaultValue={"#FFFFFF"}
@@ -122,7 +122,7 @@ const CreateCalendar = (props) => {
               </Grid>
               <Grid item>
                 <TextField
-                  className={classes.fieldsSize}
+                  className={S.fieldsSize}
                   label={"Cor de borda padrão dos eventos"}
                   helperText={"Defina a cor de borda padrão dos eventos."}
                   defaultValue={"#3F51B5"}

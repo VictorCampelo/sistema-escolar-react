@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function ClassReportOLD({ classCode, open, onClose }) {
-  const classes = useStyles();
+  const S = useStyles();
   const [loader, setLoader] = useState(false);
 
   const getData = async () => {
@@ -345,7 +345,7 @@ export default function ClassReportOLD({ classCode, open, onClose }) {
 
   return (
     <>
-      <Backdrop open={loader} className={classes.backdrop}>
+      <Backdrop open={loader} className={S.backdrop}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <Dialog open={open} fullScreen>

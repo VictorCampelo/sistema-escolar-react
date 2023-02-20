@@ -37,7 +37,7 @@ const DaysCodeSet = () => {
       await daysCodesRef.set(values);
       enqueueSnackbar("Dados salvos!");
     } catch (error) {
-      console.log(error);
+      console.error(error);
       enqueueSnackbar(error.message, { variant: "error" });
     }
   };

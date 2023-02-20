@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Finances = () => {
-  const classes = useStyles();
+  const S = useStyles();
   const [expanded, setExpanded] = useState(false);
 
   const handleChange = (panel) => (_event, isExpanded) => {
@@ -40,7 +40,7 @@ const Finances = () => {
     <Fragment>
       {/* <h2>Configurações da escola</h2> */}
 
-      <div className={classes.root}>
+      <div className={S.root}>
         <Accordion
           expanded={expanded === "panel3"}
           onChange={handleChange("panel3")}
@@ -51,8 +51,8 @@ const Finances = () => {
             aria-controls="panel3bh-content"
             id="panel3bh-header"
           >
-            <Typography className={classes.heading}>Planos</Typography>
-            <Typography className={classes.secondaryHeading}>
+            <Typography className={S.heading}>Planos</Typography>
+            <Typography className={S.secondaryHeading}>
               Planos de pagamento para contratos
             </Typography>
           </AccordionSummary>
@@ -67,8 +67,8 @@ const Finances = () => {
                     aria-controls="panel1bh-content"
                     id="panel1bh-header"
                     >
-                        <Typography className={classes.heading}>Dados Básicos</Typography>
-                        <Typography className={classes.secondaryHeading}>Dados básicos como o nome, contatos da escola, e chave pix para carnês</Typography>
+                        <Typography className={S.heading}>Dados Básicos</Typography>
+                        <Typography className={S.secondaryHeading}>Dados básicos como o nome, contatos da escola, e chave pix para carnês</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <BasicSchoolData />
@@ -82,8 +82,8 @@ const Finances = () => {
                     aria-controls="panel2bh-content"
                     id="panel2bh-header"
                     >
-                        <Typography className={classes.heading}>Campos adicionais</Typography>
-                        <Typography className={classes.secondaryHeading}>
+                        <Typography className={S.heading}>Campos adicionais</Typography>
+                        <Typography className={S.secondaryHeading}>
                             Campos adicionais personalizados que aparecerão no cadastro de alunos
                         </Typography>
                     </AccordionSummary>
@@ -98,8 +98,8 @@ const Finances = () => {
                     aria-controls="panel4bh-content"
                     id="panel4bh-header"
                     >
-                    <Typography className={classes.heading}>Livros Cadastrados</Typography>
-                    <Typography className={classes.secondaryHeading}>
+                    <Typography className={S.heading}>Livros Cadastrados</Typography>
+                    <Typography className={S.secondaryHeading}>
                         Livros cadastrados no sistema que são utilizados pela escola.
                     </Typography>
                     </AccordionSummary>
@@ -114,8 +114,8 @@ const Finances = () => {
                     aria-controls="panel5bh-content"
                     id="panel5bh-header"
                     >
-                    <Typography className={classes.heading}>Códigos dos dias da semana</Typography>
-                    <Typography className={classes.secondaryHeading}>
+                    <Typography className={S.heading}>Códigos dos dias da semana</Typography>
+                    <Typography className={S.secondaryHeading}>
                         Códigos dos dias da semana para gerar os códigos de turmas.
                     </Typography>
                     </AccordionSummary>

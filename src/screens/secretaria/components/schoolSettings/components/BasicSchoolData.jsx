@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BasicSchoolData = () => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const [shrink, setShrink] = useState(undefined);
   const [checked, setChecked] = useState(false);
@@ -79,7 +79,7 @@ const BasicSchoolData = () => {
               document.getElementById(id).value = value;
             }
           } catch (error) {
-            console.log(error);
+            console.error(error);
           }
         }
       }
@@ -113,7 +113,7 @@ const BasicSchoolData = () => {
       setloading(false);
       enqueueSnackbar("Dados atualizados com sucesso", { variant: "success" });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setloading(false);
       enqueueSnackbar(error.message, { variant: "error" });
       throw new Error(error.message);
@@ -125,7 +125,7 @@ const BasicSchoolData = () => {
       <form id="infoEscolaForm" onSubmit={handleSubmit}>
         <Grid justifyContent="flex-start" container direction="row" spacing={1}>
           <Grid item>
-            <FormControl className={classes.fields} style={{ width: "100%" }}>
+            <FormControl className={S.fields} style={{ width: "100%" }}>
               <TextField
                 placeholder={"CNPJ da Escola"}
                 autoComplete="off"
@@ -141,7 +141,7 @@ const BasicSchoolData = () => {
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields} style={{ width: "100%" }}>
+            <FormControl className={S.fields} style={{ width: "100%" }}>
               <TextField
                 placeholder={"Nome da Escola"}
                 autoComplete="off"
@@ -156,7 +156,7 @@ const BasicSchoolData = () => {
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields} style={{ width: "100%" }}>
+            <FormControl className={S.fields} style={{ width: "100%" }}>
               <TextField
                 placeholder={"Endereço da Escola"}
                 autoComplete="off"
@@ -171,7 +171,7 @@ const BasicSchoolData = () => {
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields} style={{ width: "100%" }}>
+            <FormControl className={S.fields} style={{ width: "100%" }}>
               <TextField
                 placeholder={"Telefone da Escola"}
                 autoComplete="off"
@@ -187,7 +187,7 @@ const BasicSchoolData = () => {
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields} style={{ width: "100%" }}>
+            <FormControl className={S.fields} style={{ width: "100%" }}>
               <TextField
                 placeholder={"E-mail da Escola"}
                 autoComplete="off"
@@ -205,7 +205,7 @@ const BasicSchoolData = () => {
         <h4>Cores da Escola</h4>
         <Grid justifyContent="flex-start" container direction="row" spacing={1}>
           <Grid item>
-            <FormControl className={classes.fields} style={{ width: "100%" }}>
+            <FormControl className={S.fields} style={{ width: "100%" }}>
               <InputLabel htmlFor="corPrimariaEscola">Cor primária da Escola</InputLabel>
               <Input
                 type="color"
@@ -217,7 +217,7 @@ const BasicSchoolData = () => {
             </FormControl>
           </Grid>
           <Grid item>
-            <FormControl className={classes.fields} style={{ width: "100%" }}>
+            <FormControl className={S.fields} style={{ width: "100%" }}>
               <InputLabel htmlFor="corPrimariaEscola">Cor secundária da Escola</InputLabel>
               <Input
                 type="color"
@@ -232,7 +232,7 @@ const BasicSchoolData = () => {
         <h4>Critérios de Aprovação/Reprovação</h4>
         <Grid justifyContent="flex-start" container direction="row" spacing={1}>
           <Grid item xl={6}>
-            <FormControl className={classes.fields} style={{ width: "100%" }}>
+            <FormControl className={S.fields} style={{ width: "100%" }}>
               <TextField
                 placeholder={"Nota mínima para aprovação"}
                 autoComplete="off"
@@ -249,7 +249,7 @@ const BasicSchoolData = () => {
             </FormControl>
           </Grid>
           <Grid item xl={6}>
-            <FormControl className={classes.fields} style={{ width: "100%" }}>
+            <FormControl className={S.fields} style={{ width: "100%" }}>
               <TextField
                 placeholder={"Frequência mínima para aprovação"}
                 autoComplete="off"

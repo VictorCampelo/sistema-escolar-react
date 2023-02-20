@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ViewStudentHistory = ({ studentId, isOpen, onClose, isDisabled }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const confirm = useConfirmation();
 
@@ -147,7 +147,7 @@ const ViewStudentHistory = ({ studentId, isOpen, onClose, isDisabled }) => {
         setEdit(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       enqueueSnackbar(error.message, {
         title: "Erro",
         variant: "error",
@@ -203,7 +203,7 @@ try {
         });
         getData();
       } catch (error) {
-        console.log(error);
+        console.error(error);
         error &&
           enqueueSnackbar(error.message, {
             title: "Erro",
@@ -238,7 +238,7 @@ enqueueSnackbar("Não é possível apagar enquanto o aluno está desativado", {
   //         let par = historyCopy[key];
 
   //         return (
-  //             <Card className={classes.smallCards} variant="outlined">
+  //             <Card className={S.smallCards} variant="outlined">
   //                 <CardContent>
   //                     <Grid
   //                         justifyContent="flex-start"
@@ -253,7 +253,7 @@ enqueueSnackbar("Não é possível apagar enquanto o aluno está desativado", {
   //                                     <Delete />
   //                                 </IconButton>
   //                             ) : (
-  //                             <Avatar className={classes.avatar}>
+  //                             <Avatar className={S.avatar}>
 
   //                                 <SupervisedUserCircle  />
   //                             </Avatar>)}
@@ -377,7 +377,7 @@ enqueueSnackbar("Não é possível apagar enquanto o aluno está desativado", {
   //                     </Box>
 
   //                     <Box m={1}>
-  //                         <FormControl className={classes.fields} size="small">
+  //                         <FormControl className={S.fields} size="small">
   //                         <FormControlLabel
   //                             defaultValue={par.pedagogico}
   //                             control={<Checkbox id="pedagogico" defaultChecked={par.pedagogico} onChange={(e) => {
@@ -392,7 +392,7 @@ enqueueSnackbar("Não é possível apagar enquanto o aluno está desativado", {
   //                     </Box>
 
   //                     <Box m={1}>
-  //                         <FormControl className={classes.fields} size="small">
+  //                         <FormControl className={S.fields} size="small">
   //                         <FormControlLabel
   //                             defaultValue={par.financeiro}
   //                             control={<Checkbox id="financeiro" size="small"  defaultChecked={par.financeiro} onChange={(e) => {

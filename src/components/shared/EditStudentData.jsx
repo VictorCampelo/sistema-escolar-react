@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EditStudentData = ({ studentId, isOpen, onClose, preEnrollment }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const form = useRef();
 
@@ -112,7 +112,7 @@ const EditStudentData = ({ studentId, isOpen, onClose, preEnrollment }) => {
       setLoader(false);
       onClose();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error)
         enqueueSnackbar(error.message, {
           title: "Erro",
@@ -139,7 +139,7 @@ const EditStudentData = ({ studentId, isOpen, onClose, preEnrollment }) => {
         title={"Editar dados"}
         saveButton={"Salvar"}
       >
-        <Backdrop className={classes.backdrop} open={loader}>
+        <Backdrop className={S.backdrop} open={loader}>
           <CircularProgress color="inherit" />
         </Backdrop>
         <Container>

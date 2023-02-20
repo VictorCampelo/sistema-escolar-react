@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
 
 const StudentPanelTeacher = (props) => {
   const { studentInfo } = props;
-  const classes = useStyles();
+  const S = useStyles();
 
   const classCode = studentInfo.classCode;
   const studentId = studentInfo.id;
@@ -146,8 +146,8 @@ const StudentPanelTeacher = (props) => {
     setLoading(true);
     try {
       if (disabledStudent || !desablingStudent) {
-        let classes = (await classesRef.once("value")).val();
-        let classesArray = Object.keys(classes);
+        let S = (await classesRef.once("value")).val();
+        let classesArray = Object.keys(S);
         setClassesCodes(classesArray);
         setClassCodeEnable(classesArray[0]);
       }
@@ -163,7 +163,7 @@ const StudentPanelTeacher = (props) => {
       data.exists() && calculateGrade(data.val().notas);
       console.log(data.val());
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setLoading(false);
   };
@@ -390,7 +390,7 @@ const StudentPanelTeacher = (props) => {
           </DialogContentText>
           {(disabledStudent || !desablingStudent) && (
             <Select
-              autoFocus
+              
               fullWidth
               required
               onChange={
@@ -421,23 +421,23 @@ const StudentPanelTeacher = (props) => {
             }
             variant="contained"
             color="primary"
-            autoFocus
+            
           >
             Sim, continuar
           </Button>
         </DialogActions>
       </Dialog>
-      <Backdrop open={loading} className={classes.backdrop}>
+      <Backdrop open={loading} className={S.backdrop}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      <div className={classes.container} id="noprint">
+      <div className={S.container} id="noprint">
         <StudentDataCard studentData={studentData} />
 
-        <Card className={classes.smallCards} variant="outlined">
+        <Card className={S.smallCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
-                <Avatar className={classes.orange}>
+                <Avatar className={S.orange}>
                   <Assistant />
                 </Avatar>
               </Grid>
@@ -562,11 +562,11 @@ const StudentPanelTeacher = (props) => {
           </CardContent>
         </Card>
 
-        <Card className={classes.smallCards} variant="outlined">
+        <Card className={S.smallCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
-                <Avatar className={classes.orange}>
+                <Avatar className={S.orange}>
                   <School />
                 </Avatar>
               </Grid>
@@ -579,7 +579,7 @@ const StudentPanelTeacher = (props) => {
             </Grid>
             <hr />
 
-            <Typography className={classes.pos} color="textSecondary">
+            <Typography className={S.pos} color="textSecondary">
               Turma atual: {classCode}
             </Typography>
 
@@ -588,7 +588,7 @@ const StudentPanelTeacher = (props) => {
             </Typography>
             {academicData.hasOwnProperty("desempenho")
               ? Object.keys(academicData.desempenho).map((name, i) => (
-                  <Typography className={classes.grades} color="textSecondary">
+                  <Typography className={S.grades} color="textSecondary">
                     {name}: {academicData.desempenho[name]}
                   </Typography>
                 ))
@@ -596,7 +596,7 @@ const StudentPanelTeacher = (props) => {
             <Typography variant="h6" component="h6">
               Somatório Geral
             </Typography>
-            <Typography className={classes.grades} color="textSecondary">
+            <Typography className={S.grades} color="textSecondary">
               Nota final: {currentGrade}
             </Typography>
             <Typography variant="h6" component="h6">
@@ -612,7 +612,7 @@ const StudentPanelTeacher = (props) => {
                     .reverse()
                     .join("/");
                   return (
-                    <Typography className={classes.grades} color="textSecondary">
+                    <Typography className={S.grades} color="textSecondary">
                       {i + 1}: {dateConverted}
                     </Typography>
                   );
@@ -633,11 +633,11 @@ const StudentPanelTeacher = (props) => {
           </CardActions>
         </Card>
 
-        <Card className={classes.smallCards} variant="outlined">
+        <Card className={S.smallCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
-                <Avatar className={classes.avatar}>
+                <Avatar className={S.avatar}>
                   <AttachFile />
                 </Avatar>
               </Grid>

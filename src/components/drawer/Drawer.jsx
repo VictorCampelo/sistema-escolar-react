@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ResponsiveDrawer(props) {
   const { window, open, onClose } = props;
-  const classes = useStyles();
+  const S = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user } = useAuth();
@@ -109,7 +109,7 @@ function ResponsiveDrawer(props) {
           }
           setAreas([...localAreas]);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
     };
@@ -126,7 +126,7 @@ function ResponsiveDrawer(props) {
 
   const drawer = (
     <div>
-      <div className={classes.toolbar}>
+      <div className={S.toolbar}>
         <IconButton onClick={onClose} color="primary" aria-label="Close Sidedrawer">
           <CloseIcon />
         </IconButton>
@@ -172,9 +172,9 @@ function ResponsiveDrawer(props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <div className={classes.root}>
+    <div className={S.root}>
       <CssBaseline />
-      <nav className={classes.drawer} aria-label="menu">
+      <nav className={S.drawer} aria-label="menu">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden smUp implementation="css">
           <SwipeableDrawer
@@ -183,8 +183,8 @@ function ResponsiveDrawer(props) {
             anchor={theme.direction === "rtl" ? "right" : "left"}
             open={mobileOpen}
             onClose={handleDrawerToggle}
-            classes={{
-              paper: classes.drawerPaper
+            S={{
+              paper: S.drawerPaper
             }}
             ModalProps={{
               keepMounted: true // Better open performance on mobile.
@@ -194,8 +194,8 @@ function ResponsiveDrawer(props) {
         </Hidden>
         <Hidden xsDown implementation="css">
           <SwipeableDrawer
-            classes={{
-              paper: classes.drawerPaper
+            S={{
+              paper: S.drawerPaper
             }}
             variant="temporary"
             open={open}

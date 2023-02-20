@@ -68,16 +68,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StudentDataCard = ({ studentData }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   return (
     <>
       {studentData &&
-        <Card className={classes.smallCards} variant="outlined">
+        <Card className={S.smallCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
-                <Avatar className={classes.orange}>
+                <Avatar className={S.orange}>
                   <AccountBox />
                 </Avatar>
               </Grid>
@@ -89,7 +89,7 @@ const StudentDataCard = ({ studentData }) => {
               </Grid>
             </Grid>
             <hr />
-            <Typography className={classes.title} color="textPrimary" gutterBottom>
+            <Typography className={S.title} color="textPrimary" gutterBottom>
               {studentData.nomeAluno}
             </Typography>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
@@ -99,23 +99,23 @@ const StudentDataCard = ({ studentData }) => {
                   variant="rounded"
                   src={studentData.fotoAluno}
                   style={{ width: "3cm", height: "4cm" }}
-                  className={classes.orange}
+                  className={S.orange}
                 />
               </Grid>
 
               <Grid item>
-                <Typography className={classes.pos} color="textSecondary">
+                <Typography className={S.pos} color="textSecondary">
                   Matrícula: {studentData.matriculaAluno}
                 </Typography>
-                <Typography className={classes.pos} color="textSecondary">
+                <Typography className={S.pos} color="textSecondary">
                   Nascimento:{" "}
                   {studentData.hasOwnProperty("dataNascimentoAluno") &&
                     studentData.dataNascimentoAluno.split("-").reverse().join("/")}
                 </Typography>
-                <Typography className={classes.pos} color="textSecondary">
+                <Typography className={S.pos} color="textSecondary">
                   CPF: {studentData.cpfAluno}
                 </Typography>
-                <Typography className={classes.pos} color="textSecondary">
+                <Typography className={S.pos} color="textSecondary">
                   RG: {studentData.rgAluno}
                 </Typography>
               </Grid>
@@ -123,7 +123,7 @@ const StudentDataCard = ({ studentData }) => {
 
             <List component="nav" aria-label="informações adicionais do aluno">
               <ListItem>
-                <ListItemText className={classes.list}>
+                <ListItemText className={S.list}>
                   Email: {studentData.emailAluno}{" "}
                 </ListItemText>
               </ListItem>

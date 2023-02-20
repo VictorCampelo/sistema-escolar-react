@@ -147,7 +147,7 @@ const useStyles = makeStyles((theme) => ({
 const ClassPanelTeacher = ({ classDataRows, onClose }) => {
   const confirm = useConfirmation();
 
-  const classes = useStyles();
+  const S = useStyles();
   const classCode = classDataRows.id;
   const classRef = classesRef.child(classCode);
 
@@ -239,8 +239,8 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
   const getData = async () => {
     setLoader(true);
     try {
-      let classes = (await classesRef.once("value")).val();
-      let classesArray = Object.keys(classes);
+      let S = (await classesRef.once("value")).val();
+      let classesArray = Object.keys(S);
       setClassesCodes(classesArray.filter((classroomCode) => classroomCode !== classCode));
       setClassCodeTransfer(classesArray[0]);
       let data = (await classRef.once("value")).val();
@@ -300,7 +300,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
       }
       setLoader(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -675,7 +675,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
             <Typography variant="h6" gutterBottom>
               Dados para abertura:
             </Typography>
-            <div className={classes.fieldsContainer}>
+            <div className={S.fieldsContainer}>
               <TextField
                 margin="dense"
                 id="name"
@@ -692,7 +692,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                 id="name"
                 label="Aulas"
                 type="number"
-                className={classes.textField}
+                className={S.textField}
                 variant="filled"
                 required
                 value={numberOfClasses}
@@ -701,8 +701,8 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
               />
             </div>
 
-            <div className={classes.fieldsContainer}>
-              <FormControl className={classes.fields}>
+            <div className={S.fieldsContainer}>
+              <FormControl className={S.fields}>
                 <TextField
                   name="dataNascimentoAluno"
                   style={{ width: "219px" }}
@@ -718,7 +718,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                 />
                 <FormHelperText>Início das aulas</FormHelperText>
               </FormControl>
-              <FormControl className={classes.fields}>
+              <FormControl className={S.fields}>
                 <TextField
                   name="dataNascimentoAluno"
                   style={{ width: "219px" }}
@@ -739,7 +739,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                 type="time"
                 label="Hr. Término"
                 value={classEndTime}
-                className={classes.textField}
+                className={S.textField}
                 helperText="Cada aula"
                 onChange={(e) => setClassEndTime(e.target.value)}
                 variant="filled"
@@ -753,8 +753,8 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
             <Typography variant="h6" gutterBottom>
               Outras configurações do calendário:
             </Typography>
-            <div className={classes.fieldsContainer}>
-              <FormControl className={classes.fields}>
+            <div className={S.fieldsContainer}>
+              <FormControl className={S.fields}>
                 <TextField
                   name="corDoEvento"
                   style={{ width: "219px" }}
@@ -768,7 +768,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                   onBlur={(e) => setEventColor(e.target.value)}
                 />
               </FormControl>
-              <FormControl className={classes.fields}>
+              <FormControl className={S.fields}>
                 <TextField
                   name="corDoEvento"
                   style={{ width: "219px" }}
@@ -818,7 +818,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
         </DialogActions>
       </Dialog>
 
-      <Backdrop open={loader} className={classes.backdrop}>
+      <Backdrop open={loader} className={S.backdrop}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <FullScreenDialog
@@ -836,12 +836,12 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
         <StudentInfo studentInfo={studentInfo} teacherView />
       </FullScreenDialog>
       <div style={{ position: "absolute" }}>
-        <Backdrop className={classes.backdrop} open={loader}>
+        <Backdrop className={S.backdrop} open={loader}>
           <CircularProgress color="inherit" />
         </Backdrop>
       </div>
-      <div className={classes.container}>
-        <Card className={classes.smallCards} variant="outlined">
+      <div className={S.container}>
+        <Card className={S.smallCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
@@ -852,7 +852,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                       : "Turma Fechada"
                   }>
                   <Avatar
-                    className={classes.avatar}
+                    className={S.avatar}
                     style={{
                       backgroundColor: `${classData.hasOwnProperty("status") && classData.status.turma === "aberta"
                           ? "#38a800"
@@ -875,15 +875,15 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
               </Grid>
             </Grid>
             <hr />
-            <Typography className={classes.title} color="textPrimary" gutterBottom>
+            <Typography className={S.title} color="textPrimary" gutterBottom>
               Código da Turma: {classData.codigoSala}
             </Typography>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
-                <Typography className={classes.pos} color="textSecondary">
+                <Typography className={S.pos} color="textSecondary">
                   Curso: {courseData.nomeCurso}
                 </Typography>
-                <Typography className={classes.pos} color="textSecondary">
+                <Typography className={S.pos} color="textSecondary">
                   Horário de Aula:{" "}
                   {classData.hasOwnProperty("hora") &&
                     (classData.hora.indexOf("_") === -1
@@ -894,7 +894,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                     "ás " + classData.horarioTerminoTurma}
                   h
                 </Typography>
-                <Typography className={classes.pos} color="textSecondary"></Typography>
+                <Typography className={S.pos} color="textSecondary"></Typography>
               </Grid>
             </Grid>
             {canDefineGrades &&
@@ -946,13 +946,13 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                 Atualizar dados
               </Button>
             </Box>
-            {/* <Typography className={classes.title} color="textPrimary" gutterBottom>
+            {/* <Typography className={S.title} color="textPrimary" gutterBottom>
                       Lista de professores
                     </Typography>
                     <List component="nav" aria-label="professores cadastrados">
                       {teachers.map((teacher, i) => (
                         <ListItem divider button onClick={handleTeacherClick}>
-                          <ListItemText className={classes.list}>{teacher.nome} ({teacher.email}) </ListItemText>
+                          <ListItemText className={S.list}>{teacher.nome} ({teacher.email}) </ListItemText>
 
                         </ListItem>
                       ))}
@@ -961,11 +961,11 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
           </CardContent>
         </Card>
 
-        <Card className={classes.bigCards} variant="outlined">
+        <Card className={S.bigCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
-                <Avatar className={classes.avatar}>
+                <Avatar className={S.avatar}>
                   <School />
                 </Avatar>
               </Grid>
@@ -1040,7 +1040,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
                 onRowClick={handleRowClick}
               />
 
-              <div className={classes.container}>
+              <div className={S.container}>
                 <Button
                   size="medium"
                   variant="contained"
@@ -1070,11 +1070,11 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
           </CardContent>
         </Card>
 
-        <Card className={classes.bigCards} style={{ height: "100vh" }} variant="outlined">
+        <Card className={S.bigCards} style={{ height: "100vh" }} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
-                <Avatar className={classes.avatar}>
+                <Avatar className={S.avatar}>
                   <CalendarToday />
                 </Avatar>
               </Grid>

@@ -13,11 +13,6 @@ export function AuthContextProvider(props) {
       if (user) {
         const { displayName, photoURL, uid, email, emailVerified } = user;
 
-        if (!displayName || !photoURL) {
-          console.log(user);
-        }
-        console.log(user);
-
         setUser({
           id: uid,
           name: displayName,
@@ -26,7 +21,7 @@ export function AuthContextProvider(props) {
           emailVerified: emailVerified
         });
       } else {
-        setUser(undefined);
+        setUser(null);
       }
     });
 
@@ -35,30 +30,32 @@ export function AuthContextProvider(props) {
     };
   }, []);
 
-  async function signInWithEmailAndPassword(email, password) {
-    const result = await auth.signInWithEmailAndPassword(email, password);
+  async function signInWithEmailAndPassword(userEmail, password) {
+    const result = await auth.signInWithEmailAndPassword(userEmail, password);
 
     if (result.user) {
-      const { displayName, photoURL, uid, email, emailVerified } = result.user;
-
-      if (!displayName || !photoURL) {
-        console.log("Missing account info!");
-      }
-
-      setUser({
-        id: uid,
-        name: displayName,
-        avatar: photoURL,
-        email: email,
-        emailVerified: emailVerified
-      });
-      return result.user;
+      throw new Error("Usuário não encontrado!");
     }
+
+    const { displayName, photoURL, uid, email, emailVerified } = result.user;
+
+    if (!displayName || !photoURL) {
+      console.log("Missing account info!");
+    }
+
+    setUser({
+      id: uid,
+      name: displayName,
+      avatar: photoURL,
+      email: email,
+      emailVerified: emailVerified
+    });
+    return result.user;
   }
 
   async function signOut() {
     await auth.signOut();
-    setUser(undefined);
+    setUser(null);
     window.location.href = "/";
     return;
   }
@@ -94,7 +91,7 @@ export function AuthContextProvider(props) {
       await auth.currentUser.sendEmailVerification();
       return;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new Error(error.message);
     }
   }

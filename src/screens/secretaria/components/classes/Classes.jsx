@@ -1,4 +1,4 @@
-import { Button, createTheme, darken, Grid, lighten, makeStyles } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import { Refresh } from "@material-ui/icons";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Fragment, useEffect, useState } from "react";
@@ -7,55 +7,11 @@ import { LocaleText } from "../../../../components/shared/DataGridLocaleText";
 import FullScreenDialog from "../../../../components/shared/FullscreenDialog";
 import { capitalizeFirstLetter } from "../../../../components/shared/FunctionsUse";
 import PerformanceDistribuition from "../../../../components/shared/PerformanceDistribuition";
-import ClassInfo from "../../../../components/shared/ViewClassInfo";
-
-function getThemePaletteMode(palette) {
-  return palette.type || palette.mode;
-}
-
-const defaultTheme = createTheme();
-const useStyles = makeStyles(
-  (theme) => {
-    const getBackgroundColor = (color) =>
-      getThemePaletteMode(theme.palette) === "dark" ? darken(color, 0.6) : lighten(color, 0.6);
-
-    const getHoverBackgroundColor = (color) =>
-      getThemePaletteMode(theme.palette) === "dark" ? darken(color, 0.5) : lighten(color, 0.5);
-
-    return {
-      root: {
-        "& .super-app-theme--Open": {
-          backgroundColor: getBackgroundColor(theme.palette.info.main),
-          "&:hover": {
-            backgroundColor: getHoverBackgroundColor(theme.palette.info.main)
-          }
-        },
-        "& .super-app-theme--Aberta": {
-          backgroundColor: getBackgroundColor(theme.palette.success.main),
-          "&:hover": {
-            backgroundColor: getHoverBackgroundColor(theme.palette.success.main)
-          }
-        },
-        "& .super-app-theme--PartiallyFilled": {
-          backgroundColor: getBackgroundColor(theme.palette.warning.main),
-          "&:hover": {
-            backgroundColor: getHoverBackgroundColor(theme.palette.warning.main)
-          }
-        },
-        "& .super-app-theme--Fechada": {
-          backgroundColor: getBackgroundColor(theme.palette.error.main),
-          "&:hover": {
-            backgroundColor: getHoverBackgroundColor(theme.palette.error.main)
-          }
-        }
-      }
-    };
-  },
-  { defaultTheme }
-);
+import ClassInfo from "./../classInfo/ViewClassInfo";
+import { useStyles } from "./styles";
 
 const Classes = () => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -106,14 +62,10 @@ const Classes = () => {
 
         theClass.modalidade = theClass.modalidade === "ead" ? "Ensino a Distância" : "Presencial";
         // theClass.escola = theClass.escola[0].name;
-        console.log(theClass);
 
-        theClass.currentPeriod = theClass.hasOwnProperty("status")
-          ? theClass.status.nomePeriodo
-          : "";
         theClass.status = theClass.hasOwnProperty("status")
           ? capitalizeFirstLetter(theClass.status.turma)
-          : "Sem dados";
+          : "Fechada";
 
         classesArray.push(theClass);
       }
@@ -186,7 +138,7 @@ const Classes = () => {
 
       <Grid justifyContent="flex-start" container direction="row" spacing={2}>
         <Grid item xs={12}>
-          <div style={{ height: "59vh", width: "100%" }} className={classes.root}>
+          <div style={{ height: "59vh", width: "100%" }} className={S.root}>
             <DataGrid
               filterModel={filterModel}
               onFilterModelChange={(model) => setFilterModel(model)}
@@ -197,9 +149,10 @@ const Classes = () => {
                 { field: "horarioTerminoTurma", headerName: "Hr. Fim", width: 140 },
                 { field: "professor", headerName: "Prof. Referência", width: 220 },
                 { field: "modalidade", headerName: "Modalidade", width: 180 },
-                { field: "escola", headerName: "Escola", width: 180 },
+                { field: "escola", headerName: "Cod. Escola", width: 180 },
+                { field: "curso", headerName: "Cod. Curso", width: 180 },
                 { field: "status", headerName: "Status", width: 180 },
-                { field: "currentPeriod", headerName: "Período", width: 180 },
+                { field: "period", headerName: "Período", width: 180 },
                 { field: "timestamp", headerName: "Data/Hora Criação", width: 200 }
               ]}
               disableSelectionOnClick

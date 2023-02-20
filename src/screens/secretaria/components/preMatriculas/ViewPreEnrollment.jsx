@@ -6,41 +6,11 @@ import {
   Card,
   CardActions,
   CardContent,
-  CircularProgress,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  makeStyles,
-  MenuItem,
-  Select,
-  Typography
+  CircularProgress, Grid, makeStyles, Typography
 } from "@material-ui/core";
-import { green } from "@material-ui/core/colors";
 import {
-  AccountBox,
-  Assignment,
   Assistant,
-  AttachFile,
-  Check,
-  CheckCircle,
-  ChromeReaderMode,
-  Description,
-  DoneAll,
-  Edit,
-  NotInterested,
-  Person,
-  Print,
-  School,
-  SupervisedUserCircle,
-  TransferWithinAStation
+  AttachFile, CheckCircle, Edit, Print, SupervisedUserCircle
 } from "@material-ui/icons";
 import { useSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
@@ -107,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ViewPreEnrollment = ({ studentInfo, changeTab }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const classCode = studentInfo.classCode;
   const studentId = studentInfo.id;
@@ -143,7 +113,7 @@ const ViewPreEnrollment = ({ studentInfo, changeTab }) => {
       console.log(studentData);
       studentData && setStudentData(studentData);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -172,18 +142,18 @@ const ViewPreEnrollment = ({ studentInfo, changeTab }) => {
       title: "Info",
       variant: "info",
       key: "0",
-      action: (
+      action:
         <Button onClick={() => closeSnackbar("0")} color="inherit">
           Fechar
         </Button>
-      )
+
     });
   };
 
   return (
     <Fragment>
       {openStudentPDF && <BaseDocument open={openStudentPDF} onClose={setOpenStudentPDF} />}
-      {openContractsDialog && (
+      {openContractsDialog &&
         <StudentContracts
           studentId={studentId}
           isDisabled={disabledStudent}
@@ -192,7 +162,7 @@ const ViewPreEnrollment = ({ studentInfo, changeTab }) => {
             setOpenContractsDialog(false);
           }}
         />
-      )}
+      }
 
       <ViewParentsInfo
         studentId={studentId}
@@ -211,17 +181,17 @@ const ViewPreEnrollment = ({ studentInfo, changeTab }) => {
         onClose={() => setOpenEditStudentsInfo(false)}
       />
 
-      <Backdrop open={loading} className={classes.backdrop}>
+      <Backdrop open={loading} className={S.backdrop}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      <div className={classes.container}>
+      <div className={S.container}>
         <StudentDataCard studentData={studentData} />
 
-        <Card className={classes.smallCards} variant="outlined">
+        <Card className={S.smallCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
-                <Avatar className={classes.orange}>
+                <Avatar className={S.orange}>
                   <Assistant />
                 </Avatar>
               </Grid>
@@ -287,11 +257,11 @@ const ViewPreEnrollment = ({ studentInfo, changeTab }) => {
           </CardContent>
         </Card>
 
-        <Card className={classes.smallCards} variant="outlined">
+        <Card className={S.smallCards} variant="outlined">
           <CardContent>
             <Grid justifyContent="flex-start" direction="row" container spacing={1}>
               <Grid item>
-                <Avatar className={classes.avatar}>
+                <Avatar className={S.avatar}>
                   <AttachFile />
                 </Avatar>
               </Grid>

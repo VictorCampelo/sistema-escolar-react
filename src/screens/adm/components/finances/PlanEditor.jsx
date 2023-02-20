@@ -56,10 +56,10 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
           handleMountContractScreen(courseInfo.val());
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -83,7 +83,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const classes = useStyles();
+  const S = useStyles();
   const [data, setData] = useState(null);
 
   const [state, setState] = useState({
@@ -116,7 +116,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
       });
     } catch (error) {
       console.log("**************************");
-      console.log(error);
+      console.error(error);
       console.log(planChosen);
       console.log(internData);
       internData = planChosen
@@ -187,7 +187,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
             }</option>`;
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
 
       internData.valorFinal = (
@@ -287,7 +287,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
       setRows(internRows);
       // addParcela(`Total: R$${somaParcelas.toFixed(2)}`)
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     internData.codCurso = courseId;
@@ -301,7 +301,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
         }
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     console.log(internData);
@@ -335,7 +335,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
           try {
             document.getElementById(name).value = value;
           } catch (error) {
-            console.log(error);
+            console.error(error);
           }
         }
       }
@@ -412,7 +412,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                 <h1>Dados do Curso:</h1>
                 <Grid justifyContent="flex-start" container direction="row" spacing={2}>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         InputLabelProps={{ shrink: true }}
@@ -433,7 +433,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -459,7 +459,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                 </h6>
                 <Grid justifyContent="flex-start" container direction="row" spacing={2}>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -477,7 +477,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -492,7 +492,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -507,7 +507,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -521,7 +521,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -536,7 +536,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -550,7 +550,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -570,7 +570,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                 <h2>Parcelas</h2>
                 <Grid justifyContent="flex-start" container direction="row" spacing={2}>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <TextField
                         variant="filled"
                         autoComplete="off"
@@ -629,7 +629,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                     </FormControl>
                   </Grid>
                   <Grid item>
-                    <FormControl className={classes.fields}>
+                    <FormControl className={S.fields}>
                       <CrudTable
                         rows={rows}
                         columns={columns}
@@ -701,7 +701,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                                     <FormHelperText>Escolha o dia de vencimento do boleto/carnê. </FormHelperText>
                                 </FormControl> */}
 
-                        <FormControl className={classes.formControl}>
+                        <FormControl className={S.formControl}>
                           <InputLabel id="demo-mutiple-checkbox-label">
                             Dias de vencimento
                           </InputLabel>
@@ -748,7 +748,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
 
                   <Grid item>
                     {plan &&
-                      <FormControl className={classes.fields}>
+                      <FormControl className={S.fields}>
                         <TextField
                           variant="filled"
                           autoComplete="off"

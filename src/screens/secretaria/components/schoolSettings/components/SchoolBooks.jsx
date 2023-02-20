@@ -56,7 +56,7 @@ const SchoolBooks = () => {
       await booksRef.set(rowsArray);
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setLoading(false);
       throw new Error(error.message);
     }
@@ -78,7 +78,7 @@ const SchoolBooks = () => {
       setRows(updatedRows);
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setLoading(false);
       throw new Error(error.message);
     }

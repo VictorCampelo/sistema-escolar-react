@@ -27,7 +27,7 @@ export default function Deposits() {
         setData(snapshot.val());
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }, []);
 

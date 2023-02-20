@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Navbar(props) {
-  const classes = useStyles();
+  const S = useStyles();
   const { user, signOut } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -112,7 +112,7 @@ export default function Navbar(props) {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={S.root}>
       {showSignInDialog ? <LoginDialog onClose={onClose} /> : null}
 
       {showSignUpDialog ? <SignUpDialog onClose={onClose} /> : null}
@@ -129,7 +129,7 @@ export default function Navbar(props) {
             <Grid item>
               <IconButton
                 edge="start"
-                className={classes.menuButton}
+                className={S.menuButton}
                 onClick={openDrawer}
                 color="inherit"
                 aria-label="menu"
@@ -140,7 +140,7 @@ export default function Navbar(props) {
             </Grid>
 
             <Grid item>
-              <Typography variant="h6" className={classes.title}>
+              <Typography variant="h6" className={S.title}>
                 Sistema Escolar
               </Typography>
             </Grid>

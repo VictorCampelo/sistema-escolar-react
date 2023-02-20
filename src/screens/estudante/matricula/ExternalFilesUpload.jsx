@@ -66,7 +66,7 @@ const useStyles = makeStyles(
 );
 
 const ExternalFilesUpload = ({ hasFile }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [files, setFiles] = useState([]);
@@ -113,7 +113,7 @@ const ExternalFilesUpload = ({ hasFile }) => {
 
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       error &&
         enqueueSnackbar(error.message, {
           title: "Erro",
@@ -203,7 +203,7 @@ const ExternalFilesUpload = ({ hasFile }) => {
             </Button>
 
         });
-      console.log(error);
+      console.error(error);
     }
     setLoading(false);
   };
@@ -211,7 +211,7 @@ const ExternalFilesUpload = ({ hasFile }) => {
   return (
     <>
       <div style={{ position: "absolute" }}>
-        <Backdrop className={classes.backdrop} open={loading}>
+        <Backdrop className={S.backdrop} open={loading}>
           <CircularProgress color="inherit" variant="determinate" value={progress} />
         </Backdrop>
       </div>
@@ -232,7 +232,7 @@ const ExternalFilesUpload = ({ hasFile }) => {
           Adicionar arquivos...
         </Button>
         <Paper variant="outlined" style={{ height: "60vh" }}>
-          <div style={{ height: "100%", width: "100%" }} className={classes.root}>
+          <div style={{ height: "100%", width: "100%" }} className={S.root}>
             <DataGrid
               rows={files}
               columns={[
