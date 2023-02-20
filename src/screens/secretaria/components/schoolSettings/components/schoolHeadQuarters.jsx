@@ -5,7 +5,7 @@ import { Fragment, useEffect, useState } from "react";
 import { LocaleText } from "../../../../../components/shared/DataGridLocaleText";
 import { headquartersRef } from "../../../../../services/databaseRefs";
 
-const SchoolCourses = () => {
+const SchoolHeadquarters = () => {
   const [loading, setLoading] = useState(false);
 
   function CustomToolbar() {
@@ -34,23 +34,23 @@ const SchoolCourses = () => {
     let rowsArray = JSON.parse(JSON.stringify(rows));
     rowsArray.push({
       id: rowsArray.length,
-      codSistema: rowsArray.length,
-      codSede: "Nome da sede",
-      nomeSede: "Digite..."
+      internalCod: rowsArray.length,
+      name: "Nome da sede",
+      neighborhood: "Digite...",
+      street: "Digite...",
+      city: "Digite...",
+      cep: "Digite..."
     });
     setRows(rowsArray);
-    console.log(rowsArray);
   };
 
   const handleRowEdit = async (editedRow) => {
-    setLoading(true);
-    console.log(editedRow);
-    let rowsArray = JSON.parse(JSON.stringify(rows));
-    let rowIndex = rowsArray.findIndex((row) => row.id === editedRow.id);
-    rowsArray[rowIndex][editedRow.field] = editedRow.value;
-    setRows(rowsArray);
-    console.log(rowsArray);
     try {
+      setLoading(true);
+      let rowsArray = JSON.parse(JSON.stringify(rows));
+      let rowIndex = rowsArray.findIndex((row) => row.id === editedRow.id);
+      rowsArray[rowIndex][editedRow.field] = editedRow.value;
+      setRows(rowsArray);
       await headquartersRef.set(rowsArray);
       setLoading(false);
     } catch (error) {
@@ -94,7 +94,7 @@ const SchoolCourses = () => {
               rows={rows}
               columns={[
                 {
-                  field: "codSistema",
+                  field: "internalCod",
                   headerName: "ID",
                   description:
                     "Código apenas para identificação interna no sistema. Não aparecerá em outros documentos do sistema.",
@@ -102,16 +102,44 @@ const SchoolCourses = () => {
                   editable: false
                 },
                 {
-                  field: "codSede",
+                  field: "cod",
                   headerName: "Código",
                   description:
-                    "O código do curso será utilizado para formar o código automático da turma.",
+                    "O código da sede será utilizado para formar o código automático da turma.",
                   width: 130,
                   editable: true
                 },
                 {
-                  field: "nomeSede",
+                  field: "name",
                   headerName: "Nome da sede",
+                  description: "Este será o nome que aparecerá nos boletins.",
+                  width: 300,
+                  editable: true
+                },
+                {
+                  field: "neighborhood",
+                  headerName: "Nome do Bairro",
+                  description: "Este será o nome que aparecerá nos boletins.",
+                  width: 300,
+                  editable: true
+                },
+                {
+                  field: "street",
+                  headerName: "Rua da sede",
+                  description: "Este será o nome que aparecerá nos boletins.",
+                  width: 300,
+                  editable: true
+                },
+                {
+                  field: "city",
+                  headerName: "Nome da cidade",
+                  description: "Este será o nome que aparecerá nos boletins.",
+                  width: 300,
+                  editable: true
+                },
+                {
+                  field: "cep",
+                  headerName: "CEP da sede",
                   description: "Este será o nome que aparecerá nos boletins.",
                   width: 300,
                   editable: true
@@ -159,4 +187,4 @@ const SchoolCourses = () => {
   );
 };
 
-export default SchoolCourses;
+export default SchoolHeadquarters;

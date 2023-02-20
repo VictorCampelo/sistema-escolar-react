@@ -25,6 +25,7 @@ import {
   booksRef,
   coursesRef,
   daysCodesRef,
+  headquartersRef,
   teachersListRef
 } from "../../../../services/databaseRefs";
 import { LocaleText } from "../../../../components/shared/DataGridLocaleText";
@@ -164,6 +165,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
     professor: ""
   });
   const [courses, setCourses] = useState([]);
+  const [headquarters, setHeadquarters] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [days, setDays] = useState([]);
   const fabStyle = {
@@ -197,6 +199,11 @@ const AddClass = ({ dataForEditing, onClose }) => {
     setCourses(allCourses);
   };
 
+  const getHeadquarters = async () => {
+    const allHeadquarters = (await headquartersRef.once("value")).val();
+    setHeadquarters(allHeadquarters);
+  };
+
   const getTeachers = async () => {
     const allTeachers = (await teachersListRef.once("value")).val();
     let teachersArray = [];
@@ -211,6 +218,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
 
   useEffect(() => {
     getCourses();
+    getHeadquarters();
     getTeachers();
     getDays();
     getBooks();
@@ -432,7 +440,7 @@ const AddClass = ({ dataForEditing, onClose }) => {
                   label="escola"
                   value={classData.escola}
                   fullWidth
-                  helperText="Escolha a escola dessa turma"
+                  helperText="Escolha a sede dessa turma"
                   variant="filled"
                   SelectProps={{
                     native: true
@@ -441,8 +449,12 @@ const AddClass = ({ dataForEditing, onClose }) => {
                   <option hidden selected>
                     Selecione uma escola...
                   </option>
-                  <option value="presencial">UE Antonio</option>
-                  <option value="ead">UE PIO XII</option>
+                  {headquarters.length > 0 &&
+                      headquarters.map((option) =>
+                        <option key={option.internalCod} value={option.internalCod}>
+                          {option.cod + " - " + option.name}
+                        </option>
+                      )}
                 </TextField>
               </Box>
             </form>

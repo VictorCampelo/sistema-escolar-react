@@ -1,11 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const {
-  HttpsError
-} = require("firebase-functions/v1/https");
-const {
-  Merchant
-} = require("steplix-emv-qrcps");
+const { HttpsError } = require("firebase-functions/v1/https");
+const { Merchant } = require("steplix-emv-qrcps");
 const QRCode = require("qrcode");
 const axios = require("axios").default;
 
@@ -97,27 +93,22 @@ exports.liberaERemoveAcessos = functions.https.onCall(async (data, context) => {
 exports.apagaContas = functions.https.onCall(async (data, context) => {
   if (context.auth.token.master === true) {
     try {
-      await admin
-        .auth()
-        .deleteUser(data.uid);
+      await admin.auth().deleteUser(data.uid);
       try {
-        await admin
-          .database()
-          .ref("sistemaEscolar/registroGeral")
-          .push({
-            operacao: "Conta deletada",
-            timestamp: admin.firestore.Timestamp.now(),
-            userCreator: context.auth.uid,
-            dados: data
-          });
+        await admin.database().ref("sistemaEscolar/registroGeral").push({
+          operacao: "Conta deletada",
+          timestamp: admin.firestore.Timestamp.now(),
+          userCreator: context.auth.uid,
+          dados: data
+        });
         return {
           answer: "Usuário deletado com sucesso."
         };
       } catch (error) {
         throw new functions.https.HttpsError("unknown", error.message, error);
       }
-    } catch (error_1) {
-      throw new functions.https.HttpsError("unknown", error_1.message);
+    } catch (error1) {
+      throw new functions.https.HttpsError("unknown", error1.message);
     }
   }
   throw new functions.https.HttpsError(
@@ -166,7 +157,7 @@ exports.criaContaAluno = functions.database
         displayName: aluno.nomeAluno,
         phoneNumber: "+55" + aluno.celularAluno
       })
-      .then(() => { })
+      .then(() => {})
       .catch((error) => {
         throw new functions.https.HttpsError("unknown", error.message, error);
       });
@@ -179,7 +170,7 @@ exports.modificaSenhaContaAluno = functions.database
       let senhaAluno = snapshot.after.val();
       let matricula = context.params.matricula;
       let firestoreRef = admin.firestore().collection("mail");
-      
+
       let dadosAluno = await admin
         .database()
         .ref("sistemaEscolar/alunos/" + matricula)
@@ -189,16 +180,17 @@ exports.modificaSenhaContaAluno = functions.database
         .database()
         .ref("sistemaEscolar/infoEscola/dadosBasicos/nomeEscola")
         .once("value");
-      
+
       let user = await admin.auth().getUserByEmail(dadosAluno.val().emailAluno);
-      
+
       let emailContent = {
         to: dadosAluno.val().emailAluno,
         message: {
           subject: `${nomeEscola.val()}: Senha alterada no portal do Aluno`,
           text: `Sua nova senha para login no portal do aluno é ${senhaAluno}. Em caso de dificuldades entre em contato com sua escola para maiores informações. Sistemas ProjetoX.`,
-          html: `<h3>Olá ${dadosAluno.val().nomeAluno.split(" ")[0]
-            }!</h3><p>O sistema detectou uma mudança na sua senha do portal do aluno e sua nova senha para login no portal do aluno é <b>${senhaAluno}</b>.</p><p>Em caso de dificuldades <b>entre em contato com sua escola para maiores informações</b>.</p><p>Sistemas ProjetoX.</p>`
+          html: `<h3>Olá ${
+            dadosAluno.val().nomeAluno.split(" ")[0]
+          }!</h3><p>O sistema detectou uma mudança na sua senha do portal do aluno e sua nova senha para login no portal do aluno é <b>${senhaAluno}</b>.</p><p>Em caso de dificuldades <b>entre em contato com sua escola para maiores informações</b>.</p><p>Sistemas ProjetoX.</p>`
         }
       };
 
@@ -346,14 +338,70 @@ exports.cadastroUser = functions.auth.user().onCreate(async (user) => {
   }
 });
 
+async function createClassroom(data, context) {
+  try {
+    const user = await admin.auth().getUserByEmail(data.professor);
+    const dados = {
+      codigoSala: data.codigoSala,
+      nome: data.nome,
+      professor: [
+        {
+          nome: user.displayName,
+          email: user.email
+        }
+      ],
+      timestamp: admin.firestore.Timestamp.now(),
+      id: data.codigoSala
+    };
+
+    await admin
+      .database()
+      .ref(`sistemaEscolar/usuarios/${user.uid}/professor/turmas/${data.codigoSala}`)
+      .set(true);
+
+    const snapshot = await admin
+      .database()
+      .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
+      .once("value");
+
+    if (snapshot.exists()) {
+      throw new functions.https.HttpsError(
+        "already-exists",
+        "Uma turma com o mesmo código já foi criada."
+      );
+    }
+
+    const dadosTurmaAtual = { ...dados };
+    await admin.database().ref(`sistemaEscolar/turmas/${data.codigoSala}/`).set(dadosTurmaAtual);
+    await admin
+      .database()
+      .ref("sistemaEscolar/numeros/turmasCadastradas")
+      .transaction((currentValue) => {
+        return (currentValue || 0) + 1;
+      });
+
+    await admin.database().ref("sistemaEscolar/registroGeral").push({
+      operacao: "Cadastro de Turma",
+      timestamp: admin.firestore.Timestamp.now(),
+      userCreator: context.auth.uid,
+      dados: dados
+    });
+
+    return { answer: "A turma e todos os seus registros foram alterados com sucesso." };
+  } catch (error) {
+    throw new functions.https.HttpsError("unknown", error.message, error);
+  }
+}
+
 exports.cadastraTurma = functions.https.onCall(async (data, context) => {
   if (context.auth.token.master === true || context.auth.token.secretaria === true) {
     let dados = data;
     if (dados.hasOwnProperty("codTurmaAtual")) {
-      let turma = dados.codTurmaAtual;
-      return admin
-        .database()
-        .ref(`sistemaEscolar/turmas/${turma}/professor/0`)
+      const turma = dados.codTurmaAtual;
+      const professorRef = admin.database().ref(`sistemaEscolar/turmas/${turma}/professor/0`);
+      const turmaRef = admin.database().ref(`sistemaEscolar/turmas/${turma}`);
+
+      return professorRef
         .once("value")
         .then(async (snapshot) => {
           if (snapshot.val()) {
@@ -362,245 +410,113 @@ exports.cadastraTurma = functions.https.onCall(async (data, context) => {
               "Operação cancelada! Desconecte todos os professores desta turma antes de editar a turma"
             );
           }
-          return admin
-            .database()
-            .ref(`sistemaEscolar/turmas/${turma}`)
-            .once("value")
-            .then(async (turmaFire) => {
-              let dadosTurmaAtual = turmaFire.val();
 
-              async function atualizaAlunos() {
-                Object.keys(dadosTurmaAtual.alunos).map(async (matricula) => {
-                  await admin
-                    .database()
-                    .ref("sistemaEscolar/alunos/" + matricula + "/turmaAluno")
-                    .set(dados.codigoSala);
-                });
-              }
+          const turmaFire = await turmaRef.once("value");
+          const dadosTurmaAtual = turmaFire.val();
 
-              if (dadosTurmaAtual.hasOwnProperty("alunos") &&
-                Object.keys(dadosTurmaAtual.alunos).length > 0) {
-                await atualizaAlunos();
-              }
-
-              // Essa parte se repete com as funções de baixo
-              return admin
+          async function atualizaAlunos() {
+            for (const matricula of Object.keys(dadosTurmaAtual.alunos)) {
+              await admin
                 .database()
-                .ref(`sistemaEscolar/turmas/${turma}`)
-                .remove()
-                .then(async () => {
-                  return admin
-                    .database()
-                    .ref("sistemaEscolar/registroGeral")
-                    .push({
-                      operacao: "Edição das informações de turma do sistema",
-                      timestamp: admin.firestore.Timestamp.now(),
-                      userCreator: context.auth.uid,
-                      dados: {
-                        codTurma: turma
-                      }
-                    })
-                    .then(() => {
-                      let horario;
-                      let hora = dados.hora.indexOf("_") === -1 ? dados.hora : dados.hora.split("_")[0];
-                      if (hora >= 12 && hora <= 17) {
-                        horario = "Tarde";
-                      } else if (hora >= 18 && hora <= 23) {
-                        horario = "Noite";
-                      } else if (hora >= 5 && hora <= 11) {
-                        horario = "Manha";
-                      } else {
-                        throw new functions.https.HttpsError(
-                          "invalid-argument",
-                          "Você deve passar um horário válido"
-                        );
-                      }
-                      return admin
-                        .auth()
-                        .getUserByEmail(data.professor)
-                        .then((user) => {
-                          dados.professor = [{
-                            nome: user.displayName,
-                            email: user.email
-                          }];
-                          dados.timestamp = admin.firestore.Timestamp.now();
-                          dados.id = dados.codigoSala;
-                          return admin
-                            .database()
-                            .ref(
-                              `sistemaEscolar/usuarios/${user.uid}/professor/turmas/${data.codigoSala}`
-                            )
-                            .set(true)
-                            .then(() => {
-                              return admin
-                                .database()
-                                .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
-                                .once("value")
-                                .then((snapshot) => {
-                                  if (snapshot.exists() === false) {
-                                    Object.assign(dadosTurmaAtual, dados);
-                                    return admin
-                                      .database()
-                                      .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
-                                      .set(dadosTurmaAtual)
-                                      .then(() => {
-                                        admin
-                                          .database()
-                                          .ref("sistemaEscolar/numeros/turmasCadastradas")
-                                          .transaction((currentValue) => {
-                                            return (currentValue || 0) + 1;
-                                          })
-                                          .catch((error) => {
-                                            throw new functions.https.HttpsError(
-                                              "unknown",
-                                              error.message,
-                                              error
-                                            );
-                                          });
-                                        return admin
-                                          .database()
-                                          .ref("sistemaEscolar/registroGeral")
-                                          .push({
-                                            operacao: "Cadastro de Turma",
-                                            timestamp: admin.firestore.Timestamp.now(),
-                                            userCreator: context.auth.uid,
-                                            dados: dados
-                                          })
-                                          .then(() => {
-                                            return {
-                                              answer: "A turma e todos os seus registros foram alterados com sucesso."
-                                            };
-                                          })
-                                          .catch((error) => {
-                                            throw new functions.https.HttpsError(
-                                              "unknown",
-                                              error.message,
-                                              error
-                                            );
-                                          });
-                                      })
-                                      .catch((error) => {
-                                        throw new functions.https.HttpsError(
-                                          error.code,
-                                          error.message,
-                                          error
-                                        );
-                                      });
-                                  }
-                                  throw new functions.https.HttpsError(
-                                    "already-exists",
-                                    "Uma turma com o mesmo código já foi criada."
-                                  );
-                                });
-                            })
-                            .catch((error) => {
-                              throw new functions.https.HttpsError("unknown", error.message, error);
-                            });
-                        })
-                        .catch((error) => {
-                          throw new functions.https.HttpsError("unknown", error.message, error);
-                        });
-                    })
-                    .catch((error) => {
-                      throw new functions.https.HttpsError("unknown", error.message, error);
-                    });
-                })
-                .catch((error) => {
-                  throw new functions.https.HttpsError("unknown", error.message, error);
-                });
-            })
-            .catch((error) => {
-              throw new functions.https.HttpsError("unknown", error.message, error);
-            });
+                .ref(`sistemaEscolar/alunos/${matricula}/turmaAluno`)
+                .set(dados.codigoSala);
+            }
+          }
+
+          if (
+            dadosTurmaAtual.hasOwnProperty("alunos") &&
+            Object.keys(dadosTurmaAtual.alunos).length > 0
+          ) {
+            await atualizaAlunos();
+          }
+
+          try {
+            await turmaRef.remove();
+            await admin
+              .database()
+              .ref("sistemaEscolar/registroGeral")
+              .push({
+                operacao: "Edição das informações de turma do sistema",
+                timestamp: admin.firestore.Timestamp.now(),
+                userCreator: context.auth.uid,
+                dados: {
+                  codTurma: turma
+                }
+              });
+            getFormatedTime(dados);
+            
+            await createClassroom(data, context);
+            return {
+              answer: "A turma e todos os seus registros foram alterados com sucesso."
+            };
+          } catch (error) {
+            throw new functions.https.HttpsError("unknown", error.message, error);
+          }
         })
         .catch((error) => {
           throw new functions.https.HttpsError("unknown", error.message, error);
         });
     }
+
     data.id = data.codigoSala;
-    let horario;
-    let hora = dados.hora.indexOf("_") === -1 ? dados.hora : dados.hora.split("_")[0];
-    if (hora >= 12 && hora <= 17) {
-      horario = "Tarde";
-    } else if (hora >= 18 && hora <= 23) {
-      horario = "Noite";
-    } else if (hora >= 5 && hora <= 11) {
-      horario = "Manha";
-    } else {
-      throw new functions.https.HttpsError(
-        "invalid-argument",
-        "Você deve passar um horário válido"
-      );
-    }
-    return admin
-      .auth()
-      .getUserByEmail(data.professor)
-      .then(async (user) => {
-        dados.professor = [{
+    getFormatedTime(dados);
+
+    try {
+      // Get the user by email
+      const user = await admin.auth().getUserByEmail(data.professor);
+
+      // Set the professor's name and email in the data object
+      dados.professor = [
+        {
           nome: user.displayName,
           email: user.email
-        }];
-        dados.timestamp = admin.firestore.Timestamp.now();
-        return admin
-          .database()
-          .ref(`sistemaEscolar/usuarios/${user.uid}/professor/turmas/${data.codigoSala}`)
-          .set(true)
-          .then(() => {
-            return admin
-              .database()
-              .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
-              .once("value")
-              .then((snapshot) => {
-                if (snapshot.exists() === false) {
-                  return admin
-                    .database()
-                    .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
-                    .set(dados)
-                    .then(() => {
-                      admin
-                        .database()
-                        .ref("sistemaEscolar/numeros/turmasCadastradas")
-                        .transaction((currentValue) => {
-                          return (currentValue || 0) + 1;
-                        })
-                        .catch((error) => {
-                          throw new functions.https.HttpsError("unknown", error.message, error);
-                        });
-                      return admin
-                        .database()
-                        .ref("sistemaEscolar/registroGeral")
-                        .push({
-                          operacao: "Cadastro de Turma",
-                          timestamp: admin.firestore.Timestamp.now(),
-                          userCreator: context.auth.uid,
-                          dados: dados
-                        })
-                        .then(() => {
-                          return {
-                            answer: "Turma cadastrada com sucesso."
-                          };
-                        })
-                        .catch((error) => {
-                          throw new functions.https.HttpsError("unknown", error.message, error);
-                        });
-                    })
-                    .catch((error) => {
-                      throw new functions.https.HttpsError(error.code, error.message, error);
-                    });
-                }
-                throw new functions.https.HttpsError(
-                  "already-exists",
-                  "Uma turma com o mesmo código já foi criada."
-                );
-              });
-          })
-          .catch((error) => {
-            throw new functions.https.HttpsError("unknown", error.message, error);
-          });
-      })
-      .catch((error) => {
-        throw new functions.https.HttpsError("unknown", error.message, error);
+        }
+      ];
+
+      // Set a flag to indicate that the professor is associated with this classroom
+      await admin
+        .database()
+        .ref(`sistemaEscolar/usuarios/${user.uid}/professor/turmas/${data.codigoSala}`)
+        .set(true);
+
+      // Check if the classroom already exists
+      const snapshot = await admin
+        .database()
+        .ref(`sistemaEscolar/turmas/${data.codigoSala}/`)
+        .once("value");
+      if (snapshot.exists()) {
+        throw new functions.https.HttpsError(
+          "already-exists",
+          "Uma turma com o mesmo código já foi criada."
+        );
+      }
+
+      // Create the classroom
+      await admin.database().ref(`sistemaEscolar/turmas/${data.codigoSala}/`).set(dados);
+
+      // Increment the number of registered classrooms
+      await admin
+        .database()
+        .ref("sistemaEscolar/numeros/turmasCadastradas")
+        .transaction((currentValue) => {
+          return (currentValue || 0) + 1;
+        });
+
+      // Add a record of the classroom creation to the log
+      await admin.database().ref("sistemaEscolar/registroGeral").push({
+        operacao: "Cadastro de Turma",
+        timestamp: admin.firestore.Timestamp.now(),
+        userCreator: context.auth.uid,
+        dados: dados
       });
+
+      // Return a success message
+      return {
+        answer: "Turma cadastrada com sucesso."
+      };
+    } catch (error) {
+      throw new functions.https.HttpsError(error.code, error.message, error);
+    }
   }
   throw new functions.https.HttpsError(
     "permission-denied",
@@ -675,14 +591,20 @@ exports.cadastraProf = functions.https.onCall(async (data, context) => {
         cc: dadosEscola.emailEscola || null,
         message: {
           subject: `${dadosEscola.nomeEscola}`,
-          text: `Olá ${dadosProfessor.nomeProfessor.split(" ")[0]
-            }, você foi corretamente cadastrado(a) em nosso sistema e está pronto(a) para iniciar essa jornada conosco. Sistemas GrupoProX.`,
-          html: `<h3>Olá ${dadosProfessor.nomeProfessor.split(" ")[0]
-            }!</h3><p>Você está matriculado(a) no nº de matrícula <b>${dadosProfessor.matriculaProfessor
-            }</b>, e está pronto(a) para iniciar os estudos conosco. Use seu e-mail e senha cadastrados para acessar o sistema. Só lembrando, sua senha é: <b>${dadosProfessor.senhaProfessor
-            }</b>. Fique atento aos e-mails, pois sua escola pode utilizar este canal para comunicação com você.</p><p>Em caso de dificuldades <b>entre em contato com a escola para maiores informações</b>.</p><p><b>Dados de contato da escola:</b><br>Telefone: ${dadosEscola.telefoneEscola
-            }<br>E-mail: ${dadosEscola.emailEscola}<br>Endereço: ${dadosEscola.enderecoEscola
-            }</p><p>Sistemas GrupoProX.</p>`
+          text: `Olá ${
+            dadosProfessor.nomeProfessor.split(" ")[0]
+          }, você foi corretamente cadastrado(a) em nosso sistema e está pronto(a) para iniciar essa jornada conosco. Sistemas GrupoProX.`,
+          html: `<h3>Olá ${
+            dadosProfessor.nomeProfessor.split(" ")[0]
+          }!</h3><p>Você está matriculado(a) no nº de matrícula <b>${
+            dadosProfessor.matriculaProfessor
+          }</b>, e está pronto(a) para iniciar os estudos conosco. Use seu e-mail e senha cadastrados para acessar o sistema. Só lembrando, sua senha é: <b>${
+            dadosProfessor.senhaProfessor
+          }</b>. Fique atento aos e-mails, pois sua escola pode utilizar este canal para comunicação com você.</p><p>Em caso de dificuldades <b>entre em contato com a escola para maiores informações</b>.</p><p><b>Dados de contato da escola:</b><br>Telefone: ${
+            dadosEscola.telefoneEscola
+          }<br>E-mail: ${dadosEscola.emailEscola}<br>Endereço: ${
+            dadosEscola.enderecoEscola
+          }</p><p>Sistemas GrupoProX.</p>`
         }
       };
 
@@ -723,7 +645,8 @@ exports.cadastraProf = functions.https.onCall(async (data, context) => {
           console.log("Queued email for delivery to " + dadosProfessor.emailProfessor);
 
           return {
-            answer: "Professor cadastrado na matrícula " +
+            answer:
+              "Professor cadastrado na matrícula " +
               dadosProfessor.matriculaProfessor +
               " com sucesso! Os e-mails foram disparados.",
             codContrato: codContrato
@@ -909,12 +832,16 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
         cc: dadosAluno.emailResponsavelPedagogico || null,
         message: {
           subject: `${dadosEscola.nomeEscola}`,
-          text: `Olá ${dadosAluno.nomeAluno.split(" ")[0]
-            }, sua pré matrícula foi cadastrada. Sistemas GrupoProX.`,
-          html: `<h3>Olá ${dadosAluno.nomeAluno.split(" ")[0]
-            }!</h3><p>Sua Pré-Matrícula foi cadastrada com sucesso. Fique atento aos e-mails. Nós poderemos utilizar este meio para entrar em contato e passar informações importantes.</p><p>Em caso de dúvidas ou dificuldades <b>entre em contato com a escola para maiores informações</b>.</p><p><b>Dados de contato da escola:</b><br>Telefone: ${dadosEscola.telefoneEscola
-            }<br>E-mail: ${dadosEscola.emailEscola}<br>Endereço: ${dadosEscola.enderecoEscola
-            }</p><p>Sistemas GrupoProX.</p>`
+          text: `Olá ${
+            dadosAluno.nomeAluno.split(" ")[0]
+          }, sua pré matrícula foi cadastrada. Sistemas GrupoProX.`,
+          html: `<h3>Olá ${
+            dadosAluno.nomeAluno.split(" ")[0]
+          }!</h3><p>Sua Pré-Matrícula foi cadastrada com sucesso. Fique atento aos e-mails. Nós poderemos utilizar este meio para entrar em contato e passar informações importantes.</p><p>Em caso de dúvidas ou dificuldades <b>entre em contato com a escola para maiores informações</b>.</p><p><b>Dados de contato da escola:</b><br>Telefone: ${
+            dadosEscola.telefoneEscola
+          }<br>E-mail: ${dadosEscola.emailEscola}<br>Endereço: ${
+            dadosEscola.enderecoEscola
+          }</p><p>Sistemas GrupoProX.</p>`
         }
       };
 
@@ -928,7 +855,8 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
             .then(() => {
               console.log("Queued email for delivery to " + dadosAluno.emailAluno);
               return {
-                answer: "Pré-matrícula enviada com sucesso! Um e-mail será enviado para o aluno, informando sobre este cadastro."
+                answer:
+                  "Pré-matrícula enviada com sucesso! Um e-mail será enviado para o aluno, informando sobre este cadastro."
               };
             })
             .catch((error) => {
@@ -949,9 +877,9 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
     let ultimaMatricula = (
       await admin.database().ref("sistemaEscolar/ultimaMatricula").once("value")
     ).val();
-    dadosAluno.matriculaAluno = !dadosAluno.matriculaAluno ?
-      formataNumMatricula(String(Number(ultimaMatricula) + 1)) :
-      dadosAluno.matriculaAluno;
+    dadosAluno.matriculaAluno = !dadosAluno.matriculaAluno
+      ? formataNumMatricula(String(Number(ultimaMatricula) + 1))
+      : dadosAluno.matriculaAluno;
     let firestoreRef = admin.firestore().collection("mail");
     let infoEscola = await admin
       .database()
@@ -963,14 +891,20 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
       cc: dadosAluno.emailResponsavelPedagogico || null,
       message: {
         subject: `${dadosEscola.nomeEscola}`,
-        text: `Olá ${dadosAluno.nomeAluno.split(" ")[0]
-          }, você foi corretamente cadastrado(a) em nosso sistema e está pronto(a) para iniciar essa jornada conosco. Sistemas GrupoProX.`,
-        html: `<h3>Olá ${dadosAluno.nomeAluno.split(" ")[0]
-          }!</h3><p>Você está matriculado(a) no nº de matrícula <b>${dadosAluno.matriculaAluno
-          }</b>, e está pronto(a) para iniciar os estudos conosco. Use seu e-mail e senha cadastrados para acessar o sistema. Só lembrando, sua senha é: <b>${dadosAluno.senhaAluno
-          }</b>. Fique atento aos e-mails, pois sua escola pode utilizar este canal para comunicação com você.</p><p>Em caso de dificuldades <b>entre em contato com a escola para maiores informações</b>.</p><p><b>Dados de contato da escola:</b><br>Telefone: ${dadosEscola.telefoneEscola
-          }<br>E-mail: ${dadosEscola.emailEscola}<br>Endereço: ${dadosEscola.enderecoEscola
-          }</p><p>Sistemas GrupoProX.</p>`
+        text: `Olá ${
+          dadosAluno.nomeAluno.split(" ")[0]
+        }, você foi corretamente cadastrado(a) em nosso sistema e está pronto(a) para iniciar essa jornada conosco. Sistemas GrupoProX.`,
+        html: `<h3>Olá ${
+          dadosAluno.nomeAluno.split(" ")[0]
+        }!</h3><p>Você está matriculado(a) no nº de matrícula <b>${
+          dadosAluno.matriculaAluno
+        }</b>, e está pronto(a) para iniciar os estudos conosco. Use seu e-mail e senha cadastrados para acessar o sistema. Só lembrando, sua senha é: <b>${
+          dadosAluno.senhaAluno
+        }</b>. Fique atento aos e-mails, pois sua escola pode utilizar este canal para comunicação com você.</p><p>Em caso de dificuldades <b>entre em contato com a escola para maiores informações</b>.</p><p><b>Dados de contato da escola:</b><br>Telefone: ${
+          dadosEscola.telefoneEscola
+        }<br>E-mail: ${dadosEscola.emailEscola}<br>Endereço: ${
+          dadosEscola.enderecoEscola
+        }</p><p>Sistemas GrupoProX.</p>`
       }
     };
     dadosAluno.userCreator = context.auth.uid;
@@ -1026,7 +960,7 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
                             .ref("sistemaEscolar/preMatriculas")
                             .child(preMatriculaKey)
                             .remove()
-                            .then(() => { })
+                            .then(() => {})
                             .catch((error) => {
                               functions.logger.log(error);
                             });
@@ -1064,7 +998,8 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
                           .then(() => {
                             console.log("Queued email for delivery to " + dadosAluno.emailAluno);
                             return {
-                              answer: "Aluno cadastrado na matrícula " +
+                              answer:
+                                "Aluno cadastrado na matrícula " +
                                 dadosAluno.matriculaAluno +
                                 " com sucesso! Os e-mails foram disparados.",
                               codContrato: codContrato
@@ -1200,7 +1135,7 @@ exports.transfereAlunos = functions.https.onCall(async (data, context) => {
                                               operacao: "Transferência de alunos",
                                               userCreator: context.auth.uid
                                             })
-                                            .then(() => { })
+                                            .then(() => {})
                                             .catch((error) => {
                                               throw new functions.https.HttpsError(
                                                 "unknown",
@@ -1398,7 +1333,7 @@ exports.ativaDesativaAlunos = functions.https.onCall(async (data, context) => {
                                       .database()
                                       .ref(`sistemaEscolar/alunos/${matricula}/turmaAluno`)
                                       .set(turma)
-                                      .then(() => { })
+                                      .then(() => {})
                                       .catch((error) => {
                                         throw new functions.https.HttpsError(
                                           "unknown",
@@ -1505,7 +1440,7 @@ exports.ativaDesativaAlunos = functions.https.onCall(async (data, context) => {
                                     timestamp: timestamp,
                                     operacao: "Desativação de aluno"
                                   })
-                                  .then(() => { })
+                                  .then(() => {})
                                   .catch((error) => {
                                     throw new functions.https.HttpsError(
                                       "unknown",
@@ -1594,7 +1529,7 @@ exports.lancarNotas = functions.https.onCall(async (data, context) => {
                   userCreator: context.auth.uid,
                   dados: dados
                 })
-                .then(() => { })
+                .then(() => {})
                 .catch((error) => {
                   throw new functions.https.HttpsError("unknown", error.message, error);
                 });
@@ -1608,7 +1543,8 @@ exports.lancarNotas = functions.https.onCall(async (data, context) => {
     return lancar()
       .then(() => {
         return {
-          answer: "As notas lançadas com sucesso. Aguarde um momento até que o sistema atualize as notas automaticamente."
+          answer:
+            "As notas lançadas com sucesso. Aguarde um momento até que o sistema atualize as notas automaticamente."
         };
       })
       .catch((error) => {
@@ -1719,14 +1655,13 @@ exports.fechaTurma = functions.https.onCall(async (data, context) => {
     let alunosRef = admin.database().ref("sistemaEscolar/alunos/");
     let chave = alunosRef.push().key;
     try {
-      const dadosTurma = await turmaRef
-        .once("value");
+      const dadosTurma = await turmaRef.once("value");
       async function sequenciaDeFechamento(dadosDaTurma) {
         delete dadosDaTurma.historicoEscolar;
         turmaRef
           .child("status/turma")
           .set("fechada")
-          .then(() => { })
+          .then(() => {})
           .catch((error) => {
             throw new Error(error.message);
           });
@@ -1741,7 +1676,7 @@ exports.fechaTurma = functions.https.onCall(async (data, context) => {
             codTurma: dadosDaTurma.codigoSala,
             aulaEvento: aulaEvento
           })
-          .then(() => { })
+          .then(() => {})
           .catch((error) => {
             throw new Error(error.message);
           });
@@ -1749,7 +1684,7 @@ exports.fechaTurma = functions.https.onCall(async (data, context) => {
         turmaRef
           .child("frequencia")
           .remove()
-          .then(() => { })
+          .then(() => {})
           .catch((error) => {
             throw new Error(error.message);
           });
@@ -1775,7 +1710,7 @@ exports.fechaTurma = functions.https.onCall(async (data, context) => {
                 turma: dadosDaTurma.codigoSala,
                 aulaEvento: aulaEvento
               })
-              .then(() => { })
+              .then(() => {})
               .catch((error) => {
                 throw new Error(error.message);
               });
@@ -1784,7 +1719,7 @@ exports.fechaTurma = functions.https.onCall(async (data, context) => {
               .set({
                 nome: infoAluno.nome
               })
-              .then(() => { })
+              .then(() => {})
               .catch((error) => {
                 throw new Error(error.message);
               });
@@ -1801,7 +1736,7 @@ exports.fechaTurma = functions.https.onCall(async (data, context) => {
               codTurma: dadosDaTurma.codigoSala
             }
           })
-          .then(() => { })
+          .then(() => {})
           .catch((error) => {
             throw new functions.https.HttpsError("unknown", error.message, error);
           });
@@ -1886,10 +1821,10 @@ exports.aberturaChamados = functions.database
             </p>
             <p> 
                 <b>Data e Hora de Abertura: </b> ${convertTimestamp(
-          chamado.timestamp
-        ).toLocaleDateString("pt-br", {
-          timeZone: "America/Sao_Paulo"
-        })} ás ${convertTimestamp(chamado.timestamp).toLocaleTimeString("pt-BR", {
+                  chamado.timestamp
+                ).toLocaleDateString("pt-br", {
+                  timeZone: "America/Sao_Paulo"
+                })} ás ${convertTimestamp(chamado.timestamp).toLocaleTimeString("pt-BR", {
           timeZone: "America/Sao_Paulo"
         })}
             </p>
@@ -2076,9 +2011,11 @@ exports.systemUpdate = functions.pubsub
       message: {
         subject: "Job de domingo realizado",
         text: "Veja o log do job de domingo",
-        html: `<h3>Olá!</h3><p>O Job de systemUpdate do Sistema Escolar foi executado.</p><p>Ano base: ${now.getFullYear()}</p><p> Timestamp: ${context.timestamp
-          }</p><p> EventId: ${context.eventId}</p><p> EventType: ${context.eventType
-          }</p><p>Sistemas ProjetoX.</p>`
+        html: `<h3>Olá!</h3><p>O Job de systemUpdate do Sistema Escolar foi executado.</p><p>Ano base: ${now.getFullYear()}</p><p> Timestamp: ${
+          context.timestamp
+        }</p><p> EventId: ${context.eventId}</p><p> EventType: ${
+          context.eventType
+        }</p><p>Sistemas ProjetoX.</p>`
       }
     };
 
@@ -2148,11 +2085,15 @@ exports.dailyUpdate = functions.pubsub
           message: {
             subject: "Job diário realizado",
             text: "Veja o log do job diário",
-            html: `<h3>Olá!</h3><p>O Job de dailyUpdate do Sistema Escolar foi executado.</p><p> Alunos: ${result.students
-              }</p><p> Turmas: ${result.classes}</p><p> Alunos Desativados: ${result.disabledStudents
-              }</p><p>Ano base: ${now.getFullYear()}</p><p> Timestamp: ${context.timestamp
-              }</p><p> EventId: ${context.eventId}</p><p> EventType: ${context.eventType
-              }</p><p>Sistemas ProjetoX.</p>`
+            html: `<h3>Olá!</h3><p>O Job de dailyUpdate do Sistema Escolar foi executado.</p><p> Alunos: ${
+              result.students
+            }</p><p> Turmas: ${result.classes}</p><p> Alunos Desativados: ${
+              result.disabledStudents
+            }</p><p>Ano base: ${now.getFullYear()}</p><p> Timestamp: ${
+              context.timestamp
+            }</p><p> EventId: ${context.eventId}</p><p> EventType: ${
+              context.eventType
+            }</p><p>Sistemas ProjetoX.</p>`
           }
         };
 
@@ -2172,10 +2113,13 @@ exports.dailyUpdate = functions.pubsub
           message: {
             subject: "Job diário falhou",
             text: "Veja o log do job diário",
-            html: `<h3>Olá!</h3><p>O Job de dailyUpdate do Sistema Escolar foi executado, porém falhou.</p><p>Error message: ${error.message
-              }</p><p>Ano base: ${now.getFullYear()}</p><p> Timestamp: ${context.timestamp
-              }</p><p> EventId: ${context.eventId}</p><p> EventType: ${context.eventType
-              }</p><p>Sistemas ProjetoX.</p>`
+            html: `<h3>Olá!</h3><p>O Job de dailyUpdate do Sistema Escolar foi executado, porém falhou.</p><p>Error message: ${
+              error.message
+            }</p><p>Ano base: ${now.getFullYear()}</p><p> Timestamp: ${
+              context.timestamp
+            }</p><p> EventId: ${context.eventId}</p><p> EventType: ${
+              context.eventType
+            }</p><p>Sistemas ProjetoX.</p>`
           }
         };
 
@@ -2252,9 +2196,11 @@ exports.newYear = functions.pubsub
       message: {
         subject: "Job anual realizado",
         text: "Veja o log do job anual",
-        html: `<h3>Olá!</h3><p>O Job de newYear do Sistema Escolar foi executado.</p><p>Ano base: ${now.getFullYear()}</p><p> Timestamp: ${context.timestamp
-          }</p><p> EventId: ${context.eventId}</p><p> EventType: ${context.eventType
-          }</p><p>Sistemas ProjetoX.</p>`
+        html: `<h3>Olá!</h3><p>O Job de newYear do Sistema Escolar foi executado.</p><p>Ano base: ${now.getFullYear()}</p><p> Timestamp: ${
+          context.timestamp
+        }</p><p> EventId: ${context.eventId}</p><p> EventType: ${
+          context.eventType
+        }</p><p>Sistemas ProjetoX.</p>`
       }
     };
 
@@ -2292,9 +2238,9 @@ exports.geraBoletos = functions.https.onCall(async (data) => {
     let dadosEscola = infoEscola.val();
     console.log(dadosEscola);
     let dadosAluno = await alunoRef.once("value");
-    dadosAluno = dadosAluno.exists() ?
-      dadosAluno :
-      await alunosDesativadosRef.child(matricula + "/dadosAluno").once("value");
+    dadosAluno = dadosAluno.exists()
+      ? dadosAluno
+      : await alunosDesativadosRef.child(matricula + "/dadosAluno").once("value");
     let aluno = dadosAluno.val();
     let contratos = aluno.contratos;
     let data = dadosEscola.contratos[codContrato].contratoConfigurado;
@@ -2310,8 +2256,9 @@ exports.geraBoletos = functions.https.onCall(async (data) => {
     console.log(timestamp);
     let now = new Date(timestamp._seconds * 1000);
     console.log(now);
-    let dataProcessamento = `${Number(now.getDate()) <= 9 ? "0" + now.getDate() : now.getDate()}/${Number(now.getMonth()) + 1 <= 9 ? "0" + (Number(now.getMonth()) + 1) : now.getMonth()
-      }/${now.getFullYear()}`;
+    let dataProcessamento = `${Number(now.getDate()) <= 9 ? "0" + now.getDate() : now.getDate()}/${
+      Number(now.getMonth()) + 1 <= 9 ? "0" + (Number(now.getMonth()) + 1) : now.getMonth()
+    }/${now.getFullYear()}`;
 
     for (const key in docsSistema) {
       if (Object.hasOwnProperty.call(docsSistema, key)) {
@@ -2446,7 +2393,8 @@ exports.geraBoletos = functions.https.onCall(async (data) => {
           await addParcela(
             parcela + 1,
             data.numeroParcelas,
-            `${diaVencimento <= 9 ? "0" + diaVencimento : diaVencimento}/${mesVencimento <= 9 ? "0" + mesVencimento : mesVencimento
+            `${diaVencimento <= 9 ? "0" + diaVencimento : diaVencimento}/${
+              mesVencimento <= 9 ? "0" + mesVencimento : mesVencimento
             }/${anoVencimento}`,
             numDoc,
             valorParcela,
@@ -2553,8 +2501,9 @@ exports.escutaHistoricoBoletos = functions.database
             .child(histKey)
             .child("comments")
             .push({
-              text: `(Comentário automático do sistema) O usuário ${user.displayName} (${user.email
-                }) modificou o status deste documento para "${billetStatus[hist.status]}".`,
+              text: `(Comentário automático do sistema) O usuário ${user.displayName} (${
+                user.email
+              }) modificou o status deste documento para "${billetStatus[hist.status]}".`,
               timestamp: context.timestamp
             });
           if (hist.paidValue !== undefined && hist.paymentDay !== undefined) {
@@ -2596,9 +2545,11 @@ exports.escutaHistoricoBoletos = functions.database
             .child(histKey)
             .child("comments")
             .push({
-              text: `(Comentário automático do sistema) O usuário ${user.displayName} (${user.email
-                }) deseja modificar o status deste documento para "${billetStatus[hist.status]
-                }" e necessita de aprovação.`,
+              text: `(Comentário automático do sistema) O usuário ${user.displayName} (${
+                user.email
+              }) deseja modificar o status deste documento para "${
+                billetStatus[hist.status]
+              }" e necessita de aprovação.`,
               timestamp: context.timestamp
             });
           await admin.database().ref("sistemaEscolar/billetsNotifications").push({
@@ -2698,14 +2649,9 @@ exports.lancaFaltas = functions.https.onCall(async (data) => {
       for (const i in studentsIds) {
         if (Object.hasOwnProperty.call(studentsIds, i)) {
           const id = studentsIds[i];
-          await classRef
-            .child("alunos")
-            .child(id)
-            .child("frequencia")
-            .child(dateStr)
-            .set({
-              turma: classId
-            });
+          await classRef.child("alunos").child(id).child("frequencia").child(dateStr).set({
+            turma: classId
+          });
         }
       }
 
@@ -2770,6 +2716,19 @@ exports.escutaFollowUp = functions.database
     });
   });
 
+function getFormatedTime(dados) {
+  let horario;
+  let hora = dados.hora.indexOf("_") === -1 ? dados.hora : dados.hora.split("_")[0];
+  if (hora >= 12 && hora <= 17) {
+    horario = "Tarde";
+  } else if (hora >= 18 && hora <= 23) {
+    horario = "Noite";
+  } else if (hora >= 5 && hora <= 11) {
+    horario = "Manha";
+  } else {
+    throw new functions.https.HttpsError("invalid-argument", "Você deve passar um horário válido");
+  }
+}
 // exports.adicionaFotoAluno = functions.storage.object().onFinalize(async (object) => {
 //     const fileBucket = object.bucket; // The Storage bucket that contains the file.
 //     const filePath = object.name; // File path in the bucket.

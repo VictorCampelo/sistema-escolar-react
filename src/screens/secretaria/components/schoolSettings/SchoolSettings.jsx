@@ -13,6 +13,7 @@ import BasicSchoolData from "./components/BasicSchoolData";
 import DaysCodeSet from "./components/DaysCodesSet";
 import SchoolBooks from "./components/SchoolBooks";
 import SchoolCourses from "./components/SchoolCourses";
+import SchoolHeadquarters from "./components/schoolHeadQuarters";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -97,6 +98,23 @@ const SchoolSettings = () => {
         <Accordion expanded={expanded === "panel4"} onChange={handleChange("panel4")}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
+            aria-controls="panel3bh-content"
+            id="panel3bh-header"
+          >
+            <Typography className={classes.heading}>Sedes Cadastradas</Typography>
+            <Typography className={classes.secondaryHeading}>
+              Sedes da rede escolar
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <SchoolHeadquarters />
+          </AccordionDetails>
+
+        </Accordion>
+
+        <Accordion expanded={expanded === "panel5"} onChange={handleChange("panel5")}>
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
             aria-controls="panel4bh-content"
             id="panel4bh-header"
           >
@@ -110,7 +128,7 @@ const SchoolSettings = () => {
           </AccordionDetails>
         </Accordion>
 
-        <Accordion expanded={expanded === "panel5"} onChange={handleChange("panel5")}>
+        <Accordion expanded={expanded === "panel6"} onChange={handleChange("panel6")}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel5bh-content"

@@ -1,10 +1,4 @@
-import {
-  Button,
-  createTheme,
-  darken, Grid,
-  lighten,
-  makeStyles
-} from "@material-ui/core";
+import { Button, createTheme, darken, Grid, lighten, makeStyles } from "@material-ui/core";
 import { Refresh } from "@material-ui/icons";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Fragment, useEffect, useState } from "react";
@@ -98,16 +92,21 @@ const Classes = () => {
         } else {
           theClass.professor = "Professor(a) não encontrado(a)";
         }
+
         theClass.hora =
           theClass.hora.indexOf("_") === -1
             ? theClass.hora + ":00"
             : theClass.hora.split("_").join(":");
-        let timestamp = new Date(theClass.timestamp._seconds * 1000);
-        theClass.timestamp =
-          timestamp.toLocaleDateString() + " ás " + timestamp.toLocaleTimeString();
+
+        if (theClass.timestamp) {
+          let timestamp = new Date(theClass.timestamp._seconds * 1000);
+          theClass.timestamp =
+            timestamp.toLocaleDateString() + " ás " + timestamp.toLocaleTimeString();
+        }
 
         theClass.modalidade = theClass.modalidade === "ead" ? "Ensino a Distância" : "Presencial";
-        theClass.escola = theClass.escola === "abc" ? "abc" : "Presencial";
+        // theClass.escola = theClass.escola[0].name;
+        console.log(theClass);
 
         theClass.currentPeriod = theClass.hasOwnProperty("status")
           ? theClass.status.nomePeriodo
@@ -179,8 +178,7 @@ const Classes = () => {
         }}
         title={"Informações da turma"}
         saveButton={"Salvar"}
-        saveButtonDisabled={true}
-      >
+        saveButtonDisabled={true}>
         <ClassInfo classDataRows={classData} onClose={() => setOpen(false)} />
       </FullScreenDialog>
 
@@ -199,7 +197,7 @@ const Classes = () => {
                 { field: "horarioTerminoTurma", headerName: "Hr. Fim", width: 140 },
                 { field: "professor", headerName: "Prof. Referência", width: 220 },
                 { field: "modalidade", headerName: "Modalidade", width: 180 },
-                { field: "Escola", headerName: "Escola", width: 180 },
+                { field: "escola", headerName: "Escola", width: 180 },
                 { field: "status", headerName: "Status", width: 180 },
                 { field: "currentPeriod", headerName: "Período", width: 180 },
                 { field: "timestamp", headerName: "Data/Hora Criação", width: 200 }
@@ -226,8 +224,7 @@ const Classes = () => {
             color="primary"
             onClick={() => {
               getData();
-            }}
-          >
+            }}>
             <Refresh />
             Atualizar lista
           </Button>
@@ -238,8 +235,7 @@ const Classes = () => {
             color="secondary"
             onClick={() => {
               handleOpenPerformanceGrades();
-            }}
-          >
+            }}>
             Definir notas de desempenho
           </Button>
         </Grid>

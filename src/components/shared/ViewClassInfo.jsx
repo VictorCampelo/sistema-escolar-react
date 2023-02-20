@@ -803,7 +803,7 @@ const ClassInfo = ({ classDataRows, onClose }) => {
       getData();
       setLoader(false);
       if (error) {
-enqueueSnackbar(error.message, {
+        enqueueSnackbar(error.message, {
           title: "Erro",
           variant: "error",
           key: "0",
@@ -813,7 +813,7 @@ enqueueSnackbar(error.message, {
             </Button>
 
         });
-}
+      }
     }
   };
 
@@ -1080,13 +1080,13 @@ enqueueSnackbar(error.message, {
                     className={classes.avatar}
                     style={{
                       backgroundColor: `${classData.hasOwnProperty("status") && classData.status.turma === "aberta"
-                          ? "#38a800"
-                          : "red"
+                        ? "#38a800"
+                        : "red"
                         }`
                     }}>
                     {classData.hasOwnProperty("status") && classData.status.turma === "aberta" ?
                       <MeetingRoom />
-                     :
+                      :
                       <NoMeetingRoom />
                     }
                   </Avatar>
@@ -1223,7 +1223,7 @@ enqueueSnackbar(error.message, {
                 startIcon={
                   classData.hasOwnProperty("status") && classData.status.turma === "aberta" ?
                     <NoMeetingRoom />
-                   :
+                    :
                     <MeetingRoom />
 
                 }>
