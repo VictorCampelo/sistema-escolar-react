@@ -45,7 +45,7 @@ export default function Orders() {
       });
   }, []);
 
-  const classes = useStyles();
+  const S = useStyles();
   return (
     <React.Fragment>
       <Title>Aniversariantes do mês 🥳</Title>
@@ -74,7 +74,7 @@ export default function Orders() {
           )}
         </TableBody>
       </Table>
-      {/* <div className={classes.seeMore}>
+      {/* <div className={S.seeMore}>
         <Link color="primary" href="#" onClick={preventDefault}>
           See more orders
         </Link>

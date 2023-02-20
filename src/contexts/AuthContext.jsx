@@ -33,7 +33,7 @@ export function AuthContextProvider(props) {
   async function signInWithEmailAndPassword(userEmail, password) {
     const result = await auth.signInWithEmailAndPassword(userEmail, password);
 
-    if (result.user) {
+    if (!result.user) {
       throw new Error("Usuário não encontrado!");
     }
 
@@ -108,8 +108,7 @@ export function AuthContextProvider(props) {
           updatePhoto,
           updateName,
           sendEmailVerification
-        }}
-      >
+        }}>
         {props.children}
       </AuthContext.Provider>
     </>

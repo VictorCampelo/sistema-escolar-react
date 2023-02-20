@@ -16,7 +16,7 @@ const useStyles = makeStyles({
 });
 
 export default function Deposits() {
-  const classes = useStyles();
+  const S = useStyles();
 
   const [data, setData] = useState({});
 
@@ -39,19 +39,19 @@ export default function Deposits() {
           <Typography component="p" variant="h6">
             {data.students}
           </Typography>
-          <Typography color="textSecondary" className={classes.depositContext}>
+          <Typography color="textSecondary" className={S.depositContext}>
             alunos ativos
           </Typography>
           <Typography component="p" variant="h6">
             {data.classes}
           </Typography>
-          <Typography color="textSecondary" className={classes.depositContext}>
+          <Typography color="textSecondary" className={S.depositContext}>
             turmas criadas
           </Typography>
           <Typography component="p" variant="h6">
             {data.disabledStudents}
           </Typography>
-          <Typography color="textSecondary" className={classes.depositContext}>
+          <Typography color="textSecondary" className={S.depositContext}>
             alunos desativados
           </Typography>
         </div>

@@ -68,7 +68,7 @@ import CreateCalendar from "../shared/CreateCalendar";
 import useStyles from "../../hooks/useStyles";
 
 const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) => {
-  const classes = useStyles();
+  const S = useStyles();
 
   const initialView = localStorage.getItem("view") || "dayGridMonth";
 
@@ -583,7 +583,7 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
           </Menu>
         </Grid>
       </Grid>
-      {/* <div className={classes.navigationButtons}>
+      {/* <div className={S.navigationButtons}>
                 <Button variant='outlined' onClick={handlePreviousMonth}><ChevronLeft /></Button>
                 <Button variant='outlined' onClick={handleNextMonth}><ChevronRight /></Button>
 

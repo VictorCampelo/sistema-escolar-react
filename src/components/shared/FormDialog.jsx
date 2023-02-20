@@ -25,7 +25,7 @@ const styles = (theme) => ({
 
 function FormDialog(props) {
   const {
-    S,
+    classes: S,
     open,
     onClose,
     loading,
@@ -43,12 +43,11 @@ function FormDialog(props) {
       onClose={onClose}
       disableBackdropClick={loading}
       disableEscapeKeyDown={loading}
-      S={{
+      classes={{
         paper: S.dialogPaper,
         paperScrollPaper: S.dialogPaperScrollPaper
       }}
-      hideBackdrop={hideBackdrop ? hideBackdrop : false}
-    >
+      hideBackdrop={hideBackdrop ? hideBackdrop : false}>
       <div style={{ width: "100%" }}>
         <DialogTitle>
           {headline}
@@ -58,8 +57,7 @@ function FormDialog(props) {
               color="inherit"
               style={{ float: "right" }}
               onClick={handleClose}
-              aria-label="close"
-            >
+              aria-label="close">
               <Close />
             </IconButton>
           )}
@@ -79,7 +77,7 @@ function FormDialog(props) {
 }
 
 FormDialog.propTypes = {
-  S: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   headline: PropTypes.string.isRequired,

@@ -107,16 +107,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Dashboard() {
-  const classes = useStyles();
+  const S = useStyles();
   const [open, setOpen] = React.useState(true);
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const fixedHeightPaper = clsx(S.paper, S.fixedHeight);
 
   return (
-    <div className={classes.root}>
+    <div className={S.root}>
       <CssBaseline />
 
-      <main className={classes.content}>
-        <Container maxWidth="lg" className={classes.container}>
+      <main className={S.content}>
+        <Container maxWidth="lg" className={S.container}>
           <Grid container spacing={3}>
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
@@ -132,7 +132,7 @@ export default function Dashboard() {
             </Grid>
             {/* Calendar */}
             <Grid item xs={12}>
-              <Paper className={classes.paper}>
+              <Paper className={S.paper}>
                 <CalendarComponent />
               </Paper>
             </Grid>

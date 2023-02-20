@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AccountCenter = ({ onClose }) => {
-  const classes = useStyles();
+  const S = useStyles();
   const { signOut, updatePhoto, updateName, sendEmailVerification, passwordRecover } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [verifyingAccess, setVerifyingAccess] = useState(false);
@@ -217,15 +217,15 @@ const AccountCenter = ({ onClose }) => {
 
   return (
     <Fragment>
-      <Backdrop className={classes.backdrop} open={isLoading}>
+      <Backdrop className={S.backdrop} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <AdminCenter isOpen={openAdmin} onClose={() => setOpenAdmin(false)} />
       <Dialog open={open} onClose={onClose}>
         <Container component="main" maxWidth="xs">
-          <div className={classes.paper}>
+          <div className={S.paper}>
             <Avatar
-              className={classes.avatar}
+              className={S.avatar}
               onMouseOut={() => setPhotoBackdrop(false)}
               onMouseOver={() => setPhotoBackdrop(true)}>
               <IconButton onClick={() => document.getElementById("alteraFoto").click()}>
@@ -285,12 +285,12 @@ const AccountCenter = ({ onClose }) => {
               style={{ visibility: "hidden" }}
               onChange={(e) => handleChangePhoto(e.target.files)}
             />
-            <Button fullWidth className={classes.button} onClick={handlePasswordRecover}>
+            <Button fullWidth className={S.button} onClick={handlePasswordRecover}>
               Alterar minha senha
             </Button>
             <Button
               fullWidth
-              className={classes.button}
+              className={S.button}
               onClick={() => signOut()}
               color="secondary"
               variant="contained">
@@ -298,7 +298,7 @@ const AccountCenter = ({ onClose }) => {
             </Button>
             <Button
               fullWidth
-              className={classes.button}
+              className={S.button}
               variant="contained"
               color="primary"
               disabled={!isAdmin}
