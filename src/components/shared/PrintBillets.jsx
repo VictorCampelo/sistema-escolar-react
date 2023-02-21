@@ -1,6 +1,10 @@
 import {
-    Button, CircularProgress,
-    Dialog, DialogActions, DialogContent, DialogTitle
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { Fragment, useEffect, useState } from "react";
@@ -24,7 +28,7 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
     let docsBoletosRef = database.ref("sistemaEscolar/docsBoletos");
     let infoEscola = await database.ref("sistemaEscolar/infoEscola").once("value");
     let dadosEscola = infoEscola.val();
-    console.log(dadosEscola);
+
     let dadosAluno = await alunoRef.once("value");
     dadosAluno = dadosAluno.exists()
       ? dadosAluno
@@ -32,15 +36,15 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
     let aluno = dadosAluno.val();
     let contratos = aluno.contratos;
     let data = dadosEscola.contratos[codContrato].contratoConfigurado;
-    console.log(codContrato);
+
     let docsSistema = dadosEscola.docsBoletos;
     let qtdeDocs = 0;
 
     let timestampF = functions.httpsCallable("timestamp");
     let timestamp = await timestampF();
-    console.log(timestamp);
+
     let now = new Date(timestamp.data.timestamp._seconds * 1000);
-    console.log(now);
+
     for (const key in docsSistema) {
       if (Object.hasOwnProperty.call(docsSistema, key)) {
         qtdeDocs++;
@@ -63,8 +67,6 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
         .endAt(numerosDeDoc[numerosDeDoc.length - 1])
         .once("value");
       let docsDoContrato = docsFiltrados.val();
-      console.log(docsDoContrato);
-      console.log(numerosDeDoc);
 
       limpa();
 
@@ -152,7 +154,7 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
       let gera = functions.httpsCallable("geraPix");
       return gera({ valor: totalCobrado, descricao: `DOC${numeroDoc}` }).then(function (lineCode) {
         //divQr.src = lineCode.data;
-        console.log(lineCode);
+
         //const code = new QRCode(divQr, { text: lineCode.data, width: 100, height: 100 });
         // qrCodesArray.push({qrcode: lineCode.data, numeroDoc: numeroDoc})
 
@@ -497,7 +499,6 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
     }, 0.5);
   }, [studentId, contractId]);
 
-
   function printElem() {
     let elem = "livro";
     let mywindow = window.open("", "PRINT", "height=800,width=950");
@@ -571,7 +572,7 @@ const PrintBillets = ({ studentId, contractId, open, onClose }) => {
             </style>
         `);
     mywindow.document.write(
-      "</head><body > <div id=\"noprint\" className=\"actionButtons\" style=\"width: 100%; text-align: center; margin-top: 10px;\"><button onclick=\"window.print()\" style=\"align-self: center;\" id=\"noprint\">Imprimir/PDF</button></div>"
+      '</head><body > <div id="noprint" className="actionButtons" style="width: 100%; text-align: center; margin-top: 10px;"><button onclick="window.print()" style="align-self: center;" id="noprint">Imprimir/PDF</button></div>'
     );
     //mywindow.document.write('<h1>' + document.title  + '</h1>');
     mywindow.document.write(document.getElementById(elem).innerHTML);

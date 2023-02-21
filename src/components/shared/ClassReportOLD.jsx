@@ -212,10 +212,10 @@ export default function ClassReportOLD({ classCode, open, onClose }) {
     }
 
     rows = rows.sort((a, b) => {
-      console.log(a, b);
+
       return a[1].text.localeCompare(b[1].text);
     });
-    console.log(rows);
+
     for (const rowI in rows) {
       if (Object.hasOwnProperty.call(rows, rowI)) {
         let row = rows[rowI];

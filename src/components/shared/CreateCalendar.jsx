@@ -18,7 +18,7 @@ const CreateCalendar = (props) => {
 
   const handleCreateCalendar = async (e) => {
     e.preventDefault();
-    console.log(e);
+
     const formData = new FormData(e.target);
     const source = Object.fromEntries(formData.entries());
     await calendarRef.transaction(
@@ -81,9 +81,9 @@ const CreateCalendar = (props) => {
           </Typography>
           <form onSubmit={handleCreateCalendar} ref={form}>
             <Grid
-              justify="space-around" // Add it here :)
+              justifyContent="space-around" // Add it here :)
               container
-              spacing={24}
+              spacing={2}
               alignItems="center"
             >
               <Grid item>

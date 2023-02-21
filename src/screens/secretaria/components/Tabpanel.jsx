@@ -34,13 +34,8 @@ function TabPanel(props) {
       hidden={value !== index}
       id={`scrollable-force-tabpanel-${index}`}
       aria-labelledby={`scrollable-force-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {...other}>
+      {value === index && <Box p={3}>{children}</Box>}
     </div>
   );
 }
@@ -82,10 +77,9 @@ export default function SecretariaTabs() {
           onChange={handleChange}
           variant="scrollable"
           scrollButtons="on"
-          indicatorColor="standard"
+          indicatorColor="primary"
           textColor="primary"
-          aria-label="scrollable force tabs example"
-        >
+          aria-label="scrollable force tabs example">
           <Tab label="Dashboard" icon={<Home />} {...a11yProps(0)} />
           <Tab label="Alunos" icon={<PeopleAlt />} {...a11yProps(1)} />
           <Tab label="Turmas" icon={<GroupWork />} {...a11yProps(2)} />
@@ -96,6 +90,7 @@ export default function SecretariaTabs() {
           <Tab label="Conf. da Escola" icon={<Build />} {...a11yProps(7)} />
         </Tabs>
       </AppBar>
+
       <TabPanel value={value} index={0}>
         <Dashboard />
       </TabPanel>

@@ -88,7 +88,7 @@ const AccountCenter = ({ onClose }) => {
     try {
       setIsLoading(true);
       const photo = await usersRef.child(user.uid).child("profilePic").getDownloadURL();
-      console.log(photo);
+
       await updatePhoto(photo);
       enqueueSnackbar("Foto trocada. Atualize a página.", {
         title: "Sucesso",

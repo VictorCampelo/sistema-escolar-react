@@ -248,17 +248,17 @@ const StudentInfo = ({ studentInfo, teacherView = false }) => {
         setClassesCodes(classesArray);
         setClassCodeEnable(classesArray[0]);
       }
-      console.log(disabledStudent);
+
       let data = await classesRef.child(classCode).child("alunos").child(studentId).once("value");
       let studentData = !disabledStudent
         ? (await studentsRef.child(studentId).once("value")).val()
         : (await disabledStudentsRef.child(studentId + "/dadosAluno").once("value")).val();
 
-      console.log(studentData);
+
       studentData && setStudentData(studentData);
       data.exists() && setAcademicData(data.val());
       data.exists() && calculateGrade(data.val().notas);
-      console.log(data.val());
+
       // Filtering action buttons
       let actionButtons = [];
       if (teacherView) {

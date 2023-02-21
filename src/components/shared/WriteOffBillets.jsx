@@ -142,13 +142,13 @@ const WriteOffBillets = ({ docId }) => {
                   : setBilletHistory();
               }
             }
-            console.log(localDoc);
+
             const studentInfo = (await studentsRef.child(localDoc.matricula).once("value")).val();
             setStudentData(studentInfo);
             setPaidValue(localDoc.totalCobrado);
             const timestampFunc = functions.httpsCallable("timestamp");
             const result = await timestampFunc();
-            console.log(result);
+
             const timestamp = result.data.timestamp;
             const now = new Date(timestamp._seconds * 1000);
             let localDate = now.toLocaleDateString();
@@ -254,7 +254,7 @@ const WriteOffBillets = ({ docId }) => {
     });
 
     const dueDate = doc.vencimento.split("/").reverse().join("-");
-    console.log(`${dueDate} < ${paymentDay}`);
+
     if (dueDate < paymentDay) {
       // If the billet has passed the dueDate
       enqueueSnackbar("Boleto vencido.", {
@@ -377,7 +377,7 @@ const WriteOffBillets = ({ docId }) => {
   };
 
   const handleShowHistory = async () => {
-    console.log(billetHistory);
+
     enqueueSnackbar("O histórico está em desenvolvimento :)", {
       title: "Info",
       variant: "info",

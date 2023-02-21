@@ -92,18 +92,18 @@ const SeeEventPopover = ({
       api.refetchEvents();
       //const eventsSources = api.getEventSources();
       let rawSources = (await calendarRef.once("value")).val();
-      console.log(rawSources);
+
       let thisSource = rawSources.filter((eventSource) => eventSource.id === sourceId);
 
-      console.log(thisSource);
+
       rawSources = rawSources.filter((eventSource) => eventSource.id !== sourceId);
-      console.log(rawSources);
+
       let thisEvents = thisSource[0].events;
       let updatedEvents = thisEvents.filter((aEvent) => aEvent.id !== eventId);
-      console.log(updatedEvents);
+
       thisSource[0].events = updatedEvents;
       rawSources.push(thisSource[0]);
-      console.log(rawSources);
+
       await calendarRef.set(rawSources);
     } catch (error) {
       console.error(error);
@@ -144,7 +144,7 @@ const SeeEventPopover = ({
         }}
         style={{ maxWidth: "70vw" }}>
         <DialogTitle>
-          <Grid justifyContent="space-between" container spacing={24} alignItems="center">
+          <Grid justifyContent="space-between" container spacing={2} alignItems="center">
             <Grid item>
               {!isFromClassCode &&
                 <>

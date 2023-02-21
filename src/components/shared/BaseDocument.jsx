@@ -60,7 +60,7 @@ export default function BaseDocument({ open, onClose }) {
       let type = hash.split("?")[0].substring(1);
       let matriculas = hash.split("?")[1];
       let ids = hash.split("?")[2] || "";
-      console.log(type, matriculas, ids);
+
       if (type === "fichaCadastral") {
         geraFichaCadastral(matriculas);
         setDocType("Ficha Cadastral");
@@ -68,7 +68,7 @@ export default function BaseDocument({ open, onClose }) {
       if (type === "preMatricula") {
         // Neste caso os parametros recebidos no lugar da matrícula serão um código de pré-matricula
         geraFichaCadastral(matriculas, "preMatricula");
-        console.log("foi");
+
         tipoDocumento.innerText = "Ficha de Pré-matrícula";
       }
       if (type === "boletim") {
@@ -85,7 +85,7 @@ export default function BaseDocument({ open, onClose }) {
   }, []);
 
   async function calcularIdadePrecisa(dataNasc) {
-    console.log(dataNasc);
+
     let nascimento = dataNasc;
     nascimento = nascimento.split("-");
     let data = new Date();
@@ -212,13 +212,13 @@ export default function BaseDocument({ open, onClose }) {
       matriculas = matriculas.split(",");
       ids = ids.split(",");
 
-      console.log(matriculas, ids);
+
 
       nextMatricula.style.display = "block";
       previousMatricula.style.display = "block";
       nextId.style.display = "none";
       previousId.style.display = "none";
-      console.log(matriculas);
+
       gerador(matriculas[c], ids[c]);
     } else {
       nextMatricula.style.display = "none";
@@ -248,7 +248,7 @@ export default function BaseDocument({ open, onClose }) {
       let aluno = alunoInfo.val();
       let historico = aluno.historicoEscolar[id];
 
-      console.log(aluno);
+
 
       // Adiciona o semestre mais os livros
       let semestreLivros = historico.infoAluno.nomePeriodo + " - ";
@@ -266,7 +266,7 @@ export default function BaseDocument({ open, onClose }) {
         c1++;
       }
       adicionaEspacoCabeçalho("Nome: ", aluno.nomeAluno, "Matrícula:", aluno.matriculaAluno);
-      console.log(aluno.fotoAluno);
+
       imagemAluno.src = !aluno.fotoAluno ? null : aluno.fotoAluno;
       adicionaEspacoCabeçalho(
         "Turma:",
@@ -289,7 +289,7 @@ export default function BaseDocument({ open, onClose }) {
       let notas = [];
       let topicos = [];
       let soma = 0;
-      console.log(notasDesempenho);
+
       if (notasDesempenho !== undefined) {
         adicionaDadosTabela([true, "Notas de desempenho"]);
       }
@@ -421,7 +421,7 @@ export default function BaseDocument({ open, onClose }) {
       previousMatricula.style.display = "block";
       nextId.style.display = "none";
       previousId.style.display = "none";
-      console.log(matriculas);
+
       gerador(matriculas[c]);
     } else {
       nextMatricula.style.display = "none";
@@ -446,7 +446,7 @@ export default function BaseDocument({ open, onClose }) {
       let aluno = alunoInfo.val();
       let idade = await calcularIdadePrecisa(aluno.dataNascimentoAluno);
       let responsaveis = aluno.responsaveis;
-      console.log(responsaveis);
+
       let responsavel;
       let keyResp;
       for (const key in responsaveis) {
@@ -462,7 +462,7 @@ export default function BaseDocument({ open, onClose }) {
         responsavel = responsavel === undefined ? responsaveis[keyResp] : responsavel;
       }
 
-      console.log(aluno);
+
       let titulos = [
         [true, "Dados do Aluno"],
         [
@@ -510,7 +510,7 @@ export default function BaseDocument({ open, onClose }) {
       for (let i = 0; i < titulos.length; i++) {
         const titulo = titulos[i];
         const dado = dados[i];
-        console.log(titulo);
+
         adicionaDadosTabela(titulo, dado, i);
       }
     }

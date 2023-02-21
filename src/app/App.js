@@ -57,7 +57,7 @@ function App() {
         ];
       }
       localStorage.setItem("notifications", JSON.stringify(storedNotifications));
-      console.log(payload);
+
     })
     .catch((err) => console.log("failed: ", err));
 

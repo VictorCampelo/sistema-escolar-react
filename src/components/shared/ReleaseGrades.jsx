@@ -92,7 +92,7 @@ const ReleaseGrades = ({ open, onClose, classCode, studentsIds, refresh }) => {
         gradesArray.push({ key: key, value: value, readonly: key === "Desempenho" });
       }
     }
-    console.log(gradesArray);
+
     setGrades([...gradesArray]);
 
     // Getting students grade
@@ -128,7 +128,7 @@ const ReleaseGrades = ({ open, onClose, classCode, studentsIds, refresh }) => {
           }
         }
         setStudentGrades([...studentGradesArray]);
-        console.log(studentGradesArray);
+
         if (studentGradesArray.length !== gradesArray.length) {
           let tempGrade = [];
           for (const i in gradesArray) {
@@ -146,23 +146,23 @@ const ReleaseGrades = ({ open, onClose, classCode, studentsIds, refresh }) => {
               });
             }
           }
-          console.log(tempGrade);
+
           setStudentGrades([...tempGrade]);
         }
       } else {
         let tempGrade = [];
-        console.log(gradesArray);
+
         for (const i in gradesArray) {
           let key = gradesArray[i].key;
           if (Object.hasOwnProperty.call(gradesArray, i)) {
             tempGrade.push({ key: key, value: 0, readonly: key === "Desempenho" });
           }
         }
-        console.log(tempGrade);
+
         setStudentGrades([...tempGrade]);
       }
     }
-    console.log(studentGradesArray);
+
   };
 
   const handleSum = (localStudentGrades) => {
@@ -172,7 +172,7 @@ const ReleaseGrades = ({ open, onClose, classCode, studentsIds, refresh }) => {
         localStudentGrades.hasOwnProperty(i) &&
         Number(localStudentGrades[i].value) > Number(grades[i].value)
       ) {
-        console.log(localStudentGrades, grades);
+
         localStudentGrades[i].value = grades[i].value;
         setStudentGrades([...localStudentGrades]);
       }
@@ -180,7 +180,7 @@ const ReleaseGrades = ({ open, onClose, classCode, studentsIds, refresh }) => {
     });
 
     setSum(localSum);
-    console.log(studentsAvatars);
+
   };
 
   const handleAddGrade = (key = "", value = 0, readonly = false) => {
@@ -194,12 +194,12 @@ const ReleaseGrades = ({ open, onClose, classCode, studentsIds, refresh }) => {
     if (sum <= 100) {
 try {
         form.current.requestSubmit();
-        console.log(studentGrades);
+
         let localGrades = {};
         studentGrades.map((grade, i) => {
           localGrades[grade.key] = Number(grade.value);
         });
-        console.log(localGrades);
+
         for (const i in studentsIds) {
           if (Object.hasOwnProperty.call(studentsIds, i)) {
             const id = studentsIds[i];
@@ -263,7 +263,7 @@ enqueueSnackbar("O somatório das notas não pode ser maior que 100.", {
   };
 
   const handleChangePerformanceGrade = (e) => {
-    console.log(e.target.checked);
+
     if (e.target.checked) {
       handleAddGrade("Desempenho", performanceGradesSum, true);
     } else {
@@ -295,7 +295,7 @@ enqueueSnackbar("O somatório das notas não pode ser maior que 100.", {
             <TextField
               variant="outlined"
               onChange={(e) => {
-                console.log(localStudentGrades, localGrades, e.target.value);
+
 
                 localStudentGrades[i].value = e.target.value === "" ? 0 : e.target.value;
                 e.target.value = e.target.value === "" ? 0 : e.target.value;

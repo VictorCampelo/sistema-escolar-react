@@ -12,7 +12,7 @@ exports.verificadorDeAcesso = functions.https.onCall((data, context) => {
     let accessList = ["master", "professores", "adm", "secretaria"];
 
     let hasAccess = accessList.some((access) => {
-      console.log(context.auth.token[access]);
+
       if (context.auth.token[access] === true) {
         return true;
       }
@@ -118,7 +118,7 @@ exports.apagaContas = functions.https.onCall(async (data, context) => {
 });
 
 exports.deletaUsersAutomatico = functions.auth.user().onDelete((user) => {
-  console.log(user);
+
   admin
     .database()
     .ref(`sistemaEscolar/listaDeUsuarios/${user.uid}`)
@@ -129,7 +129,7 @@ exports.deletaUsersAutomatico = functions.auth.user().onDelete((user) => {
         .ref(`sistemaEscolar/usuarios/${user.uid}`)
         .remove()
         .then(() => {
-          console.log("ok deleted");
+
           return {
             ok: "user deleted"
           };
@@ -203,7 +203,7 @@ exports.modificaSenhaContaAluno = functions.database
           firestoreRef
             .add(emailContent)
             .then(() => {
-              console.log("Queued email for delivery to " + dadosAluno.val().emailAluno);
+
             })
             .catch((error) => {
               console.error(error);
@@ -331,7 +331,7 @@ exports.cadastroUser = functions.auth.user().onCreate(async (user) => {
       };
 
       await firestoreRef.add(emailContent);
-      console.log("Queued email for delivery to " + user.email);
+
     } catch (error) {
       console.error(error);
     }
@@ -484,7 +484,7 @@ exports.cadastraAniversarios = functions.database
   });
 
 exports.cadastraProf = functions.https.onCall(async (data, context) => {
-  console.log(context.auth.token);
+
 
   if (context.auth.token.master === true || context.auth.token.secretaria === true) {
     try {
@@ -567,7 +567,7 @@ exports.cadastraProf = functions.https.onCall(async (data, context) => {
 
           await firestoreRef.add(emailContent);
 
-          console.log("Queued email for delivery to " + dadosProfessor.emailProfessor);
+
 
           return {
             answer:
@@ -778,7 +778,7 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
           return firestoreRef
             .add(emailContent)
             .then(() => {
-              console.log("Queued email for delivery to " + dadosAluno.emailAluno);
+
               return {
                 answer:
                   "Pré-matrícula enviada com sucesso! Um e-mail será enviado para o aluno, informando sobre este cadastro."
@@ -921,7 +921,7 @@ exports.cadastraAluno = functions.https.onCall(async (data, context) => {
                         return firestoreRef
                           .add(emailContent)
                           .then(() => {
-                            console.log("Queued email for delivery to " + dadosAluno.emailAluno);
+
                             return {
                               answer:
                                 "Aluno cadastrado na matrícula " +
@@ -994,7 +994,7 @@ exports.transfereAlunos = functions.https.onCall(async (data, context) => {
             alunos[formataNumMatricula(matricula)] = alunosTurma[formataNumMatricula(matricula)];
           }
         }
-        console.log(alunos);
+
 
         return admin
           .database()
@@ -1218,7 +1218,7 @@ exports.ativaDesativaAlunos = functions.https.onCall(async (data, context) => {
               // eslint-disable-next-line no-loop-func
               .then((snapshot) => {
                 dadosAluno = snapshot.val();
-                console.log(dadosAluno);
+
 
                 admin
                   .database()
@@ -1325,7 +1325,7 @@ exports.ativaDesativaAlunos = functions.https.onCall(async (data, context) => {
               // eslint-disable-next-line no-loop-func
               .then((snapshot) => {
                 dadosAluno = snapshot.val();
-                console.log(dadosAluno);
+
                 turma = dadosAluno.turmaAluno;
                 admin
                   .database()
@@ -1563,7 +1563,7 @@ exports.aberturaTurma = functions.database
 
     // checking if the class status is "opened"
     if (classState === "aberta") {
-      console.log("aberto");
+
     }
   });
 
@@ -1760,7 +1760,7 @@ exports.aberturaChamados = functions.database
     };
 
     await firestoreRef.add(emailContent);
-    console.log("Email queued for delivery.");
+
   });
 
 exports.montaCalendarioGeral = functions.database
@@ -1892,9 +1892,9 @@ exports.geraPix = functions.https.onCall((data) => {
       dadosBasicos.tipoChavePix,
       dadosBasicos.cidadePix
     );
-    console.log(lineCode);
+
     const code = lineCode.generateQrcp();
-    console.log(code);
+
     const QR_CODE_SIZE = 400;
     return QRCode.toDataURL(code, {
       width: QR_CODE_SIZE,
@@ -1947,7 +1947,7 @@ exports.systemUpdate = functions.pubsub
     firestoreRef
       .add(emailContent)
       .then(() => {
-        console.log("Queued email for delivery");
+
       })
       .catch((error) => {
         console.error(error);
@@ -2025,7 +2025,7 @@ exports.dailyUpdate = functions.pubsub
         firestoreRef
           .add(emailContent)
           .then(() => {
-            console.log("Queued email for delivery");
+
           })
           .catch((error) => {
             console.error(error);
@@ -2051,7 +2051,7 @@ exports.dailyUpdate = functions.pubsub
         firestoreRef
           .add(emailContent)
           .then(() => {
-            console.log("Queued email for delivery");
+
           })
           .catch((error) => {
             console.error(error);
@@ -2132,7 +2132,7 @@ exports.newYear = functions.pubsub
     firestoreRef
       .add(emailContent)
       .then(() => {
-        console.log("Queued email for delivery");
+
       })
       .catch((error) => {
         console.error(error);
@@ -2161,7 +2161,7 @@ exports.geraBoletos = functions.https.onCall(async (data) => {
     let infoEscola = await admin.database().ref("sistemaEscolar/infoEscola").once("value");
     let docsSistemaVal = await admin.database().ref("sistemaEscolar/docsBoletos").once("value");
     let dadosEscola = infoEscola.val();
-    console.log(dadosEscola);
+
     let dadosAluno = await alunoRef.once("value");
     dadosAluno = dadosAluno.exists()
       ? dadosAluno
@@ -2172,15 +2172,15 @@ exports.geraBoletos = functions.https.onCall(async (data) => {
     let plano = dadosEscola.contratos[codContrato].planoOriginal;
     let mesInicio = Number(data["ano-mes"].split("-")[1]);
     let anoInicio = Number(data["ano-mes"].split("-")[0]);
-    console.log(codContrato);
+
     let docsSistema = docsSistemaVal.val();
     let qtdeDocs = 0;
     let numerosDeDoc;
 
     let timestamp = await admin.firestore.Timestamp.now();
-    console.log(timestamp);
+
     let now = new Date(timestamp._seconds * 1000);
-    console.log(now);
+
     let dataProcessamento = `${Number(now.getDate()) <= 9 ? "0" + now.getDate() : now.getDate()}/${
       Number(now.getMonth()) + 1 <= 9 ? "0" + (Number(now.getMonth()) + 1) : now.getMonth()
     }/${now.getFullYear()}`;
@@ -2292,7 +2292,7 @@ exports.geraBoletos = functions.https.onCall(async (data) => {
           }
           saldo =
             (parcela >= plano.quandoAplicar ? data.valorFinal : data.valorCurso) - somaParcelas;
-          console.log(saldo);
+
           mesParcela = mesInicio + parcela;
           if (mesInicio + parcela > 12) {
             mesParcela -= 12;
@@ -2337,10 +2337,10 @@ exports.geraBoletos = functions.https.onCall(async (data) => {
           .child("docsBoletos")
           .set(numerosDeDoc)
           .then(() => {
-            console.log("Docs Cadastrados");
+
           })
           .catch((error) => {
-            console.log("Erro", error.message);
+
           });
       }
     } catch (error) {
@@ -2362,14 +2362,14 @@ exports.geraBoletos = functions.https.onCall(async (data) => {
 exports.escutaBoletos = functions.database
   .ref("sistemaEscolar/docsBoletos/{docKey}")
   .onCreate((snapshot, context) => {
-    console.log(context.params);
-    console.log(snapshot.after);
-    console.log(context.timestamp);
+
+
+
     const docKey = context.params.docKey;
     const doc = snapshot.val();
     if (doc.status) {
       admin.database().ref("sistemaEscolar/docsBoletos").child(docKey).child("status").set(0);
-      console.log(`Doc ${doc.numeroDoc} key ${docKey}. Status setado para 0`);
+
     }
   });
 
@@ -2396,7 +2396,7 @@ exports.escutaHistoricoBoletos = functions.database
     const hist = snapshot.val();
     const userRequester = hist.userCreator;
 
-    console.log(hist);
+
 
     const start = async () => {
       if (hist.status) {
@@ -2499,7 +2499,7 @@ exports.escutaContratos = functions.database
     const setContract = async () => {
       const key = context.params.key;
       const studentId = snapshot.child("matricula").val();
-      console.log(studentId);
+
       await admin
         .database()
         .ref("sistemaEscolar/infoEscola/contratos")
@@ -2544,7 +2544,7 @@ exports.escutaContratos = functions.database
     };
 
     return setContract().then((result) => {
-      console.log("Deu certo.", result);
+
       return "Deu certo";
     });
   });
@@ -2636,7 +2636,7 @@ exports.escutaFollowUp = functions.database
     };
 
     return setContract().then((result) => {
-      console.log("Deu certo.", result);
+
       return "Deu certo";
     });
   });

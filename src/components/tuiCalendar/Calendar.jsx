@@ -14,11 +14,11 @@ const TuiCalendar = () => {
   // register templates
 
   useEffect(() => {
-    console.log(calendarRef.current);
+
   }, [calendarRef]);
 
   const handleSelect = (e) => {
-    console.log(e);
+
   };
 
   return (

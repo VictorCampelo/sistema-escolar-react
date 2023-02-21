@@ -50,7 +50,7 @@ const getToken = async (setTokenFound) => {
       setTokenFound(false);
     }
   } catch (error) {
-    console.log("An error occurred while retrieving token. ", error);
+    console.error("An error occurred while retrieving token. ", error);
   }
 
   return currentToken;

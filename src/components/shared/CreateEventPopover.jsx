@@ -43,7 +43,7 @@ const CreateEventPopover = ({
   handleOpenNewCalendarDialog,
   isFromClassCode
 }) => {
-  console.log(eventsSources);
+
 
   const S = useStyles();
 
@@ -92,7 +92,7 @@ const CreateEventPopover = ({
   useEffect(() => {
     if (calendarEl) handleFormChange("");
 
-    console.log(sourceSelected);
+
   }, [
     startDate,
     endDate,
@@ -110,7 +110,7 @@ const CreateEventPopover = ({
 
   const getApi = () => {
     const { current: calendarDom } = calendarEl;
-    console.log(calendarEl.current);
+
 
     return calendarDom ? calendarDom.getApi() : null;
   };
@@ -118,15 +118,15 @@ const CreateEventPopover = ({
   const handleRandomKey = async () => {
     const key = await getRandomKey();
     setEventId(key);
-    console.log(key);
+
   };
 
   const handleFormChange = (e) => {
-    console.log(sourceSelected);
+
     const API = getApi();
     try {
       const event = API.getEventById(eventId);
-      console.log(event);
+
       event.remove();
     } catch (error) {
       console.error(error);
@@ -134,17 +134,7 @@ const CreateEventPopover = ({
 
     let start = allDay ? startDate : startDate + "T" + startTime;
     let end = allDay ? endDate : endDate + "T" + endTime;
-    console.log({
-      id: eventId,
-      title: title,
-      start: start,
-      end: end,
-      daysOfWeek: days,
-      startRecur: repeat && start,
-      endRecur: repeat && (allDay ? endRecur : endRecur + "T" + endTime),
-      color: color,
-      textColor: textColor
-    });
+
     let event = {
       id: eventId,
       title: title,
@@ -182,7 +172,7 @@ const CreateEventPopover = ({
     } else {
       weekDays.splice(weekDays.indexOf(value), 1);
     }
-    console.log(weekDays);
+
     setDays(weekDays);
     handleFormChange("");
   };
@@ -195,7 +185,7 @@ const CreateEventPopover = ({
     const API = getApi();
     try {
       const event = API.getEventById(eventId);
-      console.log(event);
+
       event.remove();
     } catch (error) {
       console.error(error);
@@ -203,15 +193,7 @@ const CreateEventPopover = ({
 
     let start = allDay ? startDate : startDate + "T" + startTime;
     let end = allDay ? endDate : endDate + "T" + endTime;
-    console.log({
-      id: eventId,
-      title: title,
-      start: start,
-      end: end,
-      daysOfWeek: days,
-      startRecur: repeat && startDate,
-      endRecur: repeat && (endRecur !== "" ? endRecur + "T23:59" : endRecur)
-    });
+
     let event = {
       id: eventId,
       title: title,
@@ -228,7 +210,7 @@ const CreateEventPopover = ({
     }
 
     recurrenceEnd && setEndRecur("");
-    console.log(chosenSource);
+
     if (chosenSource.hasOwnProperty("events")) {
       chosenSource.events.push(event);
     } else {

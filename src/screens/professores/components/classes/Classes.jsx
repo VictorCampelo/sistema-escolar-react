@@ -129,12 +129,12 @@ const Classes = () => {
       required: false
     });
     setRows(rowsArray);
-    console.log(rowsArray);
+
   };
 
   const handleRowEdit = async (editedRow) => {
     setLoading(true);
-    console.log(editedRow);
+
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let rowIndex = rowsArray.findIndex((row) => row.id === editedRow.id);
     rowsArray[rowIndex][editedRow.field] = editedRow.value;
@@ -142,7 +142,7 @@ const Classes = () => {
   };
 
   const handleRowSelection = (selectedRows) => {
-    console.log(selectedRows);
+
     setSelectedRows(selectedRows);
   };
 
@@ -150,13 +150,13 @@ const Classes = () => {
     setLoading(true);
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let updatedRows = rowsArray.filter((row) => selectedRows.indexOf(row.id) === -1);
-    console.log(updatedRows);
+
   };
 
   const handleRowClick = (e) => {
-    console.log(e);
+
     setClassData(e.row);
-    console.log(e.row);
+
     setOpen(true);
   };
 
@@ -205,7 +205,7 @@ const Classes = () => {
               onSelectionModelChange={handleRowSelection}
               onRowClick={handleRowClick}
               getRowClassName={(params) => {
-                console.log(`super-app-theme--${params.getValue(params.id, "status")}`);
+
                 return `super-app-theme--${params.getValue(params.id, "status")}`;
               }}
             />

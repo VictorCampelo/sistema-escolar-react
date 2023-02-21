@@ -137,7 +137,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
         .child("contratos")
         .once("value");
     const contractsArray = snapshot.exists() ? snapshot.val() : [];
-    console.log(contractsArray);
+
     let systemContractsArray = [];
     contractsArray.map(async (contractId, i) => {
       let localContract = (await contractRef.child(contractId).once("value")).val();
@@ -145,10 +145,10 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
       setSystemContracts([...systemContractsArray]);
     });
 
-    console.log(contractsArray);
+
     setContracts([...contractsArray]);
 
-    console.log(systemContractsArray);
+
 
     const snap = await coursesRef.once("value");
     if (snap.exists()) {
@@ -174,7 +174,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
     let contractCode = sessionStorage.getItem("codContrato");
     let configuredContract = JSON.parse(sessionStorage.getItem("contratoConfigurado"));
     let originalPlan = JSON.parse(sessionStorage.getItem("planoOriginal"));
-    console.log(contractCode);
+
     if (contractCode && configuredContract && originalPlan) {
       contractRef
         .child(contractCode)
@@ -217,7 +217,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
         });
     } else {
       //setContractState(null);
-      console.log("test");
+
     }
   }, [newContract]);
 
@@ -246,7 +246,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
   const handleDeleteContract = async (i) => {
     if (!isDisabled) {
       try {
-        console.log(i);
+
         await confirm({
           variant: "danger",
           catchOnCancel: true,
@@ -323,7 +323,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
 
       setLoading(true);
       const result = await generateBillets(studentId, contractId);
-      console.log(result);
+
       setShowBillets(true);
       getData();
       enqueueSnackbar("Boletos gerados com sucesso.", {
@@ -374,7 +374,7 @@ const StudentContracts = ({ studentId, isOpen, onClose, isDisabled }) => {
 
   const ContractsCards = ({ contractsCopy }) => {
     useEffect(() => {
-      console.log(contractsCopy);
+
     }, [contractsCopy]);
 
     const BuiltCards = contractsCopy.map((contract, i) => {

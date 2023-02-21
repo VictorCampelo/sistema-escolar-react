@@ -72,7 +72,7 @@ export default function StudentFiles({ studentId, disabledStudent, preEnrollment
         setFilesKey(studentFilesKey);
         let filesArray = [];
         const res = await studentFilesRef.child(studentFilesKey).listAll();
-        console.log(res);
+
         res.items.forEach(async (item) => {
           let metadata = await item.getMetadata();
           filesArray.push({ name: item.name, fullPath: item.fullPath, metadata: metadata });
@@ -98,7 +98,7 @@ export default function StudentFiles({ studentId, disabledStudent, preEnrollment
         setFilesKey(studentFilesKey);
         let filesArray = [];
         const res = await studentFilesRef.child(studentFilesKey).listAll();
-        console.log(res);
+
         res.items.forEach(async (item) => {
           let metadata = await item.getMetadata();
           filesArray.push({ name: item.name, fullPath: item.fullPath, metadata: metadata });
@@ -129,7 +129,7 @@ export default function StudentFiles({ studentId, disabledStudent, preEnrollment
 
   const handleOpenFile = async (fullPath) => {
     let url = await storage.ref(fullPath).getDownloadURL();
-    console.log(url);
+
     setOpenFile(true);
     setUrl(url);
   };
@@ -161,14 +161,14 @@ export default function StudentFiles({ studentId, disabledStudent, preEnrollment
   const handleUploadFile = async (e) => {
     setLoading(true);
     const files = e.target.files;
-    console.log(files);
+
     let filesArray = [];
     for (const file of files) {
       filesArray.push(file);
     }
     Promise.all(filesArray.map((file) => putStorageItem(file)))
       .then((url) => {
-        console.log(`All success`, url);
+
         getData().then((filesArray) => {
           setStudentFiles(filesArray);
         });
@@ -176,7 +176,7 @@ export default function StudentFiles({ studentId, disabledStudent, preEnrollment
         setLoading(false);
       })
       .catch((error) => {
-        console.log(`Some failed: `, error.message);
+
         enqueueSnackbar(error.message, { variant: "error" });
       });
 
@@ -187,11 +187,11 @@ export default function StudentFiles({ studentId, disabledStudent, preEnrollment
         .child(item.name)
         .put(item)
         .then(() => {
-          console.log("One success:", item);
+
           enqueueSnackbar(`${item.name} enviado com sucesso`, { variant: "info" });
         })
         .catch((error) => {
-          console.log("One failed:", item, error.message);
+
         });
     }
   };
@@ -203,7 +203,7 @@ export default function StudentFiles({ studentId, disabledStudent, preEnrollment
       let url = await strgRef.getDownloadURL();
       await studentsRef.child(studentId).child("fotoAluno").set(url);
       let metadata = await strgRef.getMetadata();
-      console.log(metadata);
+
       enqueueSnackbar("Foto do aluno definida", { variant: "success" });
     } catch (error) {
       console.error(error);

@@ -23,7 +23,7 @@ const DaysCodeSet = () => {
     let valuesArray = values.slice();
     valuesArray[prop] = event.target.value;
     setValues(valuesArray);
-    console.log(valuesArray);
+
   };
 
   const handleSendData = async () => {

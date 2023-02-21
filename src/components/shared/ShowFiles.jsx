@@ -65,7 +65,7 @@ const ShowFiles = (props) => {
   const S = useStyles();
   const { open, onClose, hideButton, onSave, url } = props;
 
-  console.log(url);
+
 
   const [openDial, setOpenDial] = useState(false);
   const [hidden, setHidden] = useState(false);

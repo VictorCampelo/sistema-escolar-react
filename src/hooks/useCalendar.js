@@ -9,7 +9,7 @@ const useCalendar = (ref) => {
 
     calendarRef.on("value", (snapshot) => {
       let eventsSources = snapshot.val();
-      console.log(eventsSources);
+
       if (eventsSources.hasOwnProperty("length")) {
         setEvents(eventsSources);
       } else {

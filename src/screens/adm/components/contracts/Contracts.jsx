@@ -96,7 +96,7 @@ const Contracts = () => {
     setLoading(true);
     let acess;
     acess = await functions.httpsCallable("verificadorDeAcesso");
-    console.log(await acess("professor"));
+
     const localTeacherClasses = (
       await usersRef.child(user.id).child("professor/turmas").once("value")
     ).val();
@@ -111,7 +111,7 @@ const Contracts = () => {
         }
       }
     }
-    console.log(localTeacherStudents);
+
 
     //let snapshot = await studentsRef.once('value');
 
@@ -121,7 +121,7 @@ const Contracts = () => {
       if (Object.hasOwnProperty.call(localTeacherStudents, i)) {
         const id = localTeacherStudents[i];
         let student = (await studentsRef.child(id).once("value")).val();
-        console.log(id);
+
         student.id = id;
         studentsArray.push(student);
       }
@@ -145,17 +145,17 @@ const Contracts = () => {
       required: false
     });
     setRows(rowsArray);
-    console.log(rowsArray);
+
   };
 
   const handleRowEdit = async (editedRow) => {
     setLoading(true);
-    console.log(editedRow);
+
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let rowIndex = rowsArray.findIndex((row) => row.id === editedRow.id);
     rowsArray[rowIndex][editedRow.field] = editedRow.value;
     setRows(rowsArray);
-    console.log(rowsArray);
+
     // try {
     //     await additionalFieldsRef.set(rowsArray)
     //     setLoading(false)
@@ -167,7 +167,7 @@ const Contracts = () => {
   };
 
   const handleRowSelection = (selectedRows) => {
-    console.log(selectedRows);
+
 
     setSelectedRows(selectedRows);
   };
@@ -176,7 +176,7 @@ const Contracts = () => {
     setLoading(true);
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let updatedRows = rowsArray.filter((row) => selectedRows.indexOf(row.id) === -1);
-    console.log(updatedRows);
+
 
     // try {
     //     await additionalFieldsRef.set(updatedRows);
@@ -190,7 +190,7 @@ const Contracts = () => {
   };
 
   const handleRowClick = (e) => {
-    console.log(e);
+
     setOpen(true);
     setStudentInfo({
       id: e.id,
@@ -329,7 +329,7 @@ const Contracts = () => {
               onSelectionModelChange={handleRowSelection}
               onRowClick={handleRowClick}
               getRowClassName={(params) => {
-                console.log(`super-app-theme--${params.getValue(params.id, "disabled")}`);
+
                 return `super-app-theme--${params.getValue(params.id, "disabled")}`;
               }}
             />

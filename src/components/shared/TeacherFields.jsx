@@ -262,13 +262,13 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
   }, [isOpen]);
 
   const handleGetData = () => {
-    console.log(activeStep);
+
     try {
       coursesRef
         .child(courseChosen.dadosTurma.courseId)
         .once("value")
         .then((courseInfo) => {
-          console.log(courseInfo.val());
+
           handleMountContractScreen(courseInfo.val());
         })
         .catch((error) => {
@@ -287,7 +287,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
   const [openDialogError, setOpenDialogError] = useState(false);
 
   const handleMountContractScreen = (courseInfo) => {
-    console.log(courseInfo);
+
     setData(courseInfo);
 
     let plansInfo = courseInfo.planos;
@@ -298,7 +298,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
         plansArray.push({ value: key, label: plan.nomePlano, key: key });
       }
     }
-    console.log(plansArray);
+
     setPlans(plansArray);
   };
 
@@ -326,7 +326,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
     let form = document.querySelector("#contractForm");
     let formData = new FormData(form);
     let fieldsData = $("#contractForm").serializeArray();
-    console.log(fieldsData);
+
 
     let internData = {};
     fieldsData.forEach((field) => {
@@ -419,7 +419,7 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
                 )}`
               }
               : { id: parcela };
-            console.log(row);
+
             somaParcelas += Number(valorParcela) + (acrescimoParcela - descontoParcela);
           } else {
             saldo = parcela === 0 ? internData.valorFinal : saldo;
@@ -437,9 +437,9 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
           saldo =
             (parcela >= internPlan.quandoAplicar ? internData.valorFinal : internData.valorCurso) -
             somaParcelas;
-          console.log(saldo);
+
           internRows.push(row);
-          console.log(internRows);
+
           // addParcela(`Saldo: R$${saldo}`)
           contadorParcelas--;
         }
@@ -513,11 +513,11 @@ function ContractConfigure({ activeStep, isOpen, setOpenDialog }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e);
+
     let formData = new FormData(document.getElementById("contractForm"));
 
     let data = Object.fromEntries(formData.entries());
-    console.log(data);
+
     //sessionStorage.setItem(activeStep, JSON.stringify(data))
   };
 
@@ -898,7 +898,7 @@ function CourseDataFields(props) {
   useEffect(() => {
     let contractCode = sessionStorage.getItem("codContrato");
     let storedCourse = JSON.parse(sessionStorage.getItem(activeStep));
-    console.log(contractCode);
+
     if (contractCode && storedCourse) {
       setContractState(contractCode);
       setCourseChosen(storedCourse.dadosTurma);
@@ -1003,7 +1003,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
 
   useEffect(() => {
     let parentsArray = JSON.parse(sessionStorage.getItem("responsaveis"));
-    console.log(parentsArray);
+
     if (parentsArray) {
       setParentsFields(parentsArray);
     } else if (parentsRequired) {
@@ -1022,7 +1022,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
   }, []);
 
   const handleGetAddress = async (e) => {
-    console.log(e.target.value);
+
     let cepNum = e.target.value;
     if (cepNum !== null) {
       try {
@@ -1032,7 +1032,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
         if (cepObj.errors) {
           cepObj.message = "Erro. Tente Novamente!";
         }
-        console.log(cepObj);
+
         setCep(cepObj);
       } catch (error) {
         console.error(error);
@@ -1052,7 +1052,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
   const handleAddParentField = (edit = false, id = null) => {
     if (edit) {
       let fields = parentsFields.filter((parent) => parent.id === id)[0];
-      console.log(fields);
+
       setDialogOpen(fields);
     } else {
       setDialogOpen(true);
@@ -1086,7 +1086,7 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
       let fieldsData = $("#formParentData").serializeArray();
       let form = document.querySelector("#formParentData");
       let formData = new FormData(form);
-      console.log(fieldsData);
+
 
       let parentObj = {};
       fieldsData.forEach((field) => {
@@ -1100,8 +1100,8 @@ const AddressAndParentsFields = ({ shrink, parentsRequired, editMode = false }) 
       let parentsArray = JSON.parse(JSON.stringify(parentsFields));
       let newParentsArray = parentsArray.filter((parent) => parent.id !== parentObj.id);
       newParentsArray.push(parentObj);
-      console.log("Array antiga", parentsArray);
-      console.log("Nova array", newParentsArray);
+
+
       setParentsFields(newParentsArray);
       sessionStorage.setItem("responsaveis", JSON.stringify(newParentsArray));
       setDialogOpen(false);

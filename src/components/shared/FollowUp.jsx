@@ -144,7 +144,7 @@ const FollowUp = ({ isOpen, onClose, studentId }) => {
   }, []);
 
   useEffect(() => {
-    console.log(filterModel);
+
   }, [filterModel]);
 
   const getData = async () => {
@@ -154,7 +154,7 @@ const FollowUp = ({ isOpen, onClose, studentId }) => {
       setFollowUps(data);
     }
 
-    console.log(data);
+
     setFilterModel({
       items: [{ id: 55942, columnField: "matricula", operatorValue: "equals", value: studentId }]
     });
@@ -162,11 +162,11 @@ const FollowUp = ({ isOpen, onClose, studentId }) => {
   };
 
   const onRowClick = async (e) => {
-    console.log(e);
+
     setSelection(e.row);
     const info = await studentsRef.child(e.row.matricula).once("value");
     const src = info.child("fotoAluno").val();
-    console.log(src);
+
     setAvatarSrc(src);
 
     handleExpandClick(true);
@@ -197,7 +197,7 @@ const FollowUp = ({ isOpen, onClose, studentId }) => {
             description: "Escolha o aluno para lançar o follow up.",
             promptStudent: true
           });
-          console.log(whichStudent);
+
         }
         const studentName = (
           await studentsRef.child(whichStudent).child("nomeAluno").once("value")

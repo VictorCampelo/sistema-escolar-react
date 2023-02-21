@@ -110,7 +110,7 @@ const ViewPreEnrollment = ({ studentInfo, changeTab }) => {
     try {
       let studentData = (await preEnrollmentsRef.child(studentId).once("value")).val();
 
-      console.log(studentData);
+
       studentData && setStudentData(studentData);
     } catch (error) {
       console.error(error);

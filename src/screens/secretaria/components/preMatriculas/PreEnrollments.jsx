@@ -122,17 +122,17 @@ const PreEnrollments = ({ changeTab }) => {
       required: false
     });
     setRows(rowsArray);
-    console.log(rowsArray);
+
   };
 
   const handleRowEdit = async (editedRow) => {
     setLoading(true);
-    console.log(editedRow);
+
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let rowIndex = rowsArray.findIndex((row) => row.id === editedRow.id);
     rowsArray[rowIndex][editedRow.field] = editedRow.value;
     setRows(rowsArray);
-    console.log(rowsArray);
+
     // try {
     //     await additionalFieldsRef.set(rowsArray)
     //     setLoading(false)
@@ -144,7 +144,7 @@ const PreEnrollments = ({ changeTab }) => {
   };
 
   const handleRowSelection = (selectedRows) => {
-    console.log(selectedRows);
+
 
     setSelectedRows(selectedRows);
   };
@@ -195,7 +195,7 @@ const PreEnrollments = ({ changeTab }) => {
   };
 
   const handleRowClick = (e) => {
-    console.log(e);
+
     setOpen(true);
     setStudentInfo({
       id: e.id,
@@ -245,7 +245,7 @@ const PreEnrollments = ({ changeTab }) => {
               onSelectionModelChange={handleRowSelection}
               onRowClick={handleRowClick}
               getRowClassName={(params) => {
-                console.log(`super-app-theme--${params.getValue(params.id, "disabled")}`);
+
                 return `super-app-theme--${params.getValue(params.id, "disabled")}`;
               }}
             />

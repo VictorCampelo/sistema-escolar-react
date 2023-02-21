@@ -41,9 +41,7 @@ const SchoolPlans = () => {
     getAdditionalFields();
   }, []);
 
-  useEffect(() => {
-    console.log(course);
-  }, [course]);
+  useEffect(() => {}, [course]);
 
   async function getAdditionalFields() {
     let localPlans = [];
@@ -64,8 +62,6 @@ const SchoolPlans = () => {
       }
     });
 
-    console.log(localCourses);
-    console.log(localPlans);
     setRows(localPlans);
   }
 
@@ -83,12 +79,12 @@ const SchoolPlans = () => {
 
   const handleRowEdit = async (editedRow) => {
     setLoading(true);
-    console.log(editedRow);
+
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let rowIndex = rowsArray.findIndex((row) => row.id === editedRow.id);
     rowsArray[rowIndex][editedRow.field] = editedRow.value;
     setRows(rowsArray);
-    console.log(rowsArray);
+
     try {
       await coursesRef.set(rowsArray);
       setLoading(false);
@@ -100,7 +96,6 @@ const SchoolPlans = () => {
   };
 
   const handleRowSelection = (selectedRows) => {
-    console.log(selectedRows);
     setSelectedRows(selectedRows);
   };
 
@@ -124,7 +119,6 @@ const SchoolPlans = () => {
   };
 
   const handleRowClick = async (e) => {
-    console.log(e);
     let planId = e.id.split(",")[0];
     let courseId = e.row.codCurso;
     setCourse(courseId);
@@ -156,8 +150,7 @@ const SchoolPlans = () => {
                 id="demo-simple-select"
                 value={course}
                 onChange={(e) => setCourse(e.target.value)}
-                fullWidth
-              >
+                fullWidth>
                 {courses.map((localCourse) => (
                   <MenuItem value={localCourse.codSistema}>{localCourse.nomeCurso}</MenuItem>
                 ))}
@@ -207,8 +200,7 @@ const SchoolPlans = () => {
             onClick={() => {
               setCourse();
               setDialog(true);
-            }}
-          >
+            }}>
             <PlusOneRounded />
             Novo plano
           </Button>
@@ -220,8 +212,7 @@ const SchoolPlans = () => {
             disabled={selectedRows.length === 0}
             onClick={() => {
               handleDeleteRows();
-            }}
-          >
+            }}>
             Excluir planos
           </Button>
         </Grid>

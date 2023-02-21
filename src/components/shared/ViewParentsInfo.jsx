@@ -106,7 +106,7 @@ const ViewParentsInfo = ({ studentId, isOpen, onClose, isDisabled, preEnrollment
     if (preEnrollment) {
       const snapshot = await preEnrollmentsRef.child(studentId).child("responsaveis").once("value");
       const parentsArray = snapshot.exists() ? snapshot.val() : [];
-      console.log(parentsArray);
+
       setParents(parentsArray);
     } else {
       const snapshot = !isDisabled
@@ -116,7 +116,7 @@ const ViewParentsInfo = ({ studentId, isOpen, onClose, isDisabled, preEnrollment
             .child("responsaveis")
             .once("value");
       const parentsArray = snapshot.exists() ? snapshot.val() : [];
-      console.log(parentsArray);
+
       setParents(parentsArray);
     }
   };
@@ -162,7 +162,7 @@ const ViewParentsInfo = ({ studentId, isOpen, onClose, isDisabled, preEnrollment
 
   const handleAddParent = async () => {
     const key = studentsRef.child(studentId).child("responsaveis").push().key;
-    console.log(key);
+
     let parentsCopy = parents;
     parentsCopy[key] = {
       celular: "",
@@ -174,7 +174,7 @@ const ViewParentsInfo = ({ studentId, isOpen, onClose, isDisabled, preEnrollment
       relacao: "",
       rg: ""
     };
-    console.log(parentsCopy);
+
     setParents(parentsCopy);
     setEdit(true);
   };

@@ -195,8 +195,6 @@ const generateClassCode = async (classData) => {
   let books;
   let days;
 
-  console.log(classData);
-
   try {
     course = (await coursesRef.child(classData.curso).child("codCurso").once("value")).val();
   } catch (error) {
@@ -372,7 +370,6 @@ function capitalizeFirstLetter(string) {
 
 const getBrazilianHolidays = async (year) => {
   const response = await fetch(`https://brasilapi.com.br/api/feriados/v1/${year}`);
-  console.log(await response.json());
 };
 
 const accessVerification = async (accessType) => {
@@ -390,7 +387,7 @@ const generateBillets = async (studentId, contractId) => {
   let generateBilletsFunction = functions.httpsCallable("geraBoletos");
   try {
     let result = await generateBilletsFunction({ matricula: studentId, codContrato: contractId });
-    console.log(result.data);
+
     return result.data;
   } catch (error) {
     console.error(error);
@@ -414,7 +411,6 @@ async function createBilletView(
   billetElem
 ) {
   // Function to create a single billet view
-  console.log(student);
 
   // bol++
   // if (bol > 3 && pag >= 1) {
@@ -433,7 +429,7 @@ async function createBilletView(
   let gera = functions.httpsCallable("geraPix");
   await gera({ valor: totalCobrado, descricao: `DOC${numeroDoc}` }).then((lineCode) => {
     //divQr.src = lineCode.data;
-    console.log(lineCode);
+
     //const code = new QRCode(divQr, { text: lineCode.data, width: 100, height: 100 });
     // qrCodesArray.push({qrcode: lineCode.data, numeroDoc: numeroDoc})
 
@@ -699,7 +695,7 @@ const grantAndRevokeAccess = async (access, uid, checked) => {
   let grantAndRevokeAccessFunction = functions.httpsCallable("liberaERemoveAcessos");
   try {
     let result = await grantAndRevokeAccessFunction({ acesso: access, checked: checked, uid: uid });
-    console.log(result.data);
+
     return result.data;
   } catch (error) {
     console.error(error);
@@ -713,7 +709,7 @@ const releaseFaults = async (dateStr, classId, studentsIds) => {
   let releaseFaultsFunction = functions.httpsCallable("lancaFaltas");
   try {
     let result = await releaseFaultsFunction(data);
-    console.log(result.data);
+
     return result.data.answer;
   } catch (error) {
     console.error(error);
@@ -723,11 +719,11 @@ const releaseFaults = async (dateStr, classId, studentsIds) => {
 
 const removeFaults = async (dateStr, classId, studentId) => {
   const data = { dateStr: dateStr, classId: classId, studentId: studentId };
-  console.log(data);
+
   let removeFaultsFunction = functions.httpsCallable("removeFaltas");
   try {
     let result = await removeFaultsFunction(data);
-    console.log(result.data);
+
     return result.data.answer;
   } catch (error) {
     console.error(error);

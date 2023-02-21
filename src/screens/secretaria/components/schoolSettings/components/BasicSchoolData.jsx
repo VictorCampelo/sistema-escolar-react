@@ -65,13 +65,13 @@ const BasicSchoolData = () => {
   useEffect(() => {
     async function getData() {
       let data = (await basicDataRef.once("value")).val();
-      console.log(data);
+
       setChecked(true);
       for (const id in data) {
         if (Object.hasOwnProperty.call(data, id)) {
           const value = data[id];
-          console.log("id:", id);
-          console.log("value:", value);
+
+
           try {
             if (id === "permitirDistribuiNotas") {
               setChecked(value);
@@ -94,7 +94,7 @@ const BasicSchoolData = () => {
     setloading(true);
     let data = $("#infoEscolaForm").serializeArray();
     let formData = new FormData(document.getElementById("infoEscolaForm"));
-    console.log(data);
+
     let basicDataObj = {};
 
     for (const i in data) {
@@ -107,7 +107,7 @@ const BasicSchoolData = () => {
       }
     }
     basicDataObj["permitirDistribuiNotas"] = basicDataObj["permitirDistribuiNotas"] ? true : false;
-    console.log(basicDataObj);
+
     try {
       await basicDataRef.update(basicDataObj);
       setloading(false);

@@ -83,12 +83,12 @@ const Classes = () => {
       required: false
     });
     setRows(rowsArray);
-    console.log(rowsArray);
+
   };
 
   const handleRowEdit = async (editedRow) => {
     setLoading(true);
-    console.log(editedRow);
+
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let rowIndex = rowsArray.findIndex((row) => row.id === editedRow.id);
     rowsArray[rowIndex][editedRow.field] = editedRow.value;
@@ -96,7 +96,7 @@ const Classes = () => {
   };
 
   const handleRowSelection = (selectedRows) => {
-    console.log(selectedRows);
+
     setSelectedRows(selectedRows);
   };
 
@@ -107,9 +107,9 @@ const Classes = () => {
   };
 
   const handleRowClick = (e) => {
-    console.log(e);
+
     setClassData(e.row);
-    console.log(e.row);
+
     setOpen(true);
   };
 

@@ -88,7 +88,7 @@ const GradeDefinition = ({ open, onClose, classCode }) => {
         gradesArray.push({ key: key, value: value, readonly: key === "Desempenho" });
       }
     }
-    console.log(gradesArray);
+
     setGrades([...gradesArray]);
   };
 
@@ -112,12 +112,12 @@ const GradeDefinition = ({ open, onClose, classCode }) => {
     if (sum <= 100)
       try {
         form.current.requestSubmit();
-        console.log(grades);
+
         let localGrades = {};
         grades.map((grade, i) => {
           localGrades[grade.key] = grade.value;
         });
-        console.log(localGrades);
+
         await classesRef.child(classCode).child("notas").set(localGrades);
         enqueueSnackbar("Notas distribuídas com sucesso.", {
           title: "Sucesso",
@@ -167,7 +167,7 @@ const GradeDefinition = ({ open, onClose, classCode }) => {
   };
 
   const handleChangePerformanceGrade = (e) => {
-    console.log(e.target.checked);
+
     if (e.target.checked) {
       handleAddGrade("Desempenho", performanceGradesSum, true);
     } else {

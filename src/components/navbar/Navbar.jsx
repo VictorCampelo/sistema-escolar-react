@@ -121,9 +121,9 @@ export default function Navbar(props) {
       <AppBar position="static">
         <Toolbar>
           <Grid
-            justify="space-between" // Add it here :)
+            justifyContent="space-between" // Add it here :)
             container
-            spacing={24}
+            spacing={2}
             alignItems="center"
           >
             <Grid item>
@@ -224,7 +224,7 @@ export default function Navbar(props) {
                     anchorEl={anchorEl}
                     anchorOrigin={{
                       vertical: "bottom",
-                      horizontal: "bottom"
+                      horizontal: "center"
                     }}
                     keepMounted
                     transformOrigin={{

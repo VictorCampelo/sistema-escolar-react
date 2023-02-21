@@ -163,7 +163,7 @@ const ViewStudentHistory = ({ studentId, isOpen, onClose, isDisabled }) => {
 
   const handleAddParent = async () => {
     const key = studentsRef.child(studentId).child("responsaveis").push().key;
-    console.log(key);
+
     let parentsCopy = history;
     parentsCopy[key] = {
       celular: "",
@@ -175,7 +175,7 @@ const ViewStudentHistory = ({ studentId, isOpen, onClose, isDisabled }) => {
       relacao: "",
       rg: ""
     };
-    console.log(parentsCopy);
+
     setHistory(parentsCopy);
     setEdit(true);
   };
@@ -417,7 +417,7 @@ enqueueSnackbar("Não é possível apagar enquanto o aluno está desativado", {
   // }
 
   const handlePrintResult = (histId) => {
-    console.log(histId);
+
     window.location.hash = "boletim?" + studentId + "?" + histId;
     setOpenResult(true);
   };

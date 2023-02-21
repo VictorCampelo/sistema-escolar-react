@@ -99,8 +99,6 @@ const AddClass = ({ dataForEditing, onClose }) => {
   const getDays = async () => {
     const allDays = (await daysCodesRef.once("value")).val();
 
-    console.log(allDays);
-
     if (allDays) {
       setDays(allDays);
     }

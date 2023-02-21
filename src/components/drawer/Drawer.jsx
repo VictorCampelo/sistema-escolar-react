@@ -1,22 +1,14 @@
 import { SwipeableDrawer } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
-import FormControl from "@material-ui/core/FormControl";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
-import InputLabel from "@material-ui/core/InputLabel";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import {
-  AllInbox,
-  Apartment, Home,
-  ImportContacts, School
-} from "@material-ui/icons";
+import { AllInbox, Apartment, Home, ImportContacts, School } from "@material-ui/icons";
 import CloseIcon from "@material-ui/icons/Close";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -132,7 +124,8 @@ function ResponsiveDrawer(props) {
         </IconButton>
       </div>
       <Divider />
-      <List>,
+      <List>
+        ,
         <Link to="/" style={{ textDecoration: "none", color: "black" }} onClick={onClose}>
           <ListItem button key={"Home"}>
             <ListItemIcon>
@@ -157,19 +150,10 @@ function ResponsiveDrawer(props) {
           </Link>
         ))}
       </List>
-      {/* <Divider />
-        <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-                <ListItemIcon></ListItemIcon>
-                <ListItemText primary={text} />
-            </ListItem>
-            ))}
-        </List> */}
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container = window ? () => window().document.body : null;
 
   return (
     <div className={S.root}>
@@ -183,7 +167,10 @@ function ResponsiveDrawer(props) {
             anchor={theme.direction === "rtl" ? "right" : "left"}
             open={mobileOpen}
             onClose={handleDrawerToggle}
-            S={{
+            onOpen={() => {
+
+            }}
+            classes={{
               paper: S.drawerPaper
             }}
             ModalProps={{
@@ -194,12 +181,15 @@ function ResponsiveDrawer(props) {
         </Hidden>
         <Hidden xsDown implementation="css">
           <SwipeableDrawer
-            S={{
+            classes={{
               paper: S.drawerPaper
             }}
             variant="temporary"
             open={open}
             onClose={onClose}
+            onOpen={() => {
+
+            }}
             disableSwipeToOpen={false}>
             {drawer}
           </SwipeableDrawer>

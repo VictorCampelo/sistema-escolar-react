@@ -98,7 +98,7 @@ const BilletAttachments = ({ docKeyPath, open, setOpen }) => {
   const handleUpload = (files) => {
     // Create the file metadata
     const file = files[0];
-    console.log(file);
+
     let metadata = {
       contentType: file.type
     };
@@ -112,7 +112,7 @@ const BilletAttachments = ({ docKeyPath, open, setOpen }) => {
       (snapshot) => {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         let progress = snapshot.bytesTransferred / snapshot.totalBytes * 100;
-        console.log("Upload is " + progress + "% done");
+
         switch (snapshot.state) {
           case "paused":
             setProgress(progress);
@@ -174,7 +174,7 @@ const BilletAttachments = ({ docKeyPath, open, setOpen }) => {
       () => {
         // Upload completed successfully, now we can get the download URL
         uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-          console.log("File available at", downloadURL);
+
           billetsDocsRef
             .child(docKeyPath)
             .child("attachments")

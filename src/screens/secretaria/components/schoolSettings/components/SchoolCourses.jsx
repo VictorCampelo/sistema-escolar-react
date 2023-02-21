@@ -25,7 +25,7 @@ const SchoolCourses = () => {
       let snapshot = await coursesRef.once("value");
       setLoading(false);
       let additionalFields = snapshot.exists() ? snapshot.val() : [];
-      console.log(additionalFields);
+
       setRows(additionalFields);
     }
     getAdditionalFields();
@@ -40,17 +40,17 @@ const SchoolCourses = () => {
       nomeCurso: "Digite..."
     });
     setRows(rowsArray);
-    console.log(rowsArray);
+
   };
 
   const handleRowEdit = async (editedRow) => {
     setLoading(true);
-    console.log(editedRow);
+
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let rowIndex = rowsArray.findIndex((row) => row.id === editedRow.id);
     rowsArray[rowIndex][editedRow.field] = editedRow.value;
     setRows(rowsArray);
-    console.log(rowsArray);
+
     try {
       await coursesRef.set(rowsArray);
       setLoading(false);
@@ -62,7 +62,7 @@ const SchoolCourses = () => {
   };
 
   const handleRowSelection = (selectedRows) => {
-    console.log(selectedRows);
+
     setSelectedRows(selectedRows);
   };
 
@@ -70,7 +70,7 @@ const SchoolCourses = () => {
     setLoading(true);
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let updatedRows = rowsArray.filter((row) => selectedRows.indexOf(row.id) === -1);
-    console.log(updatedRows);
+
 
     try {
       await coursesRef.set(updatedRows);

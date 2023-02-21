@@ -59,7 +59,7 @@ const LoginDialog = (props) => {
 
     try {
       let user = await signInWithEmailAndPassword(email, password);
-      console.log(user);
+
 
       if (user) {
         setOpen(false);

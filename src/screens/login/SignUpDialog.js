@@ -50,7 +50,7 @@ const SignUpDialog = (props) => {
     if (password === confirmPassword) {
       try {
         let user = await createUserWithEmailAndPassword(email, password, name);
-        console.log(user);
+
 
         if (user) {
           setOpen(false);
@@ -90,7 +90,7 @@ const SignUpDialog = (props) => {
         handleClose={handleClose}
         closeButton={true}
         onFormSubmit={(e) => {
-          console.log("entrou");
+
           e.preventDefault();
           signUp();
         }}

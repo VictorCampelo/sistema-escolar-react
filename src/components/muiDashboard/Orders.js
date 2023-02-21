@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -67,10 +66,16 @@ export default function Orders() {
               {/* <TableCell align="right">{row.amount}</TableCell> */}
             </TableRow>
           ))}
-          {rows.length === 0 && (
-            <TableFooter>Não foram encontrados alunos aniversariantes neste mês.</TableFooter>
-          )}
         </TableBody>
+        {rows.length === 0 && (
+          <TableFooter>
+            <TableRow>
+              <TableCell align="center">
+                Não foram encontrados alunos aniversariantes neste mês.
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        )}
       </Table>
       {/* <div className={S.seeMore}>
         <Link color="primary" href="#" onClick={preventDefault}>

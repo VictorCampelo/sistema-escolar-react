@@ -136,17 +136,17 @@ const Students = () => {
       required: false
     });
     setRows([...rowsArray]);
-    console.log(rowsArray);
+
   };
 
   const handleRowEdit = async (editedRow) => {
     setLoading(true);
-    console.log(editedRow);
+
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let rowIndex = rowsArray.findIndex((row) => row.id === editedRow.id);
     rowsArray[rowIndex][editedRow.field] = editedRow.value;
     setRows([...rowsArray]);
-    console.log(rowsArray);
+
     // try {
     //     await additionalFieldsRef.set(rowsArray)
     //     setLoading(false)
@@ -158,7 +158,7 @@ const Students = () => {
   };
 
   const handleRowSelection = (selectedRows) => {
-    console.log(selectedRows);
+
 
     setSelectedRows(selectedRows);
   };
@@ -167,7 +167,7 @@ const Students = () => {
     setLoading(true);
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let updatedRows = rowsArray.filter((row) => selectedRows.indexOf(row.id) === -1);
-    console.log(updatedRows);
+
 
     // try {
     //     await additionalFieldsRef.set(updatedRows);
@@ -181,7 +181,7 @@ const Students = () => {
   };
 
   const handleRowClick = (e) => {
-    console.log(e);
+
     setOpen(true);
     setStudentInfo({
       id: e.id,
@@ -255,7 +255,7 @@ const Students = () => {
   };
 
   const handleOpenStudentPDF = () => {
-    console.log(selectedRows);
+
     let ids = selectedRows.join(",");
 
     window.location.hash = `fichaCadastral?${ids}`;
@@ -330,7 +330,7 @@ const Students = () => {
               onSelectionModelChange={handleRowSelection}
               onRowClick={handleRowClick}
               getRowClassName={(params) => {
-                console.log(`super-app-theme--${params.getValue(params.id, "disabled")}`);
+
                 return `super-app-theme--${params.getValue(params.id, "disabled")}`;
               }}
             />

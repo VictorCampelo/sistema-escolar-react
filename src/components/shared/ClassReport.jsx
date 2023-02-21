@@ -26,7 +26,7 @@ export default function ClassReport({ classCode, open, onClose }) {
   const getData = async () => {
     let timestampFunction = functions.httpsCallable("timestamp");
     const data = (await timestampFunction()).data;
-    console.log(data.timestamp);
+
     let now = new Date(data.timestamp._seconds * 1000);
     const string = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
     setTimeString(string);

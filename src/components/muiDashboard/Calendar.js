@@ -121,7 +121,7 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
 
   const getApi = () => {
     const { current: calendarDom } = calendarEl;
-    console.log(calendarEl.current);
+
 
     return calendarDom ? calendarDom.getApi() : null;
   };
@@ -171,7 +171,7 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
   };
 
   const handlePreviousMonth = (e) => {
-    console.log(e);
+
     if (e.type === "click") {
       const API = getApi();
       API && API.prev();
@@ -183,7 +183,7 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
 
   const handleToday = () => {
     const API = getApi();
-    console.log(API);
+
     API && API.today();
   };
 
@@ -201,7 +201,7 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
 
   const handleChangeView = (view) => {
     const API = getApi();
-    console.log(API);
+
     API && API.changeView(view);
     setView(view);
   };
@@ -238,7 +238,7 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
           onClose={handleCloseRightClick}
           anchorOrigin={{
             vertical: "top",
-            horizontal: "left"
+            horizontal: 0
           }}
           transformOrigin={{
             vertical: "top",
@@ -282,7 +282,7 @@ const CalendarComponent = ({ sourceId, isFromClassCode = false, handleFault }) =
           />
         )}
 
-        <Grid justifyContent="space-between" container spacing={24} alignItems="center">
+        <Grid justifyContent="space-between" container spacing={2} alignItems="center">
           <Grid item>
             <Tooltip title={"Anterior"}>
               <IconButton

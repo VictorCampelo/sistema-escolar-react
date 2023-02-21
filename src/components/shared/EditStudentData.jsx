@@ -50,7 +50,6 @@ const EditStudentData = ({ studentId, isOpen, onClose, preEnrollment }) => {
   const [loader, setLoader] = useState(false);
 
   useEffect(() => {
-    console.log(form);
     getData();
   });
 
@@ -65,7 +64,7 @@ const EditStudentData = ({ studentId, isOpen, onClose, preEnrollment }) => {
           try {
             document.getElementById(field).value = value;
           } catch (error) {
-            console.log(error, field, value);
+            console.error(error, field, value);
           }
         }
       }
@@ -81,14 +80,13 @@ const EditStudentData = ({ studentId, isOpen, onClose, preEnrollment }) => {
     setLoader(true);
     let fieldsData = $("#formStudent").serializeArray();
     let formData = new FormData(form.current);
-    console.log(fieldsData);
 
     let studentObj = {};
     fieldsData.forEach((field) => {
       let values = formData.getAll(field.name);
       studentObj[field.name] = values.length === 1 ? values[0] : values;
     });
-    console.log(studentObj);
+
     try {
       await confirm({
         variant: "danger",
@@ -137,16 +135,14 @@ const EditStudentData = ({ studentId, isOpen, onClose, preEnrollment }) => {
           form.current.requestSubmit();
         }}
         title={"Editar dados"}
-        saveButton={"Salvar"}
-      >
+        saveButton={"Salvar"}>
         <Backdrop className={S.backdrop} open={loader}>
           <CircularProgress color="inherit" />
         </Backdrop>
         <Container>
           <Paper
             style={{ padding: "10px", minWidth: "250px", marginTop: "10px", marginBottom: "10px" }}
-            elevation={2}
-          >
+            elevation={2}>
             <form ref={form} id={"formStudent"} onSubmit={handleSubmit}>
               <BasicDataFields setLoader={setLoader} shrink editMode />
               <AddressAndParentsFields shrink editMode />

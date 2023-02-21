@@ -91,7 +91,7 @@ export default function ExternalEnroll() {
   };
 
   const handleAddStudent = () => {
-    console.log(sessionStorage.getItem("0"));
+
   };
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -201,7 +201,7 @@ export default function ExternalEnroll() {
     const newCompleted = new Set(completed);
     newCompleted.add(activeStep);
     setCompleted(newCompleted);
-    console.log(completed);
+
 
     /**
      * Sigh... it would be much nicer to replace the following if conditional with
@@ -234,12 +234,12 @@ export default function ExternalEnroll() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e);
+
     try {
       let formData = new FormData(document.getElementById("formAddStudent"));
 
       let data = Object.fromEntries(formData.entries());
-      console.log(data);
+
 
       switch (activeStep) {
         case 0:
@@ -249,7 +249,7 @@ export default function ExternalEnroll() {
 
         case 1:
           data.responsaveis = JSON.parse(sessionStorage.getItem("responsaveis")) || null;
-          console.log(parentsRequired, data.responsaveis);
+
           if (parentsRequired && (data.responsaveis === null || data.responsaveis.length < 1)) {
             throw new Error(
               "O aluno é menor de idade. É necessário cadastrar pelo menos um responsável."
@@ -283,7 +283,7 @@ export default function ExternalEnroll() {
       storedData[i] = JSON.parse(sessionStorage.getItem(i));
     }
     storedData[1].studentFilesKey = storedData[2];
-    console.log(storedData);
+
     enrollStudent(storedData[0], "", "", storedData[1])
       .then((message) => {
         setOpenFinalDialog(false);

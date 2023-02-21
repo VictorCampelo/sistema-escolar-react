@@ -113,7 +113,7 @@ const AdminCenter = ({ isOpen, onClose }) => {
   }, [isOpen]);
 
   const handleRowEdit = async (e) => {
-    console.log(e);
+
     setLoading(true);
     const access = e.field;
 
@@ -128,7 +128,7 @@ const AdminCenter = ({ isOpen, onClose }) => {
           description: "Cuidado. Você está editando o acesso MASTER do usuário. Deseja alterar o acesso MASTER deste usuário?"
         });
       const result = await grantAndRevokeAccess(access, uid, checked);
-      console.log(result);
+
       enqueueSnackbar(result.acesso, {
         title: "Sucesso",
         variant: "success",
@@ -157,11 +157,11 @@ const AdminCenter = ({ isOpen, onClose }) => {
   };
 
   const handleRowSelection = async (e) => {
-    console.log(e);
+
   };
 
   const handleRowClick = async (e) => {
-    console.log(e);
+
   };
 
   return (
@@ -224,7 +224,7 @@ const AdminCenter = ({ isOpen, onClose }) => {
                 onSelectionModelChange={handleRowSelection}
                 onRowClick={handleRowClick}
                 getRowClassName={(params) => {
-                  console.log(`super-app-theme--${params.getValue(params.id, "disabled")}`);
+
                   return `super-app-theme--${params.getValue(params.id, "disabled")}`;
                 }}
               />

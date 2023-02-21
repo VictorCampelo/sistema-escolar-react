@@ -68,7 +68,7 @@ const SchoolHeadquarters = () => {
     setLoading(true);
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let updatedRows = rowsArray.filter((row) => selectedRows.indexOf(row.id) === -1);
-    console.log(updatedRows);
+
 
     try {
       await headquartersRef.set(updatedRows);

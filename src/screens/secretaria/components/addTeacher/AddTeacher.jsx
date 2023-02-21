@@ -86,7 +86,7 @@ export default function AddTeacher() {
   };
 
   const handleAddStudent = () => {
-    console.log(sessionStorage.getItem("0"));
+
   };
 
   const fabStyle = {
@@ -197,7 +197,7 @@ export default function AddTeacher() {
     const newCompleted = new Set(completed);
     newCompleted.add(activeStep);
     setCompleted(newCompleted);
-    console.log(completed);
+
 
     /**
      * Sigh... it would be much nicer to replace the following if conditional with

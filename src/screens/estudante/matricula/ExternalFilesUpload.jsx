@@ -77,7 +77,7 @@ const ExternalFilesUpload = ({ hasFile }) => {
   useEffect(() => {
     if (!studentKey) {
       let sessionKey = sessionStorage.getItem("studentKey");
-      console.log(sessionKey);
+
       if (sessionKey) {
         setStudentKey(sessionKey);
       } else {
@@ -91,7 +91,7 @@ const ExternalFilesUpload = ({ hasFile }) => {
   const confirm = useConfirmation();
 
   const handleRowEdit = async (e) => {
-    console.log(e);
+
     setLoading(true);
 
     try {
@@ -131,7 +131,7 @@ const ExternalFilesUpload = ({ hasFile }) => {
 
 
   const handleRowClick = async (e) => {
-    console.log(e);
+
   };
 
   const handleFiles = async (filesInp) => {
@@ -150,7 +150,7 @@ const ExternalFilesUpload = ({ hasFile }) => {
         localArray.push(file);
       }
     }
-    console.log(localArray);
+
     try {
       setLoading(true);
       let oneProg = (100 / filesInp.length).toFixed(0);
@@ -178,7 +178,7 @@ const ExternalFilesUpload = ({ hasFile }) => {
           setFiles([...localFiles]);
         }
       }
-      console.log(localFiles);
+
       hasFile(true);
       sessionStorage.setItem(2, JSON.stringify(studentKey));
       enqueueSnackbar("Arquivos salvos.", {
@@ -245,7 +245,7 @@ const ExternalFilesUpload = ({ hasFile }) => {
               localeText={LocaleText}
               onRowClick={handleRowClick}
               getRowClassName={(params) => {
-                console.log(`super-app-theme--${params.getValue(params.id, "disabled")}`);
+
                 return `super-app-theme--${params.getValue(params.id, "disabled")}`;
               }}
             />

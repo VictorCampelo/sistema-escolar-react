@@ -43,7 +43,6 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
   useEffect(() => {
     setSaveDisabled(true);
     handleGetData();
-    console.log(calculatedData);
   }, [isOpen]);
 
   const handleGetData = () => {
@@ -52,7 +51,6 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
         .child(courseId)
         .once("value")
         .then((courseInfo) => {
-          console.log(courseInfo.val());
           handleMountContractScreen(courseInfo.val());
         })
         .catch((error) => {
@@ -71,7 +69,6 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
   const [openDialogError, setOpenDialogError] = useState(false);
 
   const handleMountContractScreen = (courseInfo) => {
-    console.log(courseInfo);
     setData(courseInfo);
     if (courseInfo.hasOwnProperty("planos")) {
       contractHandler("", courseInfo.planos[planId] ?? null);
@@ -108,36 +105,33 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
     try {
       let formData = new FormData(form);
       let fieldsData = $("#contractForm").serializeArray();
-      console.log(fieldsData);
 
       fieldsData.forEach((field) => {
         let values = formData.getAll(field.name);
         internData[field.name] = values.length === 1 ? values[0] : values;
       });
     } catch (error) {
-      console.log("**************************");
       console.error(error);
-      console.log(planChosen);
-      console.log(internData);
+
       internData = planChosen
         ? planChosen
         : {
-          acrescimoPlano: "0",
-          codigoCursoAdd: "",
-          descontoPlano: "0",
-          descricaoPlano: "",
-          distribuirAcrescimosEDescontos: "",
-          nomeCursoAdd: "",
-          nomePlano: "",
-          numeroMaximoParcelasPlano: "",
-          quandoAplicar: "",
-          valorAcrescimo: "0.00",
-          valorCurso: "0",
-          valorDesconto: "0",
-          valorFinal: "0",
-          vencimento: ""
-        };
-      console.log(internData);
+            acrescimoPlano: "0",
+            codigoCursoAdd: "",
+            descontoPlano: "0",
+            descricaoPlano: "",
+            distribuirAcrescimosEDescontos: "",
+            nomeCursoAdd: "",
+            nomePlano: "",
+            numeroMaximoParcelasPlano: "",
+            quandoAplicar: "",
+            valorAcrescimo: "0.00",
+            valorCurso: "0",
+            valorDesconto: "0",
+            valorFinal: "0",
+            vencimento: ""
+          };
+
       setPlan(internData);
     }
 
@@ -155,10 +149,9 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
     let internPlan = plan ?? {};
 
     try {
-      console.log(elemId);
       if (elemId === "valorDesconto") {
         internData.descontoPlano = (
-          internData.valorDesconto * 100 /
+          (internData.valorDesconto * 100) /
           Number(internData.valorCurso)
         ).toFixed(2);
       } else {
@@ -170,7 +163,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
 
       if (elemId === "valorAcrescimo") {
         internData.acrescimoPlano = (
-          internData.valorAcrescimo * 100 /
+          (internData.valorAcrescimo * 100) /
           Number(internData.valorCurso)
         ).toFixed(2);
       } else {
@@ -181,10 +174,11 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
       }
       try {
         document.getElementById("quandoAplicar").innerHTML = "";
-        console.log(Number(internData.numeroMaximoParcelasPlano));
+
         for (let i = 0; i < Number(internData.numeroMaximoParcelasPlano); i++) {
-          document.getElementById("quandoAplicar").innerHTML += `<option value="${i}">Parcela ${i + 1
-            }</option>`;
+          document.getElementById("quandoAplicar").innerHTML += `<option value="${i}">Parcela ${
+            i + 1
+          }</option>`;
         }
       } catch (error) {
         console.error(error);
@@ -235,25 +229,26 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
           saldoAcrescimo -= acrescimoParcela;
           saldoDesconto -= descontoParcela;
 
-          console.log(internPlan);
           row =
             internData.quandoAplicar !== undefined
               ? {
-                id: parcela,
-                col1: `Parcela ${parcela + 1}`,
-                col2: `R$${valorParcela}`,
-                col3: ` ${acrescimoParcela !== 0 || acrescimoParcela !== ""
-                    ? "+ R$" + acrescimoParcela
-                    : ""
+                  id: parcela,
+                  col1: `Parcela ${parcela + 1}`,
+                  col2: `R$${valorParcela}`,
+                  col3: ` ${
+                    acrescimoParcela !== 0 || acrescimoParcela !== ""
+                      ? "+ R$" + acrescimoParcela
+                      : ""
                   }`,
-                col4: ` ${descontoParcela !== 0 || descontoParcela !== "" ? "- R$" + descontoParcela : ""
+                  col4: ` ${
+                    descontoParcela !== 0 || descontoParcela !== "" ? "- R$" + descontoParcela : ""
                   }`,
-                col5: `R$${(Number(valorParcela) + (acrescimoParcela - descontoParcela)).toFixed(
-                  2
-                )}`
-              }
-              : row.id = { id: parcela };
-          console.log(row);
+                  col5: `R$${(Number(valorParcela) + (acrescimoParcela - descontoParcela)).toFixed(
+                    2
+                  )}`
+                }
+              : (row.id = { id: parcela });
+
           somaParcelas += Number(valorParcela) + (acrescimoParcela - descontoParcela);
         } else {
           saldo = parcela === 0 ? internData.valorFinal : saldo;
@@ -277,9 +272,9 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
         saldo =
           (parcela >= internData.quandoAplicar ? internData.valorFinal : internData.valorCurso) -
           somaParcelas;
-        console.log(saldo);
+
         internRows.push(row);
-        console.log(internRows);
+
         // addParcela(`Saldo: R$${saldo}`)
         contadorParcelas--;
       }
@@ -291,7 +286,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
     }
 
     internData.codCurso = courseId;
-    console.log(internData);
+
     setCalculatedData(internData);
     try {
       for (const id in internData) {
@@ -303,8 +298,6 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
     } catch (error) {
       console.error(error);
     }
-
-    console.log(internData);
 
     // if (planChosen) {
     //     console.log(planChosen)
@@ -355,7 +348,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(e);
+
     try {
       await coursesRef.child(courseId).child("planos").child(planId).set(calculatedData);
       enqueueSnackbar("Dados salvos!", { variant: "success" });
@@ -372,7 +365,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
 
   return (
     <Fragment>
-      {openDialogError &&
+      {openDialogError && (
         <ErrorDialog
           onClose={() => {
             setOpenDialogError(false);
@@ -381,7 +374,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
           title={openDialogError.title}
           message={openDialogError.message}
         />
-      }
+      )}
       <FullScreenDialog
         isOpen={isOpen}
         onClose={() => {
@@ -392,13 +385,12 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
           contractHandler("", null, true);
         }}
         title={"Configurar plano"}
-        saveButton={"Salvar"}
-      >
-        {!calculatedData ?
+        saveButton={"Salvar"}>
+        {!calculatedData ? (
           <div style={{ width: "100%" }}>
             <LinearProgress />
           </div>
-          :
+        ) : (
           <>
             <Container>
               <form
@@ -407,8 +399,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                   contractHandler(e.target.id);
                 }}
                 id="contractForm"
-                autoComplete="off"
-              >
+                autoComplete="off">
                 <h1>Dados do Curso:</h1>
                 <Grid justifyContent="flex-start" container direction="row" spacing={2}>
                   <Grid item>
@@ -615,8 +606,7 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                         inputProps={{
                           name: "quandoAplicar",
                           id: "quandoAplicar"
-                        }}
-                      >
+                        }}>
                         {/* {() => {
                                             let Option = (<option hidden>Escolha a parcela...</option>)
                                             for (let i = 0; i <= calculatedData.numeroMaximoParcelasPlano; i++) {
@@ -656,18 +646,16 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                   direction="row"
                   spacing={2}
                   alignContent="center"
-                  alignItems="center"
-                >
+                  alignItems="center">
                   <Grid item>
-                    {plan &&
+                    {plan && (
                       <FormControl component="fieldset">
                         <FormLabel component="legend">Configuração do vencimento</FormLabel>
                         <RadioGroup
                           name="vencimento"
                           id="vencimento"
                           onChange={() => contractHandler()}
-                          defaultValue={plan && plan.vencimento}
-                        >
+                          defaultValue={plan && plan.vencimento}>
                           <FormControlLabel
                             value="false"
                             control={<Radio required />}
@@ -680,11 +668,11 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                           />
                         </RadioGroup>
                       </FormControl>
-                    }
+                    )}
                   </Grid>
 
                   <Grid item>
-                    {calculatedData && calculatedData.vencimento === "true" &&
+                    {calculatedData && calculatedData.vencimento === "true" && (
                       <>
                         {/* <FormControl variant="filled">
                                     <InputLabel htmlFor="filled-age-native-simple">Escolha um dia</InputLabel>
@@ -722,20 +710,19 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                             defaultValue={calculatedData.diasDeVencimento}
                             renderValue={(selected) => selected.join(", ")}
                             variant="filled"
-                            MenuProps={MenuProps}
-                          >
-                            {daysOptions.map((dayOpt) =>
+                            MenuProps={MenuProps}>
+                            {daysOptions.map((dayOpt) => (
                               <MenuItem key={dayOpt} value={dayOpt}>
                                 <Checkbox
                                   checked={
                                     calculatedData.hasOwnProperty("diasDeVencimento") &&
                                     calculatedData.diasDeVencimento.indexOf(dayOpt.toString()) !==
-                                    -1
+                                      -1
                                   }
                                 />
                                 <ListItemText primary={dayOpt} />
                               </MenuItem>
-                            )}
+                            ))}
                           </Select>
                           <FormHelperText>
                             {" "}
@@ -743,11 +730,11 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                           </FormHelperText>
                         </FormControl>
                       </>
-                    }
+                    )}
                   </Grid>
 
                   <Grid item>
-                    {plan &&
+                    {plan && (
                       <FormControl className={S.fields}>
                         <TextField
                           variant="filled"
@@ -765,13 +752,13 @@ const PlanEditor = ({ courseId, planId = undefined, isOpen, setOpenDialog }) => 
                           Informações e avisos para serem gerados no boleto.{" "}
                         </FormHelperText>
                       </FormControl>
-                    }
+                    )}
                   </Grid>
                 </Grid>
               </form>
             </Container>
           </>
-        }
+        )}
       </FullScreenDialog>
     </Fragment>
   );

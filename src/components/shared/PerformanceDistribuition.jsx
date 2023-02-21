@@ -81,7 +81,7 @@ const PerformanceDistribuition = ({ open, onClose }) => {
         gradesArray.push({ key: key, value: value });
       }
     }
-    console.log(gradesArray);
+
     setGrades([...gradesArray]);
   };
 
@@ -105,12 +105,12 @@ const PerformanceDistribuition = ({ open, onClose }) => {
     if (sum <= 100) {
 try {
         form.current.requestSubmit();
-        console.log(grades);
+
         let localGrades = {};
         grades.map((grade, i) => {
           localGrades[grade.key] = grade.value;
         });
-        console.log(localGrades);
+
         await performanceGradesRef.set(localGrades);
         enqueueSnackbar("Notas definidas com sucesso.", {
           title: "Sucesso",
@@ -161,7 +161,7 @@ enqueueSnackbar("O somatório das notas não pode ser maior que 100.", {
   };
 
   const handleChangePerformanceGrade = (e) => {
-    console.log(e.target.checked);
+
     if (e.target.checked) {
       handleAddGrade("Desempenho", performanceGradesSum, true);
     } else {

@@ -254,7 +254,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
         }
       }
 
-      console.log(data);
+
       if (data && courseData) {
         setClassData(data);
         const dataTemplate = {
@@ -323,12 +323,12 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
   };
 
   const handleRowSelection = (selectedRows) => {
-    console.log(selectedRows);
+
     setSelectedRows(selectedRows);
   };
 
   const handleRowClick = (e) => {
-    console.log(e);
+
     //setStudentInfo({id: e.id, classCode: classCode})
     // setOpen(true);
   };
@@ -340,19 +340,19 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
 
   // Functions for the calendar
   const handleDateClick = (e) => {
-    console.log(e);
+
   };
 
   const handleEventClick = (e) => {
-    console.log(e);
+
   };
 
   const handleSelection = (e) => {
-    console.log(e);
+
   };
 
   const handleViewChange = (e) => {
-    console.log(e.view.type);
+
     //localStorage.setItem('view', e.view.type)
   };
 
@@ -360,13 +360,13 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
 
   const getApi = () => {
     const { current: calendarDom } = calendarEl;
-    console.log(calendarEl.current);
+
 
     return calendarDom ? calendarDom.getApi() : null;
   };
 
   const handleChangeStartEndClasses = (e) => {
-    console.log(e.target.value);
+
     let startAndEnd = startEndClasses;
     if (e.target.id === "start") {
       startAndEnd.start = e.target.value;
@@ -381,7 +381,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
   const handleRerenderCalendar = () => {
     if (classData.hasOwnProperty("hora")) {
       const API = getApi();
-      console.log(API);
+
       API && API.changeView("dayGridMonth", startEndClasses);
       const event = API && API.getEventById(classCode);
       event && event.remove();
@@ -475,7 +475,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
   };
 
   const handleReleaseGrades = (single) => {
-    console.log(single);
+
     if (single) {
       setSelectedRows([single]);
     }
@@ -493,7 +493,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
     if (remove) {
       // in case of remove === true, "event" will be like {eventStr: event.startStr, classCode: eventId, studentId: fault.id, studentName: fault.name}
       try {
-        console.log(event);
+
         await confirm({
           variant: "danger",
           catchOnCancel: true,
@@ -529,7 +529,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
       }
       setLoader(false);
     } else {
-      console.log(event);
+
       if (selectedRows.length > 0) {
         try {
           let selectedStudents = "";
@@ -539,7 +539,7 @@ const ClassPanelTeacher = ({ classDataRows, onClose }) => {
             for (const i in selectedRows) {
               if (Object.hasOwnProperty.call(selectedRows, i)) {
                 const id = selectedRows[i];
-                console.log(selectedRows.length - 1, Number(i));
+
                 selectedStudents += selectedRows.length - 1 === Number(i) ? `${id}` : `${id}, `;
               }
             }

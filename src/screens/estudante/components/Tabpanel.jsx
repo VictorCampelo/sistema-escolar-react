@@ -74,7 +74,7 @@ export default function StudentTabs() {
           onChange={handleChange}
           variant="scrollable"
           scrollButtons="on"
-          indicatorColor="standard"
+          indicatorColor="primary"
           textColor="primary"
           aria-label="scrollable force tabs example"
         >
