@@ -139,15 +139,6 @@ const Classes = () => {
     let rowIndex = rowsArray.findIndex((row) => row.id === editedRow.id);
     rowsArray[rowIndex][editedRow.field] = editedRow.value;
     setRows(rowsArray);
-    console.log(rowsArray);
-    // try {
-    //     await additionalFieldsRef.set(rowsArray)
-    //     setLoading(false)
-    // } catch (error) {
-    //     console.log(error)
-    //     setLoading(false);
-    //     throw new Error(error.message)
-    // }
   };
 
   const handleRowSelection = (selectedRows) => {
@@ -160,16 +151,6 @@ const Classes = () => {
     let rowsArray = JSON.parse(JSON.stringify(rows));
     let updatedRows = rowsArray.filter((row) => selectedRows.indexOf(row.id) === -1);
     console.log(updatedRows);
-
-    // try {
-    //     await additionalFieldsRef.set(updatedRows);
-    //     setRows(updatedRows);
-    //     setLoading(false);
-    // } catch (error) {
-    //     console.error(error);
-    //     setLoading(false);
-    //     throw new Error(error.message);
-    // }
   };
 
   const handleRowClick = (e) => {

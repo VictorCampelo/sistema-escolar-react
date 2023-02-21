@@ -40,8 +40,6 @@ export default function Orders() {
         } else {
           setRows([]);
         }
-
-        console.log(localRows);
       });
   }, []);
 

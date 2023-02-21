@@ -1,5 +1,5 @@
 const SecretariaDashboard = () => {
-  return null;
+  return <></>;
 };
 
 export default SecretariaDashboard;
