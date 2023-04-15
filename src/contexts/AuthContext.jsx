@@ -39,9 +39,9 @@ export function AuthContextProvider(props) {
 
     const { displayName, photoURL, uid, email, emailVerified } = result.user;
 
-    if (!displayName || !photoURL) {
-      throw new Error("Faltando informações da conta!");
-    }
+    // if (!displayName || !photoURL) {
+    //   throw new Error("Faltando informações da conta!");
+    // }
 
     setUser({
       id: uid,
