@@ -6,5 +6,10 @@
   "cSpell.words": [
     "notistack"
   ],
-  "cSpell.enabled": false
+  "cSpell.enabled": false,
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#0F3237",
+    "titleBar.activeBackground": "#15464E",
+    "titleBar.activeForeground": "#F5FBFC"
+  }
 }
